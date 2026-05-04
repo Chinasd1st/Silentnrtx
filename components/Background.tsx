@@ -2,11 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
+import { getCache, setCache } from "@/lib/cache";
+import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+
+const CACHE_KEY = "bg_url";
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 export function Background() {
   const [bgUrl, setBgUrl] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [isLight, setIsLight] = useState(false);
   const cfg = siteConfig.background;
+
+  useEffect(() => {
+    const check = () => setIsLight(document.documentElement.classList.contains("light"));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!cfg.enabled) {
@@ -21,43 +35,40 @@ export function Background() {
       return;
     }
 
+    const cached = getCache<string>(CACHE_KEY, CACHE_TTL);
+    if (cached) { setBgUrl(cached); setLoading(false); return; }
+
     if (cfg.usePixiv) {
-      fetch("https://api.lolicon.app/setu/v2")
+      fetchWithTimeout("https://api.lolicon.app/setu/v2")
         .then((r) => r.json())
         .then((data) => {
           const illusts = data.illusts || data.data || [];
           if (illusts.length > 0) {
             const pick = illusts[Math.floor(Math.random() * Math.min(illusts.length, 10))];
             const url = pick.url || pick.original || pick.large || pick.image_url;
-            if (url) setBgUrl(url);
+            if (url) { setBgUrl(url); setCache(CACHE_KEY, url); }
             else document.body.style.backgroundColor = cfg.fallbackColor;
           } else {
             document.body.style.backgroundColor = cfg.fallbackColor;
           }
         })
-        .catch(() => {
-          document.body.style.backgroundColor = cfg.fallbackColor;
-        })
+        .catch(() => { document.body.style.backgroundColor = cfg.fallbackColor; })
         .finally(() => setLoading(false));
       return;
     }
 
     if (cfg.useBing) {
-      fetch(cfg.bingApi)
+      fetchWithTimeout(cfg.bingApi)
         .then((r) => r.json())
         .then((data) => {
           let url = data.url || data.images?.[0]?.url;
-          if (!url) {
-            document.body.style.backgroundColor = cfg.fallbackColor;
-            return;
-          }
+          if (!url) { document.body.style.backgroundColor = cfg.fallbackColor; return; }
           if (url.startsWith("//")) url = `https:${url}`;
           else if (url.startsWith("/")) url = `https://www.bing.com${url}`;
           setBgUrl(url);
+          setCache(CACHE_KEY, url);
         })
-        .catch(() => {
-          document.body.style.backgroundColor = cfg.fallbackColor;
-        })
+        .catch(() => { document.body.style.backgroundColor = cfg.fallbackColor; })
         .finally(() => setLoading(false));
       return;
     }
@@ -74,7 +85,7 @@ export function Background() {
         className="h-full w-full bg-cover bg-center"
         style={{
           backgroundImage: `url(${bgUrl})`,
-          filter: `blur(${cfg.blurAmount}px) brightness(0.6)`,
+          filter: isLight ? "none" : `blur(${cfg.blurAmount}px) brightness(0.6)`,
           transform: "scale(1.1)",
         }}
       />

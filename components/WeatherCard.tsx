@@ -52,13 +52,13 @@ export function WeatherCard() {
   if (error || !weather) return <ErrorCard title={t("weather.title")} onRetry={fetchWeather} />;
 
   return (
-    <div className="md-card animate-fade-in-up">
-      <div className="flex items-center gap-4 mb-4 rounded-[16px] p-3" style={{ backgroundColor: "rgba(88,166,255,0.08)" }}>
-        <span className="text-4xl font-bold font-heading shrink-0 leading-none" style={{ color: "var(--md-accent-blue)" }}>{weather.temp_C}°C</span>
+    <div className="md-card">
+      <div className="flex items-center gap-4 mb-4 rounded-[16px] p-3" style={{ backgroundColor: "var(--md-primary-008)" }}>
+        <span className="text-4xl font-bold font-heading shrink-0 leading-none" style={{ color: "var(--md-primary)" }}>{weather.temp_C}°C</span>
         <div className="min-w-0 flex-1 flex flex-col justify-center">
           <p className="text-sm font-semibold leading-snug" style={{ color: "var(--md-text-primary)" }}>{desc || cityName}</p>
           <p className="text-xs mt-0.5 leading-snug" style={{ color: "var(--md-text-muted)" }}>
-            <FaCloudSun className="inline mr-1" style={{ color: "var(--md-accent-blue)" }} />
+            <FaCloudSun className="inline mr-1" style={{ color: "var(--md-primary)" }} />
             {t("weather.feels_like")} {weather.FeelsLikeC}°C
           </p>
         </div>

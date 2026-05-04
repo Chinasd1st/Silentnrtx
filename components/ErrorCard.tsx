@@ -13,7 +13,7 @@ export function ErrorCard({
   const { t } = useTranslation();
 
   return (
-    <div className="md-card animate-fade-in-up flex flex-col items-center justify-center gap-3 py-10 text-center">
+    <div className="md-card flex flex-col items-center justify-center gap-3 py-10 text-center">
       <FiAlertCircle className="text-2xl" style={{ color: "var(--md-text-muted)" }} />
       <div>
         <p className="text-sm font-medium" style={{ color: "var(--md-text-secondary)" }}>{title}</p>

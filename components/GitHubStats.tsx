@@ -48,7 +48,7 @@ export function GitHubStats() {
   const { user, stars, forks } = data;
 
   return (
-    <div className="md-card animate-fade-in-up overflow-hidden relative">
+    <div className="md-card overflow-hidden relative">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-purple-500/5 blur-3xl" />
         <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-blue-500/5 blur-3xl" />

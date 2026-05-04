@@ -28,6 +28,8 @@ export const siteConfig = {
     discord: { username: "silentnrtx" },
     osu: { url: "https://osu.ppy.sh/users/34040390", username: "Silentnrtx" },
     blog: { url: "https://silentnrtx.top", name: "Silentnrtx's Blog" },
+    soundcloud: { url: "https://soundcloud.com/silentnrtx", username: "Silentnrtx" },
+    bandcamp: { url: "https://bandcamp.com/silentnrtx", username: "Silentnrtx" },
     lastfm: { url: "https://www.last.fm/user/silentnrtx", username: "silentnrtx" },
   },
 

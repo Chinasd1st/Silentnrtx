@@ -58,7 +58,7 @@ export function SteamStatus() {
   const isOnline = player.personastate > 0;
 
   return (
-    <div className="md-card animate-fade-in-up">
+    <div className="md-card">
       <div className="flex items-center gap-3 mb-4">
         <FaSteam className="text-lg shrink-0" style={{ color: inGame ? "var(--md-primary)" : "var(--md-text-muted)" }} />
         <div className="min-w-0 flex-1">

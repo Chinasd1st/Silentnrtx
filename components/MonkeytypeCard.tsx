@@ -61,7 +61,7 @@ export function MonkeytypeCard() {
   const c = "var(--md-primary)";
 
   return (
-    <div className="md-card animate-fade-in-up">
+    <div className="md-card">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <SiMonkeytype className="text-lg shrink-0" style={{ color: c }} />

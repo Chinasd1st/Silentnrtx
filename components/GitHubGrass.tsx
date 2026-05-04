@@ -58,7 +58,7 @@ export function GitHubGrass() {
   if (error || weeks.length === 0) return <ErrorCard title={t("github.contributions")} onRetry={fetchGrass} />;
 
   return (
-    <div className="md-card animate-fade-in-up">
+    <div className="md-card">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaGithub style={{ color: "var(--md-accent-green)" }} />{t("github.contributions")}

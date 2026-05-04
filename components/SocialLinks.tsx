@@ -2,7 +2,7 @@
 
 import { siteConfig } from "@/config";
 import { FaGithub, FaDiscord, FaGlobe } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaXTwitter, FaSoundcloud, FaBandcamp } from "react-icons/fa6";
 import { SiBilibili, SiOsu } from "react-icons/si";
 import { useTranslation } from "@/lib/i18n";
 
@@ -10,6 +10,8 @@ const socialItems = [
   { key: "bilibili", icon: SiBilibili, color: "#00A1D6", href: siteConfig.social.bilibili.url, username: siteConfig.social.bilibili.username },
   { key: "github", icon: FaGithub, color: "var(--md-text-primary)", href: siteConfig.social.github.url, username: siteConfig.social.github.nickname },
   { key: "twitter", icon: FaXTwitter, color: "var(--md-text-primary)", href: siteConfig.social.twitter.url, username: siteConfig.social.twitter.username },
+  { key: "soundcloud", icon: FaSoundcloud, color: "#ff7700", href: siteConfig.social.soundcloud.url, username: siteConfig.social.soundcloud.username },
+  { key: "bandcamp", icon: FaBandcamp, color: "#00a1c6", href: siteConfig.social.bandcamp.url, username: siteConfig.social.bandcamp.username },
   { key: "discord", icon: FaDiscord, color: "#5865F2", href: null, username: siteConfig.social.discord.username },
   { key: "osu", icon: SiOsu, color: "var(--md-accent-pink)", href: siteConfig.social.osu.url, username: siteConfig.social.osu.username },
   { key: "blog", icon: FaGlobe, color: "var(--md-primary)", href: siteConfig.social.blog.url, username: siteConfig.social.blog.name },

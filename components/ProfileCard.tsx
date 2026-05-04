@@ -8,7 +8,7 @@ export function ProfileCard() {
   const profile = siteConfig.profile;
 
   return (
-    <div className="md-card group relative overflow-hidden animate-fade-in-up">
+    <div className="md-card group relative overflow-hidden">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <div className="h-20 w-20 overflow-hidden rounded-[24px]" style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}>

@@ -8,7 +8,7 @@ export function OsuSignature() {
   const { t } = useTranslation();
 
   return (
-    <div className="md-card animate-fade-in-up flex flex-col">
+    <div className="md-card flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <SiOsu style={{ color: "var(--md-accent-pink)" }} />{t("osu.title")}

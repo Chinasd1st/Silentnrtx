@@ -6,7 +6,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 
 export function CardSkeleton() {
   return (
-    <div className="md-card animate-fade-in-up space-y-4">
+    <div className="md-card space-y-4">
       <div className="flex items-center gap-3">
         <Skeleton className="h-12 w-12 shrink-0 rounded-[16px]" />
         <div className="space-y-2 flex-1">

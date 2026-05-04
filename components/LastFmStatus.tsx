@@ -53,7 +53,7 @@ export function LastFmStatus() {
   if (state === "error") return <ErrorCard title={t("lastfm.none")} onRetry={fetchTrack} />;
 
   return (
-    <div className="md-card animate-fade-in-up">
+    <div className="md-card">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaLastfm style={{ color: "#D51007" }} />{t("lastfm.title")}

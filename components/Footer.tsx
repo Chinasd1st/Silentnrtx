@@ -18,8 +18,7 @@ export function Footer() {
         {cfg.customHtml ? undefined : displayText}
       </p>
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-        Built {dateStr}
-      </p>
+        Built {dateStr} · <kbd className="inline-block rounded px-1.5 py-0.5 text-[9px] font-mono" style={{ backgroundColor: "var(--md-surface-variant)" }}>?</kbd> shortcuts</p>
     </footer>
   );
 }

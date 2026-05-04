@@ -36,7 +36,7 @@ export function GalleryCard() {
 
   return (
     <>
-      <div className="md-card animate-fade-in-up">
+      <div className="md-card">
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
             <FaImage style={{ color: "var(--md-primary)" }} />

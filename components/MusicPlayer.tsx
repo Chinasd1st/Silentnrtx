@@ -7,7 +7,7 @@ import { useGlobalAudio } from "@/components/GlobalAudio";
 import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
-import { FaMusic, FaPlay, FaPause, FaStepForward } from "react-icons/fa";
+import { FaMusic, FaPlay, FaPause, FaStepBackward, FaStepForward } from "react-icons/fa";
 
 interface Song { name: string; artist: string; url: string; pic: string; lrc: string; }
 
@@ -46,9 +46,14 @@ export function MusicPlayer() {
 
   const toggle = useCallback((idx: number) => {
     if (selectedIdx === idx && audio.playing) { audio.pause(); return; }
-    if (selectedIdx === idx) { audio.resume(); return; }
     playSong(idx);
   }, [selectedIdx, audio, playSong]);
+
+  const prev = useCallback(() => {
+    if (selectedIdx === null) return;
+    const p = selectedIdx - 1;
+    if (p >= 0) playSong(p);
+  }, [selectedIdx, playSong]);
 
   const next = useCallback(() => {
     if (selectedIdx === null) return;
@@ -64,6 +69,17 @@ export function MusicPlayer() {
     return () => audio.setOnEnded(null);
   }, [selectedIdx, songs.length, playSong, audio]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === " " || e.code === "Space") { e.preventDefault(); if (selectedIdx !== null) toggle(selectedIdx); }
+      if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [toggle, next, selectedIdx]);
+
   if (loading) return <CardSkeleton />;
   if (error || songs.length === 0) return <ErrorCard title={t("music.error")} onRetry={() => setRetryKey((k) => k + 1)} />;
 
@@ -71,7 +87,7 @@ export function MusicPlayer() {
   const track = songs[idx];
 
   return (
-    <div className="md-card animate-fade-in-up">
+    <div className="md-card">
       <div className="flex items-center gap-3 mb-3">
         {track?.pic && (
           <img src={track.pic} alt="cover" className="h-12 w-12 shrink-0 rounded-[16px] object-cover"
@@ -91,9 +107,12 @@ export function MusicPlayer() {
             <p className="truncate text-xs" style={{ color: "var(--md-text-muted)" }}>{track?.artist}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            <button onClick={prev} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "var(--md-text-secondary)" }}
+              disabled={idx <= 0}><FaStepBackward size={12} /></button>
             <button onClick={() => toggle(idx)} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}>
-              {audio.playing && selectedIdx === idx ? <FaPause size={12} /> : <FaPlay size={12} />}
+              {audio.playing && selectedIdx === idx ? <FaPause size={12} /> : <FaPlay size={12} style={{ marginLeft: "1.5px" }} />}
             </button>
             <button onClick={next} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "var(--md-text-secondary)" }}
@@ -136,7 +155,7 @@ const SongItem = React.memo(function SongItem({ song, idx, selectedIdx, isPlayin
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}>
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-[10px]"
         style={{ backgroundColor: sel ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: sel ? "var(--md-primary)" : "var(--md-text-muted)" }}>
-        {sel && isPlaying ? <FaPause size={8} /> : <FaPlay size={8} />}
+        {sel && isPlaying ? <FaPause size={8} /> : <FaPlay size={8} style={{ marginLeft: "1px" }} />}
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium" style={{ color: sel ? "var(--md-primary)" : "var(--md-text-primary)" }}>{song.name}</p>

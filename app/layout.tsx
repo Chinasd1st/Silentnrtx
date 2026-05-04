@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import { Background } from "@/components/Background";
 import { I18nInit } from "@/components/I18nInit";
 import { GlobalAudioProvider } from "@/components/GlobalAudio";
-import { ThemeInit } from "@/components/ThemeInit";
-
-// 注意：所有 NEXT_PUBLIC_* 环境变量在静态导出中会嵌入浏览器 JS bundle。
-// 涉及的 API Key：Last.fm、Monkeytype ApeKey、Steam Web API Key
-// 这些均为只读公开数据，风险可控。如需隐藏 Key 需搭建后端代理。
+import { ShortcutsPanel } from "@/components/ShortcutsPanel";
 import { siteConfig } from "@/config";
 import "./globals.css";
 
@@ -39,9 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <I18nInit />
-        <ThemeInit />
         <GlobalAudioProvider>
           <Background />
+          <ShortcutsPanel />
           <main>{children}</main>
         </GlobalAudioProvider>
       </body>

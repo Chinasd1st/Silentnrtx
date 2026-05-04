@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { FaGlobe } from "react-icons/fa";
 import { useTranslation } from "@/lib/i18n";
+import { getCache, setCache } from "@/lib/cache";
+import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
 
 interface RssItem {
   title: string;
@@ -40,10 +42,13 @@ export function BlogPosts() {
     const rssUrl = siteConfig.blog.rssUrl;
     if (!rssUrl) { setLoading(false); setError(true); return; }
 
-    fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`)
+    const cached = getCache<RssItem[]>("blog_rss", 30 * 60 * 1000);
+    if (cached) { setPosts(cached); setLoading(false); return; }
+
+    fetchWithTimeout(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`)
       .then((r) => r.json())
       .then((data: RssResponse) => {
-        if (data.status === "ok") setPosts(data.items.slice(0, siteConfig.blog.postLimit));
+        if (data.status === "ok") { const items = data.items.slice(0, siteConfig.blog.postLimit); setPosts(items); setCache("blog_rss", items); }
         else throw new Error("RSS parse failed");
       })
       .catch(() => setError(true))
@@ -59,7 +64,7 @@ export function BlogPosts() {
   };
 
   return (
-    <div className="md-card animate-fade-in-up">
+    <div className="md-card">
       <div className="flex items-center justify-between mb-5">
         <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaGlobe style={{ color: "var(--md-primary)" }} />
