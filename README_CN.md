@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_CN.md">中文</a>
+</p>
+
 # Silentnrtx 个人主页
 
 [![Deploy to GitHub Pages](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml/badge.svg)](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml)
@@ -5,7 +9,7 @@
 
 基于 Material Design 3–like 的个人主页，全程通过 **Vibe Coding** 使用 **DeepSeek V4 Flash** 配合 [opencode](https://opencode.ai) 生成。
 
-> **在线地址**: [https://chinasd1st.github.io/Silentnrtx/](https://chinasd1st.github.io/Silentnrtx/)
+> **在线地址**: [https://silentnrtx.top/Silentnrtx/](https://silentnrtx.top/Silentnrtx/)
 >
 > **仓库**: [Chinasd1st/Silentnrtx](https://github.com/Chinasd1st/Silentnrtx)
 
@@ -15,7 +19,7 @@
 
 - **Material Design 3–like** — 24px 圆角卡片、`oklch()` 动态配色，由单个 `--md-hue` 变量驱动全局色板
 - **深色优先** — 默认深色模式，跟随系统 `prefers-color-scheme` 自动切换浅色，支持手动三档切换（☀️ / 🌙 / 🖥️）
-- **毛玻璃背景** — Bing 每日壁纸 + `backdrop-filter` 模糊
+- **毛玻璃背景** — Bing 每日壁纸 + `backdrop-filter` 模糊（浅色模式自动关闭）
 - **瀑布流布局** — CSS `columns`，卡片高度自适应排列
 - **纯 CSS 动画** — 未引入任何 JavaScript 动画库
 
@@ -32,26 +36,27 @@
 | 部署 | GitHub Pages，子路径 `/Silentnrtx` |
 | CI/CD | GitHub Actions (push → 构建 → 部署) |
 
-## 数据源（全客户端，无后端）
+## 数据源（全客户端，无服务器）
 
-| 来源 | 数据 |
-|---|---|
-| GitHub REST API | 仓库数、Star、Fork、粉丝 |
-| github-contributions-api | 贡献热力图 |
-| Last.fm API | 正在播放 / 最近听歌 |
-| wttr.in | 实时天气（自动 IP 定位） |
-| Meting API (injaho) | 网易云歌单 + 播放器 |
-| Monkeytype API | 打字速度最佳记录 |
-| Bing 每日壁纸 | 毛玻璃页面背景 |
-| JMA / CEA 地震 API | 最新地震情报 |
-| RSS2JSON | 博客文章列表 |
-| 不蒜子 | 页面访问量 & 访客数 |
-| Steam Web API | 游戏状态（可选） |
+| 来源 | 数据 | 鉴权 |
+|---|---|---|
+| GitHub REST API | 仓库数、Star、Fork、粉丝 | 公开 |
+| github-contributions-api | 贡献热力图 | 公开 |
+| Last.fm API | 正在播放 / 最近听歌 | API Key |
+| wttr.in | 实时天气（自动 IP） | 公开 |
+| Meting API (injaho) | 网易云歌单 + 播放器 | 公开 |
+| Monkeytype API | 打字速度最佳记录 | 公开 |
+| WakaTime Embed JSON | 编码活动 + AI 数据 | Embed JSON |
+| JMA / CEA 地震 API | 日本 / 中国地震情报 | 公开 |
+| Bing 每日壁纸 | 毛玻璃背景 | 公开 |
+| RSS2JSON | 博客文章 | 公开 |
+| 不蒜子 | 页面访问量 & 访客数 | Script |
+| Steam Web API | 游戏状态（可选） | API Key |
 
 ## 功能模块
 
 - Hero 视差滚动
-- 6 平台社交卡片网格
+- 8 平台社交卡片
 - GitHub 统计 + 贡献热力图
 - Last.fm 听歌状态
 - osu! 签名嵌入
@@ -59,27 +64,23 @@
 - 实时天气
 - 博客 RSS 阅读
 - Monkeytype 打字统计
-- JMA & CEA 地震情报
-- 图片灯箱
-- 时钟（UTC+8，SVG 模拟 + 数字显示）
+- WakaTime 编码活动 + AI 数据
+- JMA & CEA 地震情报（标签切换）
+- 图片灯箱（createPortal）
+- 时钟（UTC+8，SVG 模拟 + 数字 + 装饰圆盘）
 - 快捷键面板（按 `?` 打开）
-- 深色/浅色/自动主题切换
+- 三态主题切换（☀️ / 🌙 / 🖥️）
 - 中英文 i18n
 - 站点访问统计
-- 构建时间戳
+- 构建时间 + commit SHA
+- Release 版本号标签
 
 ## 本地开发
 
 ```bash
-# 安装依赖
 npm ci
-
-# 启动开发服务器
-npm run dev
-
-# 构建静态导出
-npm run build
-# 产物在 ./out/
+npm run dev     # 启动开发服务器 localhost:3000
+npm run build   # 构建静态导出到 ./out/
 ```
 
 ### 环境变量
@@ -93,6 +94,8 @@ NEXT_PUBLIC_STEAM_API_KEY=
 ```
 
 > 所有 `NEXT_PUBLIC_*` 变量会嵌入客户端 JS 包，请仅使用只读公开密钥。
+
+WakaTime 配置见 [WAKATIME_SETUP.md](./WAKATIME_SETUP.md)。
 
 ## Vibe Coding
 

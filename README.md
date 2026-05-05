@@ -9,7 +9,7 @@
 
 Personal homepage with Material Design 3–like style, built entirely with **Vibe Coding** using **DeepSeek V4 Flash** via [opencode](https://opencode.ai).
 
-> **Live**: [https://chinasd1st.github.io/Silentnrtx/](https://chinasd1st.github.io/Silentnrtx/)
+> **Live**: [https://silentnrtx.top/Silentnrtx/](https://silentnrtx.top/Silentnrtx/)
 >
 > **Repo**: [Chinasd1st/Silentnrtx](https://github.com/Chinasd1st/Silentnrtx)
 
@@ -19,7 +19,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 
 - **Material Design 3–like** — 24px rounded elevated cards, `oklch()` dynamic color palette driven by a single `--md-hue` variable
 - **Always-dark first** — dark mode default, automatic light mode follows `prefers-color-scheme`, plus manual toggle (☀️ / 🌙 / 🖥️)
-- **Glassmorphism background** — Bing daily wallpaper with `backdrop-filter` blur
+- **Glassmorphism background** — Bing daily wallpaper with `backdrop-filter` blur (disabled in light mode)
 - **Masonry waterfall layout** — CSS `columns`, cards auto-flow by content height
 - **Pure CSS animations** — no JavaScript animation libraries
 
@@ -36,54 +36,51 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 | Deploy | GitHub Pages at `/Silentnrtx` subpath |
 | CI/CD | GitHub Actions (push → build → deploy) |
 
-## Data Sources (100% client-side, no backend)
+## Data Sources (100% client-side, no server)
 
-| Source | Data |
-|---|---|
-| GitHub REST API | Repos, stars, forks, followers |
-| github-contributions-api | Contribution heatmap (grass) |
-| Last.fm API | Now playing / recent scrobbles |
-| wttr.in | Real-time weather (auto IP) |
-| Meting API (injaho) | Netease Cloud Music playlist + player |
-| Monkeytype API | Typing speed personal bests |
-| Bing Daily Wallpaper | Glassmorphism page background |
-| JMA / CEA Earthquake API | Latest seismic info |
-| RSS2JSON | Blog posts feed |
-| Busuanzi | Page views & visitors counter |
-| Steam Web API | Gaming status (optional) |
+| Source | Data | Auth |
+|---|---|---|
+| GitHub REST API | Repos, stars, forks, followers | Public |
+| github-contributions-api | Contribution heatmap | Public |
+| Last.fm API | Now playing / recent scrobbles | API Key |
+| wttr.in | Real-time weather (auto IP) | Public |
+| Meting API (injaho) | Netease Cloud Music playlist + player | Public |
+| Monkeytype API | Typing speed personal bests | Public |
+| WakaTime Embed JSON | Coding activity + AI vibecoding stats | Embeddable JSON |
+| JMA / CEA Earthquake API | Latest seismic info (Japan & China) | Public |
+| Bing Daily Wallpaper | Glassmorphism page background | Public |
+| RSS2JSON | Blog posts feed | Public |
+| Busuanzi | Page views & visitors counter | Script embed |
+| Steam Web API | Gaming status (optional) | API Key |
 
 ## Features
 
 - Hero parallax scroll
-- 6-platform social card grid
+- 8-platform social card grid
 - GitHub stats + contribution grass
 - Last.fm scrobbling status
 - osu! signature embed
 - Netease music player (global audio, prev/next, progress bar)
-- 7-day weather forecast
+- 7-day weather
 - Blog RSS reader
 - Monkeytype typing stats
-- JMA & CEA earthquake monitor
-- Photo gallery lightbox
-- Clock (UTC+8, SVG analog + digital)
+- WakaTime coding activity + AI stats
+- JMA & CEA earthquake monitor (tab switch)
+- Photo gallery lightbox (`createPortal`)
+- Clock (UTC+8, SVG analog + digital + decorative face)
 - Keyboard shortcuts panel (`?`)
-- Dark/light/auto theme switch
+- Three-state theme switch (light / dark / system)
 - zh-CN / en-US i18n
 - Site visitor stats
-- Build timestamp in footer
+- Build time + commit SHA in footer
+- Version tag from GitHub releases
 
 ## Getting Started
 
 ```bash
-# Install
 npm ci
-
-# Dev server
-npm run dev
-
-# Build static export
-npm run build
-# Output in ./out/
+npm run dev     # dev server at localhost:3000
+npm run build   # static export to ./out/
 ```
 
 ### Environment Variables
@@ -97,6 +94,8 @@ NEXT_PUBLIC_STEAM_API_KEY=
 ```
 
 > All `NEXT_PUBLIC_*` variables are embedded in the client bundle. Only use read-only public keys.
+
+For WakaTime, see [WAKATIME_SETUP.md](./WAKATIME_SETUP.md).
 
 ## Vibe Coding
 
