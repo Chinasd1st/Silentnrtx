@@ -1,6 +1,7 @@
 # Silentnrtx 个人主页
 
 [![Deploy to GitHub Pages](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml/badge.svg)](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/Chinasd1st/Silentnrtx?include_prereleases&label=%E7%89%88%E6%9C%AC)](https://github.com/Chinasd1st/Silentnrtx/releases)
 
 基于 Material Design 3–like 的个人主页，全程通过 **Vibe Coding** 使用 **DeepSeek V4 Flash** 配合 [opencode](https://opencode.ai) 生成。
 

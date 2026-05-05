@@ -5,6 +5,7 @@
 # Silentnrtx Homepage
 
 [![Deploy to GitHub Pages](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml/badge.svg)](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/Chinasd1st/Silentnrtx?include_prereleases&label=release)](https://github.com/Chinasd1st/Silentnrtx/releases)
 
 Personal homepage with Material Design 3–like style, built entirely with **Vibe Coding** using **DeepSeek V4 Flash** via [opencode](https://opencode.ai).
 

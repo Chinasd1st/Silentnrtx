@@ -89,15 +89,16 @@ export function MusicPlayer() {
   return (
     <div className="md-card">
       <div className="flex items-center gap-3 mb-3">
-        {track?.pic && (
-          <img src={track.pic} alt="cover" className="h-12 w-12 shrink-0 rounded-[16px] object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-        )}
+        <FaMusic className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
         <div className="min-w-0 flex-1">
-          <h3 className="font-heading text-lg font-semibold truncate flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
-            <FaMusic style={{ color: "var(--md-primary)" }} />{cfg.title}
+          <h3 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }}>
+            {cfg.title}
           </h3>
         </div>
+        {track?.pic && (
+          <img src={track.pic} alt="cover" className="h-10 w-10 shrink-0 rounded-[12px] object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+        )}
       </div>
 
       <div className="mb-3 rounded-[16px] p-3" style={{ backgroundColor: "var(--md-primary-008)" }}>

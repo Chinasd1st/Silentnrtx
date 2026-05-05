@@ -76,7 +76,7 @@ export function WeatherCard() {
 
 function MiniStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-[12px] p-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
+    <div className="rounded-[12px] p-3 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
       <p className="text-sm font-semibold" style={{ color: "var(--md-text-primary)" }}>{value}</p>
       <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>{label}</p>
     </div>

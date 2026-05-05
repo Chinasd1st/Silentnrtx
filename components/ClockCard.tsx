@@ -46,7 +46,7 @@ export function ClockCard() {
         <div className="flex items-center gap-6">
           <div className="w-[72px] h-[72px] shrink-0" />
           <div className="min-w-0">
-            <div className="font-heading text-5xl font-light tracking-[-2px] leading-none" style={{ color: "var(--md-text-primary)" }}>
+            <div className="font-heading text-3xl sm:text-4xl xl:text-5xl font-light tracking-[-1px] sm:tracking-[-2px] leading-none" style={{ color: "var(--md-text-primary)" }}>
               <span>--:--:--</span>
             </div>
           </div>
@@ -66,8 +66,8 @@ export function ClockCard() {
 
   return (
     <div className="md-card">
-      <div className="flex items-center gap-6">
-        <svg width="72" height="72" viewBox="0 0 100 100" className="shrink-0">
+      <div className="flex items-center gap-4 sm:gap-6">
+        <svg width="56" height="56" className="sm:w-[72px] sm:h-[72px] shrink-0" viewBox="0 0 100 100">
           {/* Clock face background */}
           <path fill={c} fillOpacity="0.1"
             transform="translate(50, 50) scale(0.2) translate(-250, -250)"
@@ -85,7 +85,7 @@ export function ClockCard() {
         </svg>
 
         <div className="min-w-0">
-          <div className="flex items-center gap-1 font-heading text-5xl font-light tracking-[-2px] leading-none" style={{ color: "var(--md-text-primary)" }}>
+          <div className="flex items-center gap-1 font-heading text-3xl sm:text-4xl xl:text-5xl font-light tracking-[-1px] sm:tracking-[-2px] leading-none" style={{ color: "var(--md-text-primary)" }}>
             <span className="tabular-nums">{hh}</span>
             <span className="inline-block text-[0.85em] leading-none opacity-80 font-normal relative" style={{ top: "-0.05em" }}>:</span>
             <span className="tabular-nums">{mm}</span>

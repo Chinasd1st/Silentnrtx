@@ -2,14 +2,19 @@
 
 import { siteConfig } from "@/config";
 import { buildTime } from "@/lib/buildTime";
+import { useVersion } from "@/lib/version";
 
 export function Footer() {
   const cfg = siteConfig.footer;
   const year = new Date().getFullYear();
   const displayText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
+  const ver = useVersion();
 
   const built = new Date(buildTime);
-  const dateStr = `${built.getFullYear()}-${String(built.getMonth() + 1).padStart(2, "0")}-${String(built.getDate()).padStart(2, "0")}`;
+  const timeStr = built.toLocaleString(undefined, {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", timeZoneName: "short",
+  });
 
   return (
     <footer className="pb-8 pt-2 text-center space-y-1">
@@ -18,7 +23,8 @@ export function Footer() {
         {cfg.customHtml ? undefined : displayText}
       </p>
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-        Built {dateStr} · <kbd className="inline-block rounded px-1.5 py-0.5 text-[9px] font-mono" style={{ backgroundColor: "var(--md-surface-variant)" }}>?</kbd> shortcuts</p>
+        Built {timeStr}{ver ? ` · ${ver}` : ""}
+      </p>
     </footer>
   );
 }

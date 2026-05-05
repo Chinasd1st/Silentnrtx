@@ -56,7 +56,7 @@ export function LastFmStatus() {
     <div className="md-card">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
-          <FaLastfm style={{ color: "#D51007" }} />{t("lastfm.title")}
+          <FaLastfm style={{ color: "var(--md-primary)" }} />{t("lastfm.title")}
         </h3>
         <a href={siteConfig.social.lastfm.url} target="_blank" rel="noopener noreferrer"
           className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}

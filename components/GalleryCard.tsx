@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 import { FaImage } from "react-icons/fa";
@@ -53,7 +54,7 @@ export function GalleryCard() {
               key={idx}
               onClick={() => openViewer(idx)}
               className="break-inside-avoid mb-3 group block w-full text-left rounded-[16px] overflow-hidden border border-transparent transition-all duration-300 hover:border-[var(--md-primary)]/30 hover:scale-[1.02]"
-              style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
+              style={{ backgroundColor: "var(--md-primary-008)" }}
             >
               <div className="overflow-hidden">
                 <img
@@ -75,7 +76,7 @@ export function GalleryCard() {
         </div>
       </div>
 
-      {viewerIdx !== null && (
+      {viewerIdx !== null && createPortal(
         <div ref={viewerRef}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
           onClick={closeViewer}
@@ -93,13 +94,11 @@ export function GalleryCard() {
             >
               &times;
             </button>
-
             <img
               src={images[viewerIdx].url}
               alt={images[viewerIdx].description}
               className="max-h-[75vh] w-auto object-contain"
             />
-
             {images[viewerIdx].description && (
               <div className="p-4 border-t" style={{ borderColor: "var(--md-card-border)" }}>
                 <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
@@ -113,22 +112,15 @@ export function GalleryCard() {
           </div>
 
           {viewerIdx > 0 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx - 1); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl"
-            >
-              &#8249;
-            </button>
+            <button onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx - 1); }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl">&#8249;</button>
           )}
           {viewerIdx < images.length - 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx + 1); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl"
-            >
-              &#8250;
-            </button>
+            <button onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx + 1); }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl">&#8250;</button>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

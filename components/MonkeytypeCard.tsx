@@ -81,8 +81,8 @@ export function MonkeytypeCard() {
       </div>
 
       {stats && (
-        <div className="rounded-[12px] p-3 text-center text-xs" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
-          <span style={{ color: "var(--md-text-muted)" }}>
+        <div className="rounded-[12px] p-2 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
+          <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
             {stats.completedTests.toLocaleString()} {t("monkeytype.tests")} · {hours}{t("monkeytype.hours")} {t("monkeytype.typed")}
           </span>
         </div>
@@ -93,7 +93,7 @@ export function MonkeytypeCard() {
 
 function Mini({ num, acc, label, color, unit }: { num?: number; acc?: number; label: string; color: string; unit: string }) {
   return (
-    <div className="rounded-[12px] p-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
+    <div className="rounded-[12px] p-3 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
       <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>{label}</p>
       <p className="text-xl font-bold font-heading mt-1" style={{ color }}>{num ?? "--"}</p>
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>{acc ? `${acc}%` : unit}</p>

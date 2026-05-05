@@ -61,7 +61,7 @@ export function GitHubGrass() {
     <div className="md-card">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
-          <FaGithub style={{ color: "var(--md-accent-green)" }} />{t("github.contributions")}
+          <FaGithub style={{ color: "var(--md-primary)" }} />{t("github.contributions")}
         </h3>
         <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
           {isZh ? `${t("github.last_year")} ${total.toLocaleString()}` : `${total.toLocaleString()} ${t("github.last_year")}`}
