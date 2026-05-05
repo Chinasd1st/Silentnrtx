@@ -22,6 +22,8 @@ jobs:
         working-directory: ./
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -32,12 +34,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Get Git info and Build Time
+        id: git_info
+        run: |
+          echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "COMMIT_DATE=$(git log -1 --pretty=format:%cd --date=iso)" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
+
       - name: Build static export
         run: npm run build
         env:
           NEXT_PUBLIC_LAST_FM_API_KEY: ${{ secrets.NEXT_PUBLIC_LAST_FM_API_KEY }}
           NEXT_PUBLIC_LAST_FM_USERNAME: ${{ secrets.NEXT_PUBLIC_LAST_FM_USERNAME }}
-
+          NEXT_PUBLIC_BUILD_TIME: ${{ env.BUILD_TIME }}
+          NEXT_PUBLIC_COMMIT_DATE: ${{ env.COMMIT_DATE }}
+          NEXT_PUBLIC_COMMIT_SHA: ${{ env.COMMIT_SHA }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

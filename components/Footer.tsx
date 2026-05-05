@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
-import { buildTime } from "@/lib/buildTime";
+import { buildTime, commitDate, commitSha } from "@/lib/buildTime";
 import { useVersion } from "@/lib/version";
 
 export function Footer() {
@@ -29,6 +29,11 @@ export function Footer() {
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
         Built {timeStr || "..."}{ver ? ` · ${ver}` : ""}
       </p>
+      {commitDate && (
+        <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
+          {commitDate} ({commitSha})
+        </p>
+      )}
     </footer>
   );
 }
