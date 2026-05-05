@@ -64,11 +64,11 @@ export function Hero() {
         </div>
 
         <div>
-          <h1 className="font-heading text-5xl font-bold sm:text-6xl lg:text-7xl tracking-wide" style={{ color: "var(--md-text-primary)" }}>
+          <h1 className="font-heading text-5xl font-bold sm:text-6xl lg:text-7xl tracking-wide leading-[1.15]" style={{ color: "var(--md-text-primary)" }}>
             {siteConfig.profile.name}
           </h1>
-          <p className="mt-3 text-sm" style={{ color: "var(--md-text-secondary)", letterSpacing: "0.08em" }}>{t("profile.location")}</p>
-          <p className="mt-4 text-sm" style={{ color: "var(--md-text-secondary)", opacity: 0.65, letterSpacing: "0.04em" }}>
+          <p className="mt-3 text-sm leading-[1.4]" style={{ color: "var(--md-text-secondary)", letterSpacing: "0.08em" }}>{t("profile.location")}</p>
+          <p className="mt-4 text-sm leading-[1.4] min-h-[1.4em]" style={{ color: "var(--md-text-secondary)", opacity: 0.65, letterSpacing: "0.04em" }}>
             {highlight(siteConfig.profile.signature)}
           </p>
         </div>

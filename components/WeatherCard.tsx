@@ -53,8 +53,8 @@ export function WeatherCard() {
 
   return (
     <div className="md-card">
-      <div className="flex items-center gap-4 mb-4 rounded-[16px] p-3" style={{ backgroundColor: "var(--md-primary-008)" }}>
-        <span className="text-4xl font-bold font-heading shrink-0 leading-none" style={{ color: "var(--md-primary)" }}>{weather.temp_C}°C</span>
+      <div className="flex items-center gap-2 sm:gap-4 mb-4 rounded-[16px] p-3" style={{ backgroundColor: "var(--md-primary-008)" }}>
+        <span className="text-2xl sm:text-4xl font-bold font-heading shrink-0 leading-none" style={{ color: "var(--md-primary)" }}>{weather.temp_C}°C</span>
         <div className="min-w-0 flex-1 flex flex-col justify-center">
           <p className="text-sm font-semibold leading-snug" style={{ color: "var(--md-text-primary)" }}>{desc || cityName}</p>
           <p className="text-xs mt-0.5 leading-snug" style={{ color: "var(--md-text-muted)" }}>
@@ -62,7 +62,7 @@ export function WeatherCard() {
             {t("weather.feels_like")} {weather.FeelsLikeC}°C
           </p>
         </div>
-        <span className="text-[10px] shrink-0 self-center" style={{ color: "var(--md-text-muted)" }}>{weather.localObsDateTime}</span>
+        <span className="hidden sm:inline text-[10px] shrink-0 self-center" style={{ color: "var(--md-text-muted)" }}>{weather.localObsDateTime}</span>
       </div>
 
       <div className="grid grid-cols-3 gap-2">

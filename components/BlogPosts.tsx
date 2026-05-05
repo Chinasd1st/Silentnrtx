@@ -108,11 +108,11 @@ export function BlogPosts() {
           {posts.map((post, idx) => (
             <a key={idx} href={post.link} target="_blank" rel="noopener noreferrer"
               className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/[0.06] hover:translate-x-1">
-              <h4 className="font-medium text-sm leading-snug line-clamp-2" style={{ color: "var(--md-text-primary)" }}
+              <h3 className="font-medium text-sm leading-snug line-clamp-2" style={{ color: "var(--md-text-primary)" }}
                 onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
                 onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-primary)"}>
                 {post.title}
-              </h4>
+              </h3>
               {post.description && descText(post.description) && (
                 <p className="mt-1 text-xs leading-relaxed line-clamp-2" style={{ color: "var(--md-text-muted)" }}>
                   {descText(post.description)}

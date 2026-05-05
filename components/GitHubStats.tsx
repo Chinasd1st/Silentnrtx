@@ -82,7 +82,7 @@ function SB({ icon, label, value, color }: { icon: React.ReactNode; label: strin
       <div className="flex items-center gap-2 text-xs" style={{ color: "var(--md-text-muted)" }}>
         <span style={{ color }}>{icon}</span>{label}
       </div>
-      <p className="mt-1 text-2xl font-bold font-heading" style={{ color }}>{value.toLocaleString()}</p>
+      <p className="mt-1 text-2xl font-bold font-heading" style={{ color: "var(--md-text-primary)" }}>{value.toLocaleString()}</p>
     </div>
   );
 }
