@@ -12,8 +12,8 @@ import { WeatherCard } from "@/components/WeatherCard";
 import { SteamStatus } from "@/components/SteamStatus";
 import { ClockCard } from "@/components/ClockCard";
 import { MonkeytypeCard } from "@/components/MonkeytypeCard";
+import { WakatimeCard } from "@/components/WakatimeCard";
 import { EarthquakeCard } from "@/components/EarthquakeCard";
-
 import { BusuanziStats } from "@/components/BusuanziStats";
 import { Footer } from "@/components/Footer";
 
@@ -24,52 +24,22 @@ export default function Home() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="columns-1 sm:columns-2 xl:columns-3 animate-fade-in-up" style={{ columnGap: "1.5rem" }}>
-          <div className="break-inside-avoid mb-6">
-            <ProfileCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <SocialLinks />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <GitHubStats />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <GitHubGrass />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <LastFmStatus />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <OsuSignature />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <MusicPlayer />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <WeatherCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <SteamStatus />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <ClockCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <MonkeytypeCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <EarthquakeCard />
-          </div>
-
-          <div className="break-inside-avoid mb-6">
-            <BlogPosts />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <GalleryCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <BusuanziStats />
-          </div>
+          <div className="break-inside-avoid mb-6"><ProfileCard /></div>
+          <div className="break-inside-avoid mb-6"><SocialLinks /></div>
+          <div className="break-inside-avoid mb-6"><ClockCard /></div>
+          <div className="break-inside-avoid mb-6"><GitHubStats /></div>
+          <div className="break-inside-avoid mb-6"><GitHubGrass /></div>
+          <div className="break-inside-avoid mb-6"><WakatimeCard /></div>
+          <div className="break-inside-avoid mb-6"><MonkeytypeCard /></div>
+          <div className="break-inside-avoid mb-6"><LastFmStatus /></div>
+          <div className="break-inside-avoid mb-6"><MusicPlayer /></div>
+          <div className="break-inside-avoid mb-6"><OsuSignature /></div>
+          <div className="break-inside-avoid mb-6"><SteamStatus /></div>
+          <div className="break-inside-avoid mb-6"><WeatherCard /></div>
+          <div className="break-inside-avoid mb-6"><EarthquakeCard /></div>
+          <div className="break-inside-avoid mb-6"><BlogPosts /></div>
+          <div className="break-inside-avoid mb-6"><GalleryCard /></div>
+          <div className="break-inside-avoid mb-6"><BusuanziStats /></div>
         </div>
 
         <Footer />

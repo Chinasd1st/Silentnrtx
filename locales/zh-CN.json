@@ -55,6 +55,18 @@
   "earthquake.time": "发震时间",
   "earthquake.intensity": "烈度",
 
+  "wakatime.title": "WakaTime",
+  "wakatime.activity": "活动",
+  "wakatime.ai": "AI",
+  "wakatime.languages": "语言",
+  "wakatime.ai_additions": "AI 新增",
+  "wakatime.ai_deletions": "AI 删除",
+  "wakatime.prompts": "提示词数",
+  "wakatime.output_tokens": "输出 Tokens",
+  "wakatime.input_tokens": "输入 Tokens",
+  "wakatime.output_ratio": "输出 / 输入",
+  "wakatime.no_data": "暂无数据",
+
   "monkeytype.title": "Monkeytype",
   "monkeytype.tests": "次测试",
   "monkeytype.hours": "小时",

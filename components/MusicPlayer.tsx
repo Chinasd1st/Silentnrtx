@@ -95,14 +95,14 @@ export function MusicPlayer() {
             {cfg.title}
           </h2>
         </div>
-        {track?.pic && (
-          <img src={track.pic} alt="cover" className="h-10 w-10 shrink-0 rounded-[12px] object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-        )}
       </div>
 
       <div className="mb-3 rounded-[16px] p-3" style={{ backgroundColor: "var(--md-primary-008)" }}>
         <div className="flex items-center gap-3">
+          {track?.pic && (
+            <img src={track.pic} alt="cover" className="h-10 w-10 shrink-0 rounded-[10px] object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          )}
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium" style={{ color: "var(--md-primary)" }}>{track?.name}</p>
             <p className="truncate text-xs" style={{ color: "var(--md-text-muted)" }}>{track?.artist}</p>
