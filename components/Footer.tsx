@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { buildTime } from "@/lib/buildTime";
 import { useVersion } from "@/lib/version";
@@ -9,12 +10,15 @@ export function Footer() {
   const year = new Date().getFullYear();
   const displayText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
   const ver = useVersion();
+  const [timeStr, setTimeStr] = useState("");
 
-  const built = new Date(buildTime);
-  const timeStr = built.toLocaleString(undefined, {
-    year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", timeZoneName: "short",
-  });
+  useEffect(() => {
+    const built = new Date(buildTime);
+    setTimeStr(built.toLocaleString(undefined, {
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", timeZoneName: "short",
+    }));
+  }, []);
 
   return (
     <footer className="pb-8 pt-2 text-center space-y-1">
@@ -23,7 +27,7 @@ export function Footer() {
         {cfg.customHtml ? undefined : displayText}
       </p>
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-        Built {timeStr}{ver ? ` · ${ver}` : ""}
+        Built {timeStr || "..."}{ver ? ` · ${ver}` : ""}
       </p>
     </footer>
   );

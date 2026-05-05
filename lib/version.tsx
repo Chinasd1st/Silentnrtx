@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { getCache, setCache } from "@/lib/cache";
 
-const CACHE_KEY = "gh_version";
-const CACHE_TTL = 60 * 60 * 1000;
+const CACHE_KEY = "gh_version_v2";
+const CACHE_TTL = 5 * 60 * 1000; // 5 min
 
 export function useVersion() {
   const [ver, setVer] = useState("");
