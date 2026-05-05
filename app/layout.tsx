@@ -32,10 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href={FONT_URL} crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.github.com" />
-        <link rel="preconnect" href="https://ws.audioscrobbler.com" />
-        <link rel="preconnect" href="https://wttr.in" />
-        <link rel="preconnect" href="https://api.injahow.cn" />
-        <link rel="preconnect" href="https://api.monkeytype.com" />
         <script dangerouslySetInnerHTML={{
           __html: `
             var el = document.createElement('link');
