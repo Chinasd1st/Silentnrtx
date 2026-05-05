@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
@@ -55,9 +55,9 @@ export function GitHubStats() {
       </div>
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
             <FaGithub />{t("github.stats")}
-          </h3>
+          </h2>
           <a href={user.html_url} target="_blank" rel="noopener noreferrer"
             className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}
             onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}

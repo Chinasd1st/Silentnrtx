@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { FaKeyboard } from "react-icons/fa";
@@ -35,7 +35,7 @@ export function ShortcutsPanel() {
         onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 mb-5">
           <FaKeyboard className="text-lg" style={{ color: "var(--md-primary)" }} />
-          <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>快捷键</h3>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>快捷键</h2>
         </div>
         <div className="space-y-3">
           {SHORTCUTS.map((s) => (

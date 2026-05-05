@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
@@ -60,9 +60,9 @@ export function GitHubGrass() {
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+        <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaGithub style={{ color: "var(--md-primary)" }} />{t("github.contributions")}
-        </h3>
+        </h2>
         <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
           {isZh ? `${t("github.last_year")} ${total.toLocaleString()}` : `${total.toLocaleString()} ${t("github.last_year")}`}
         </span>
@@ -81,13 +81,7 @@ export function GitHubGrass() {
           ))}
         </div>
       </div>
-      <style>{`
-        .grass-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
-        .grass-scroll::-webkit-scrollbar { height: 4px; background: transparent; }
-        .grass-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-        .light .grass-scroll { scrollbar-color: rgba(0,0,0,0.1) transparent; }
-        .light .grass-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
-      `}</style>
+
     </div>
   );
 }

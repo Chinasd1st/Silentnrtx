@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
@@ -66,10 +66,10 @@ export function BlogPosts() {
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+        <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaGlobe style={{ color: "var(--md-primary)" }} />
           {t("blog.title")}
-        </h3>
+        </h2>
         <a href={siteConfig.social.blog.url} target="_blank" rel="noopener noreferrer"
           className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}
           onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
@@ -65,7 +65,7 @@ export function MonkeytypeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <SiMonkeytype className="text-lg shrink-0" style={{ color: c }} />
-          <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("monkeytype.title")}</h3>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("monkeytype.title")}</h2>
         </div>
         <a href={`https://monkeytype.com/profile/${cfg.username}`} target="_blank" rel="noopener noreferrer"
           className="text-xs shrink-0 transition-colors" style={{ color: "var(--md-text-muted)" }}

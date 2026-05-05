@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
@@ -91,9 +91,9 @@ export function MusicPlayer() {
       <div className="flex items-center gap-3 mb-3">
         <FaMusic className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
         <div className="min-w-0 flex-1">
-          <h3 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }}>
             {cfg.title}
-          </h3>
+          </h2>
         </div>
         {track?.pic && (
           <img src={track.pic} alt="cover" className="h-10 w-10 shrink-0 rounded-[12px] object-cover"
@@ -108,14 +108,14 @@ export function MusicPlayer() {
             <p className="truncate text-xs" style={{ color: "var(--md-text-muted)" }}>{track?.artist}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <button onClick={prev} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+            <button onClick={prev} aria-label="Previous track" className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "var(--md-text-secondary)" }}
               disabled={idx <= 0}><FaStepBackward size={12} /></button>
-            <button onClick={() => toggle(idx)} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+            <button onClick={() => toggle(idx)} aria-label={audio.playing && selectedIdx === idx ? "Pause" : "Play"} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}>
               {audio.playing && selectedIdx === idx ? <FaPause size={12} /> : <FaPlay size={12} style={{ marginLeft: "1.5px" }} />}
             </button>
-            <button onClick={next} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+            <button onClick={next} aria-label="Next track" className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "var(--md-text-secondary)" }}
               disabled={idx >= songs.length - 1}><FaStepForward size={12} /></button>
           </div>
@@ -136,8 +136,7 @@ export function MusicPlayer() {
         </div>
       </div>
 
-      <div className="space-y-0.5 max-h-[180px] overflow-y-auto"
-        style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.1) transparent" }}>
+      <div className="space-y-0.5 max-h-[180px] overflow-y-auto">
         {songs.map((song, i) => (
           <SongItem key={i} song={song} idx={i} selectedIdx={idx} isPlaying={audio.playing && selectedIdx === i} onToggle={toggle} />
         ))}

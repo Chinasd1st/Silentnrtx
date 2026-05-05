@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
@@ -55,9 +55,9 @@ export function LastFmStatus() {
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+        <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaLastfm style={{ color: "var(--md-primary)" }} />{t("lastfm.title")}
-        </h3>
+        </h2>
         <a href={siteConfig.social.lastfm.url} target="_blank" rel="noopener noreferrer"
           className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}
           onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
@@ -70,7 +70,7 @@ export function LastFmStatus() {
         <div className="flex items-center gap-4">
           <div className="relative shrink-0">
             {albumArt ? (
-              <img src={albumArt} alt={track.album["#text"]} className="h-16 w-16 rounded-[16px] object-cover shadow-md"
+              <img src={albumArt} alt={track.album["#text"]} loading="lazy" className="h-16 w-16 rounded-[16px] object-cover shadow-md"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
             ) : <div className="flex h-16 w-16 items-center justify-center rounded-[16px] bg-white/[0.06] text-2xl opacity-40">&#9835;</div>}
             {state === "playing" && (

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -39,10 +39,10 @@ export function GalleryCard() {
     <>
       <div className="md-card">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
             <FaImage style={{ color: "var(--md-primary)" }} />
             {t("gallery.title")}
-          </h3>
+          </h2>
         </div>
 
         <div

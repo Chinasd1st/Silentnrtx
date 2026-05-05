@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { siteConfig } from "@/config";
@@ -21,7 +21,7 @@ export function BusuanziStats() {
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("stats.title")}</h3>
+        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("stats.title")}</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-[16px] p-4 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>

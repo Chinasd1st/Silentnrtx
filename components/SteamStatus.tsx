@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
@@ -62,9 +62,9 @@ export function SteamStatus() {
       <div className="flex items-center gap-3 mb-4">
         <FaSteam className="text-lg shrink-0" style={{ color: inGame ? "var(--md-primary)" : "var(--md-text-muted)" }} />
         <div className="min-w-0 flex-1">
-          <h3 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }}>
             {t("steam.title")}
-          </h3>
+          </h2>
         </div>
       </div>
 

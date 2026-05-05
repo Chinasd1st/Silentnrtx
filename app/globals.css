@@ -1,4 +1,4 @@
-@import url('https://fonts.loli.net/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+/* Google Fonts: 改用 link preload + swap 异步加载 (见 layout.tsx) */
 
 @tailwind base;
 @tailwind components;
@@ -143,6 +143,26 @@
   50% { opacity: 1; }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* Global scrollbar — thin, matches card surface */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--md-surface-variant);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-outline);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-surface-variant) transparent;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

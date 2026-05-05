@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslation } from "@/lib/i18n";
@@ -61,9 +61,9 @@ export function EarthquakeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <FaEarthAsia className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
             {t("earthquake.title")}
-          </h3>
+          </h2>
         </div>
         <div className="flex gap-1 shrink-0">
           <button onClick={() => setTab("jma")}
