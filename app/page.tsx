@@ -14,6 +14,7 @@ import { ClockCard } from "@/components/ClockCard";
 import { MonkeytypeCard } from "@/components/MonkeytypeCard";
 import { WakatimeCard } from "@/components/WakatimeCard";
 import { EarthquakeCard } from "@/components/EarthquakeCard";
+import { ReposCard } from "@/components/ReposCard";
 import { BusuanziStats } from "@/components/BusuanziStats";
 import { Footer } from "@/components/Footer";
 
@@ -31,6 +32,7 @@ export default function Home() {
           <div className="break-inside-avoid mb-6"><GitHubGrass /></div>
           <div className="break-inside-avoid mb-6"><WakatimeCard /></div>
           <div className="break-inside-avoid mb-6"><MonkeytypeCard /></div>
+          <div className="break-inside-avoid mb-6"><ReposCard /></div>
           <div className="break-inside-avoid mb-6"><LastFmStatus /></div>
           <div className="break-inside-avoid mb-6"><MusicPlayer /></div>
           <div className="break-inside-avoid mb-6"><OsuSignature /></div>

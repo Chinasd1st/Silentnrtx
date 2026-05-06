@@ -41,12 +41,6 @@
   --md-accent-purple: #bc8cff;
   --md-accent-pink: #ff66aa;
 
-  /* Grass — dark */
-  --md-grass-0: #1b1d23;
-  --md-grass-1: #0e4429;
-  --md-grass-2: #006d32;
-  --md-grass-3: #26a641;
-  --md-grass-4: #39d353;
 }
 
 .light {
@@ -72,12 +66,6 @@
   --md-text-secondary: oklch(0.4 0.015 var(--md-hue));
   --md-text-muted: oklch(0.45 0.015 var(--md-hue));
 
-  /* Grass — light (GitHub-style) */
-  --md-grass-0: #ebedf0;
-  --md-grass-1: #9be9a8;
-  --md-grass-2: #40c463;
-  --md-grass-3: #30a14e;
-  --md-grass-4: #216e39;
 }
 
 @layer base {

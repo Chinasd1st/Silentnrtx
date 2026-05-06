@@ -5,9 +5,11 @@ import { FiAlertCircle, FiRefreshCw } from "react-icons/fi";
 
 export function ErrorCard({
   title,
+  message,
   onRetry,
 }: {
   title: string;
+  message?: string;
   onRetry?: () => void;
 }) {
   const { t } = useTranslation();
@@ -17,7 +19,7 @@ export function ErrorCard({
       <FiAlertCircle className="text-2xl" style={{ color: "var(--md-text-muted)" }} />
       <div>
         <p className="text-sm font-medium" style={{ color: "var(--md-text-secondary)" }}>{title}</p>
-        <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>{t("github.error")}</p>
+        <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>{message || t("github.error")}</p>
       </div>
       {onRetry && (
         <button

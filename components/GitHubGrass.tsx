@@ -17,7 +17,7 @@ const CACHE_TTL = 60 * 60 * 1000;
 
 export function GitHubGrass() {
   const { t, i18n } = useTranslation();
-  const [weeks, setWeeks] = useState<D[][]>([]);
+  const [allDays, setAllDays] = useState<D[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -27,12 +27,19 @@ export function GitHubGrass() {
     if (!username) { setLoading(false); return; }
 
     const cached = getCache<R>(CACHE_KEY, CACHE_TTL);
-    if (cached) { setWeeks(cached.contributions); setTotal(cached.totalContributions); setLoading(false); return; }
+    if (cached) {
+      const flat = cached.contributions.flat();
+      setAllDays(flat);
+      setTotal(cached.totalContributions);
+      setLoading(false);
+      return;
+    }
 
     fetchWithTimeout(`https://github-contributions-api.deno.dev/${username}.json`)
       .then((r) => r.json())
       .then((data: R) => {
-        setWeeks(data.contributions || []);
+        const flat = data.contributions?.flat() || [];
+        setAllDays(flat);
         setTotal(data.totalContributions || 0);
         setCache(CACHE_KEY, data);
       })
@@ -43,24 +50,31 @@ export function GitHubGrass() {
   useEffect(() => { fetchGrass(); }, [fetchGrass]);
 
   const lc = (level: string) => {
+    const hues = [
+      "color-mix(in srgb, var(--md-primary) 0%, transparent)",
+      "color-mix(in srgb, var(--md-primary) 20%, transparent)",
+      "color-mix(in srgb, var(--md-primary) 40%, transparent)",
+      "color-mix(in srgb, var(--md-primary) 65%, transparent)",
+      "color-mix(in srgb, var(--md-primary) 100%, transparent)",
+    ];
     const map: Record<string, string> = {
-      NONE: "var(--md-grass-0)",
-      FIRST_QUARTILE: "var(--md-grass-1)",
-      SECOND_QUARTILE: "var(--md-grass-2)",
-      THIRD_QUARTILE: "var(--md-grass-3)",
-      FOURTH_QUARTILE: "var(--md-grass-4)",
+      NONE: "rgba(255,255,255,0.06)",
+      FIRST_QUARTILE: hues[1],
+      SECOND_QUARTILE: hues[2],
+      THIRD_QUARTILE: hues[3],
+      FOURTH_QUARTILE: hues[4],
     };
-    return map[level] || "var(--md-grass-0)";
+    return map[level] || "rgba(255,255,255,0.06)";
   };
   const isZh = i18n.language === "zh-CN";
 
   if (loading) return <CardSkeleton />;
-  if (error || weeks.length === 0) return <ErrorCard title={t("github.contributions")} onRetry={fetchGrass} />;
+  if (error || allDays.length === 0) return <ErrorCard title={t("github.contributions")} onRetry={fetchGrass} />;
 
   return (
     <div className="md-card">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="font-heading text-base font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaGithub style={{ color: "var(--md-primary)" }} />{t("github.contributions")}
         </h2>
         <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
@@ -68,20 +82,13 @@ export function GitHubGrass() {
         </span>
       </div>
 
-      <div className="overflow-x-auto pb-1 grass-scroll">
-        <div className="flex gap-[2px]">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[2px]">
-              {week.map((day, di) => (
-                <div key={di} className="h-[10px] w-[10px] rounded-sm transition-colors duration-200 hover:scale-150 hover:z-10 relative"
-                  style={{ backgroundColor: lc(day.contributionLevel) }}
-                  title={`${day.date}: ${day.contributionCount} contributions`} />
-              ))}
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(8px,1fr))] gap-[2px] sm:gap-[3px]">
+        {allDays.map((day, i) => (
+          <div key={i} className="aspect-square rounded-[1px] transition-colors duration-200 hover:scale-110 hover:z-10"
+            style={{ backgroundColor: lc(day.contributionLevel) }}
+            title={`${day.date}: ${day.contributionCount} contributions`} />
+        ))}
       </div>
-
     </div>
   );
 }

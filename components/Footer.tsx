@@ -20,20 +20,21 @@ export function Footer() {
     }));
   }, []);
 
+  const meta = [
+    timeStr || "...",
+    commitDate && commitSha ? `${commitDate} (${commitSha})` : "",
+    ver || "",
+  ].filter(Boolean).join("  ·  ");
+
   return (
-    <footer className="pb-8 pt-2 text-center space-y-1">
+    <footer className="pb-8 pt-2 text-center space-y-2">
       <p className="text-xs leading-relaxed" style={{ color: "var(--md-text-muted)" }}
         dangerouslySetInnerHTML={cfg.customHtml ? { __html: displayText } : undefined}>
         {cfg.customHtml ? undefined : displayText}
       </p>
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-        Built {timeStr || "..."}{ver ? ` · ${ver}` : ""}
+        {meta}
       </p>
-      {commitDate && (
-        <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-          {commitDate} ({commitSha})
-        </p>
-      )}
     </footer>
   );
 }

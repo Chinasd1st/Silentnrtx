@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Background } from "@/components/Background";
 import { I18nInit } from "@/components/I18nInit";
 import { GlobalAudioProvider } from "@/components/GlobalAudio";
@@ -8,6 +9,7 @@ import "./globals.css";
 
 const title = "Silentnrtx";
 const description = "Silentnrtx's personal homepage.";
+const FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap";
 
 export const metadata: Metadata = {
   title, description,
@@ -22,8 +24,6 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap";
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -32,14 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href={FONT_URL} crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.github.com" />
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            var el = document.createElement('link');
-            el.rel = 'stylesheet';
-            el.href = '${FONT_URL}';
-            document.head.appendChild(el);
-          `,
-        }} />
+        <Script id="font-loader" strategy="afterInteractive">
+          {`var el=document.querySelector('link[href="${FONT_URL}"][rel="preload"]');if(el)el.rel='stylesheet';`}
+        </Script>
       </head>
       <body>
         <I18nInit />

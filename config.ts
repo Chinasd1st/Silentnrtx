@@ -73,6 +73,12 @@ export const siteConfig = {
 
   weather: { enabled: true, city: "Tongxiang" },
 
+  /** Featured GitHub repos to showcase */
+  repos: [
+    { repo: "Chinasd1st/Silentnrtx", desc: "Personal homepage with MD3 style" },
+    { repo: "Chinasd1st/Chinasd1st.github.io", desc: "Personal blog built with VuePress Theme Hope" },
+  ],
+
   wakatime: {
     enabled: true,
     /** Embed ID for Coding Activity chart */
