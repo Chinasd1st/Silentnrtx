@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
-import { buildTime, commitDate, commitSha } from "@/lib/buildTime";
+import { buildTime, commitSha } from "@/lib/buildTime";
 import { useVersion } from "@/lib/version";
 
 export function Footer() {
@@ -20,11 +20,8 @@ export function Footer() {
     }));
   }, []);
 
-  const meta = [
-    timeStr || "...",
-    commitDate && commitSha ? `${commitDate} (${commitSha})` : "",
-    ver || "",
-  ].filter(Boolean).join("  ·  ");
+  const sha = commitSha ? `(${commitSha})` : "";
+  const meta = [timeStr || "...", sha, ver || ""].filter(Boolean).join("  ·  ");
 
   return (
     <footer className="pb-8 pt-2 text-center space-y-2">
