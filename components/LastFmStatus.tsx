@@ -76,12 +76,19 @@ export function LastFmStatus() {
               style={{ backgroundColor: state === "playing" ? "rgba(34,197,94,0.15)" : "var(--md-primary-012)", color: state === "playing" ? "#22c55e" : "var(--md-primary)" }}>
               {state === "playing" ? t("lastfm.now_playing") : t("lastfm.last_played")}
             </span>
-            <p className="mt-1 truncate text-sm font-semibold" style={{ color: "var(--md-text-primary)" }}>{track.name}</p>
-            <p className="truncate text-xs" style={{ color: "var(--md-text-secondary)" }}>{track.artist["#text"]}</p>
-            {track.album["#text"] && <p className="truncate text-xs" style={{ color: "var(--md-text-muted)" }}>{track.album["#text"]}</p>}
-            {track.date && (
-              <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>
-                {track.date["#text"]}
+            <p className="mt-1.5 text-base font-bold leading-snug truncate" style={{ color: "var(--md-text-primary)" }}>{track.name}</p>
+            <p className="text-sm leading-snug truncate" style={{ color: "var(--md-text-secondary)" }}>{track.artist["#text"]}</p>
+            {track.album["#text"] && (
+              <p className="text-xs leading-snug truncate" style={{ color: "var(--md-text-muted)" }}>
+{track.album["#text"]}
+              </p>
+            )}
+            {track.date?.uts && (
+              <p className="text-[10px] mt-1" style={{ color: "var(--md-text-muted)" }}>
+                {new Date(Number(track.date.uts) * 1000).toLocaleString(undefined, {
+                  year: "numeric", month: "short", day: "numeric",
+                  hour: "2-digit", minute: "2-digit",
+                })}
               </p>
             )}
           </div>
