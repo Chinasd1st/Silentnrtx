@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
-import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
 import { FaLastfm } from "react-icons/fa";
@@ -17,9 +16,6 @@ interface LastFmTrack {
 }
 interface LastFmResponse { recenttracks: { track: LastFmTrack[] }; }
 
-const CACHE_KEY = "lastfm";
-const CACHE_TTL = 5 * 60 * 1000;
-
 export function LastFmStatus() {
   const { t } = useTranslation();
   const [track, setTrack] = useState<LastFmTrack | null>(null);
@@ -29,9 +25,6 @@ export function LastFmStatus() {
     const { apiKey, username } = siteConfig.lastfm;
     if (!apiKey || !username) { setState("error"); return; }
 
-    const cached = getCache<{ track: LastFmTrack; state: string }>(CACHE_KEY, CACHE_TTL);
-    if (cached) { setTrack(cached.track); setState(cached.state as any); return; }
-
     fetchWithTimeout(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&limit=1`)
       .then((r) => r.json())
       .then((data: LastFmResponse) => {
@@ -40,7 +33,6 @@ export function LastFmStatus() {
         const t = tracks[0];
         const s = t["@attr"]?.nowplaying === "true" ? "playing" : "recent";
         setTrack(t); setState(s);
-        setCache(CACHE_KEY, { track: t, state: s });
       })
       .catch(() => { setTrack(null); setState("error"); });
   }, []);
