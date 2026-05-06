@@ -72,13 +72,13 @@
   * { border-color: var(--md-card-border); }
   html { scroll-behavior: smooth; }
   body {
-    font-family: "DM Sans", sans-serif;
+    font-family: "DM Sans", "Noto Sans SC", sans-serif;
     color: var(--md-text-primary);
     background-color: var(--md-background);
     text-wrap: pretty;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", sans-serif; }
+  h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", "Noto Sans SC", sans-serif; }
 }
 
 @layer components {

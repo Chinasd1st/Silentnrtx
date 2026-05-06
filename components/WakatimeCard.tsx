@@ -60,7 +60,7 @@ export function WakatimeCard() {
 
   if (!cfg.enabled || !cfg.embedId) return null;
   if (loading) return <CardSkeleton />;
-  if (error) return <ErrorCard title="WakaTime" onRetry={fetchStats} />;
+  if (error) return <ErrorCard title={t("wakatime.title")} onRetry={fetchStats} />;
 
   const totalSec = entries.reduce((s, e) => s + (e.grand_total?.total_seconds || 0), 0);
   const totalH = Math.floor(totalSec / 3600);

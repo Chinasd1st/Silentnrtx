@@ -6,8 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['"Space Grotesk"', "sans-serif"],
-        body: ['"DM Sans"', "sans-serif"],
+        heading: ['"Space Grotesk"', '"Noto Sans SC"', "sans-serif"],
+        body: ['"DM Sans"', '"Noto Sans SC"', "sans-serif"],
       },
       borderRadius: { md3: "24px", "md3-sm": "12px", "md3-pill": "28px" },
       boxShadow: {

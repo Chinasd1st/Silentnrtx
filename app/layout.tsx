@@ -9,7 +9,7 @@ import "./globals.css";
 
 const title = "Silentnrtx";
 const description = "Silentnrtx's personal homepage.";
-const FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap";
+const FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
 
 export const metadata: Metadata = {
   title, description,

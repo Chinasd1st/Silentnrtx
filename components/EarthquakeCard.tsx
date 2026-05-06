@@ -79,7 +79,7 @@ export function EarthquakeCard() {
         </div>
       </div>
 
-      {active.error && !eq && <ErrorCard title={t("earthquake.jma")} onRetry={active.retry} />}
+      {active.error && !eq && <ErrorCard title={t("earthquake.title")} onRetry={active.retry} />}
 
       {eq && (
         <div className="rounded-[16px] p-3 mb-3" style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}>
