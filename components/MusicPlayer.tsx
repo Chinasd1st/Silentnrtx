@@ -100,7 +100,7 @@ export function MusicPlayer() {
       <div className="mb-3 rounded-[16px] p-3" style={{ backgroundColor: "var(--md-primary-008)" }}>
         <div className="flex items-center gap-3">
           {track?.pic && (
-            <img src={track.pic} alt="cover" className="h-10 w-10 shrink-0 rounded-[10px] object-cover"
+            <img src={track.pic} alt={track?.name || "cover"} className="h-10 w-10 shrink-0 rounded-[10px] object-cover"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
           )}
           <div className="min-w-0 flex-1">
@@ -150,7 +150,7 @@ const SongItem = React.memo(function SongItem({ song, idx, selectedIdx, isPlayin
 }) {
   const sel = idx === selectedIdx;
   return (
-    <button onClick={() => onToggle(idx)}
+    <button onClick={() => onToggle(idx)} aria-label={song.name}
       className="flex w-full items-center gap-3 rounded-[12px] px-3 py-2 text-left transition-all duration-200 hover:bg-white/[0.05]"
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}>
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-[10px]"

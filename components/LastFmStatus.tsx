@@ -73,7 +73,7 @@ export function LastFmStatus() {
           </div>
           <div className="min-w-0 flex-1">
             <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-              style={{ backgroundColor: state === "playing" ? "rgba(34,197,94,0.15)" : "var(--md-primary-012)", color: state === "playing" ? "#22c55e" : "var(--md-primary)" }}>
+              style={{ backgroundColor: state === "playing" ? "color-mix(in srgb, var(--md-accent-green) 15%, transparent)" : "var(--md-primary-012)", color: state === "playing" ? "var(--md-accent-green)" : "var(--md-primary)" }}>
               {state === "playing" ? t("lastfm.now_playing") : t("lastfm.last_played")}
             </span>
             <p className="mt-1.5 text-base font-bold leading-snug truncate" style={{ color: "var(--md-text-primary)" }}>{track.name}</p>

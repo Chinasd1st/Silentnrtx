@@ -31,6 +31,8 @@ interface DayEntry {
 
 type Tab = "activity" | "ai";
 
+type WakaResponse = DayEntry[] | { data: DayEntry[] };
+
 const CACHE_KEY = "wakatime";
 const CACHE_TTL = 30 * 60 * 1000;
 
@@ -48,7 +50,7 @@ export function WakatimeCard() {
     if (cached) { setEntries(cached); setLoading(false); return; }
     try {
       const url = `https://wakatime.com/share/@${cfg.username}/${cfg.embedId}.json`;
-      const raw = await fetchWithTimeout(url).then((r) => r.json()).catch(() => fetchJsonp<any>(url));
+      const raw = await fetchWithTimeout(url).then((r) => r.json()).catch(() => fetchJsonp<WakaResponse>(url));
       const data = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
       if (Array.isArray(data) && data.length > 0) { setEntries(data); setCache(CACHE_KEY, data); }
       else throw new Error("invalid");
@@ -98,12 +100,12 @@ export function WakatimeCard() {
       </div>
 
       <div className="flex gap-1 mb-4">
-        <button onClick={() => setTab("activity")}
+        <button onClick={() => setTab("activity")} aria-label={t("wakatime.activity")}
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{ backgroundColor: tab === "activity" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "activity" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
           {t("wakatime.activity")}
         </button>
-        <button onClick={() => setTab("ai")}
+        <button onClick={() => setTab("ai")} aria-label="AI"
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{ backgroundColor: tab === "ai" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "ai" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
           <FaRobot className="inline mr-1" size={10} />AI

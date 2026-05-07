@@ -77,6 +77,9 @@
   "settings.hue_on": "Custom",
   "settings.hue_off": "Default",
   "settings.persist": "Settings auto-saved",
+  "gallery.close": "Close",
+  "gallery.prev": "Previous",
+  "gallery.next": "Next",
 
   "monkeytype.title": "Monkeytype",
   "monkeytype.tests": "tests",

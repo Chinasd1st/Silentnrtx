@@ -14,6 +14,11 @@ interface GalleryImage {
 
 export function GalleryCard() {
   const { t, i18n } = useTranslation();
+  const labels = {
+    close: t("gallery.close"),
+    prev: t("gallery.prev"),
+    next: t("gallery.next"),
+  };
   const { enabled, title, images } = siteConfig.gallery;
   const isZh = i18n.language === "zh-CN";
   const desc = (img: GalleryImage) => (isZh && img.descriptionCn ? img.descriptionCn : img.description) || "";
@@ -53,9 +58,8 @@ export function GalleryCard() {
           style={{ columnGap: "0.75rem" }}
         >
           {images.map((img, idx) => (
-            <button
-              key={idx}
-              onClick={() => openViewer(idx)}
+            <button key={idx} onClick={() => openViewer(idx)}
+              aria-label={desc(img) || `Image ${idx + 1}`}
               className="break-inside-avoid mb-3 group block w-full text-left rounded-[16px] overflow-hidden border border-transparent transition-all duration-300 hover:border-[var(--md-primary)]/30 hover:scale-[1.02]"
               style={{ backgroundColor: "var(--md-primary-008)" }}
             >
@@ -91,8 +95,7 @@ export function GalleryCard() {
             onClick={(e) => e.stopPropagation()}
             style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
           >
-            <button
-              onClick={closeViewer}
+            <button onClick={closeViewer} aria-label={labels.close}
               className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
             >
               &times;
@@ -115,11 +118,11 @@ export function GalleryCard() {
           </div>
 
           {viewerIdx > 0 && (
-            <button onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx - 1); }}
+            <button onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx - 1); }} aria-label={labels.prev}
               className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl">&#8249;</button>
           )}
           {viewerIdx < images.length - 1 && (
-            <button onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx + 1); }}
+            <button onClick={(e) => { e.stopPropagation(); setViewerIdx(viewerIdx + 1); }} aria-label={labels.next}
               className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl">&#8250;</button>
           )}
         </div>,

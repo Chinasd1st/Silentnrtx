@@ -8,13 +8,15 @@ import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
 import { FaEarthAsia } from "react-icons/fa6";
 
-interface JmaItem {
-  time: string; location: string; magnitude: string; shindo: string;
-  depth: string; latitude: string; longitude: string; info?: string;
-}
-interface CmaItem {
-  time: string; location: string; magnitude: string; intensity: string;
+interface EqBase {
+  time: string; location: string; magnitude: string;
   depth: string; latitude: string; longitude: string;
+}
+interface JmaItem extends EqBase {
+  shindo: string; info?: string;
+}
+interface CmaItem extends EqBase {
+  intensity: string;
 }
 
 const CACHE_TTL = 5 * 60 * 1000;
@@ -66,12 +68,12 @@ export function EarthquakeCard() {
           </h2>
         </div>
         <div className="flex gap-1 shrink-0">
-          <button onClick={() => setTab("jma")}
+          <button onClick={() => setTab("jma")} aria-label="JMA"
             className="rounded-full px-3 py-1 text-xs font-medium transition-all"
             style={{ backgroundColor: tab === "jma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "jma" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
             JMA
           </button>
-          <button onClick={() => setTab("cma")}
+          <button onClick={() => setTab("cma")} aria-label="CMA"
             className="rounded-full px-3 py-1 text-xs font-medium transition-all"
             style={{ backgroundColor: tab === "cma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "cma" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
             CMA
@@ -84,11 +86,11 @@ export function EarthquakeCard() {
       {eq && (
         <div className="rounded-[16px] p-3 mb-3" style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}>
           <p className="text-sm font-semibold leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-primary)" }}>
-            {(eq as any).location}
+            {(eq as EqBase).location}
           </p>
           <div className="mt-2 flex items-baseline gap-3 min-h-[2rem]">
             <span className="text-3xl font-bold font-heading leading-none" style={{ color: "var(--md-primary)" }}>
-              M{(eq as any).magnitude}
+              M{(eq as EqBase).magnitude}
             </span>
             <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
               {tab === "jma"
@@ -97,10 +99,10 @@ export function EarthquakeCard() {
             </span>
           </div>
           <p className="mt-2 text-xs leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-secondary)" }}>
-            {(eq as any).time}
+            {(eq as EqBase).time}
           </p>
           <p className="mt-1 text-[10px] leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-muted)" }}>
-            {(eq as any).latitude}, {(eq as any).longitude}
+            {(eq as EqBase).latitude}, {(eq as EqBase).longitude}
           </p>
 
         </div>

@@ -70,7 +70,7 @@ export function SettingsCard() {
               <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
                 <FiSettings className="inline mr-2" size={16} />{t("settings.title")}
               </h2>
-              <button onClick={() => setOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/[0.06]"
+              <button onClick={() => setOpen(false)} aria-label={t("gallery.close")} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/[0.06]"
                 style={{ color: "var(--md-text-muted)" }}><FiX size={16} /></button>
             </div>
 

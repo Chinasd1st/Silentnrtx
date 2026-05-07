@@ -84,7 +84,7 @@ export function SteamStatus() {
       ) : (
         <div className="flex items-center gap-2">
           <span className={`h-2 w-2 rounded-full ${isOnline ? "animate-pulse-glow" : ""}`}
-            style={{ backgroundColor: isOnline ? "#22c55e" : "var(--md-text-muted)" }} />
+            style={{ backgroundColor: isOnline ? "var(--md-accent-green)" : "var(--md-text-muted)" }} />
           <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
             {stateLabel}
           </span>
