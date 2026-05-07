@@ -60,7 +60,10 @@ export const siteConfig = {
 
   gallery: {
     enabled: true, title: "Featured Gallery",
-    images: [{ url: "/Silentnrtx/01.webp", description: "Feb 11, 2026" }],
+    images: [
+      { url: "/Silentnrtx/01.webp", description: "Feb 11, 2026", descriptionCn: "2026年2月11日" },
+      { url: "/Silentnrtx/02.webp", description: "Apr 30, 2026", descriptionCn: "2026年4月30日" },
+    ],
   },
 
   music: {

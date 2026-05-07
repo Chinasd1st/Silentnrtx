@@ -3,18 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { changeLang } from "@/lib/i18n";
+import { changeLang, getDetectedLang } from "@/lib/i18n";
 import { highlight } from "@/lib/highlight";
 import { ThemeSwitch } from "@/components/ThemeSwitch";
-
-function getInitLang() {
-  if (typeof window === "undefined") return "zh-CN";
-  try { return localStorage.getItem("md-lang") || "zh-CN"; } catch { return "zh-CN"; }
-}
+import { SettingsCard } from "@/components/SettingsCard";
 
 export function Hero() {
   const { t } = useTranslation();
-  const [lang, setLang] = useState(getInitLang);
+  const [lang, setLang] = useState(getDetectedLang);
   const bgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -76,10 +72,11 @@ export function Hero() {
 
       <div className="absolute right-6 top-6 flex items-center gap-2">
         <ThemeSwitch />
-        <button onClick={toggleLang} aria-label={lang === "zh-CN" ? "Switch to English" : "切换到中文"}
+        <SettingsCard />
+        <button onClick={toggleLang} aria-label={lang === "zh-CN" ? "当前语言：中文" : "Current: English"}
           className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/[0.06] active:scale-90"
           style={{ color: "var(--md-text-primary)" }}>
-          {lang === "zh-CN" ? "EN" : "中文"}
+          {lang === "zh-CN" ? "ZH" : "EN"}
         </button>
       </div>
 

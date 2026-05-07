@@ -8,12 +8,15 @@ import { FaImage } from "react-icons/fa";
 
 interface GalleryImage {
   url: string;
-  description: string;
+  description?: string;
+  descriptionCn?: string;
 }
 
 export function GalleryCard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { enabled, title, images } = siteConfig.gallery;
+  const isZh = i18n.language === "zh-CN";
+  const desc = (img: GalleryImage) => (isZh && img.descriptionCn ? img.descriptionCn : img.description) || "";
   const [viewerIdx, setViewerIdx] = useState<number | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
 
@@ -59,15 +62,15 @@ export function GalleryCard() {
               <div className="overflow-hidden">
                 <img
                   src={img.url}
-                  alt={img.description}
+                  alt={desc(img)}
                   className="w-full h-auto transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
                 />
               </div>
-              {img.description && (
+              {desc(img) && (
                 <div className="p-3">
                   <p className="text-xs leading-relaxed line-clamp-2" style={{ color: "var(--md-text-secondary)" }}>
-                    {img.description}
+                    {desc(img)}
                   </p>
                 </div>
               )}
@@ -96,13 +99,13 @@ export function GalleryCard() {
             </button>
             <img
               src={images[viewerIdx].url}
-              alt={images[viewerIdx].description}
+              alt={desc(images[viewerIdx])}
               className="max-h-[75vh] w-auto object-contain"
             />
-            {images[viewerIdx].description && (
+            {desc(images[viewerIdx]) && (
               <div className="p-4 border-t" style={{ borderColor: "var(--md-card-border)" }}>
                 <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
-                  {images[viewerIdx].description}
+                  {desc(images[viewerIdx])}
                 </p>
                 <p className="mt-1 text-xs" style={{ color: "var(--md-text-muted)" }}>
                   {viewerIdx + 1} / {images.length}

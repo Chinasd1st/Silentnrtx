@@ -15,6 +15,7 @@ import { MonkeytypeCard } from "@/components/MonkeytypeCard";
 import { WakatimeCard } from "@/components/WakatimeCard";
 import { EarthquakeCard } from "@/components/EarthquakeCard";
 import { ReposCard } from "@/components/ReposCard";
+import { SettingsCard } from "@/components/SettingsCard";
 import { BusuanziStats } from "@/components/BusuanziStats";
 import { Footer } from "@/components/Footer";
 

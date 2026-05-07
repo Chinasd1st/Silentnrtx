@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --md-hue: 270;
+  --md-hue: 270; /* default, overridden by ThemeInit with config.ts value */
 
   /* Primary */
   --md-primary: oklch(0.7 0.12 var(--md-hue));

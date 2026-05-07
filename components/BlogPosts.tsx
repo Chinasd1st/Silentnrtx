@@ -5,6 +5,7 @@ import { siteConfig } from "@/config";
 import { FaGlobe } from "react-icons/fa";
 import { useTranslation } from "@/lib/i18n";
 import { getCache, setCache } from "@/lib/cache";
+import { ErrorCard } from "@/components/ErrorCard";
 import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
 
 interface RssItem {
@@ -37,6 +38,7 @@ export function BlogPosts() {
   const [posts, setPosts] = useState<RssItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     const rssUrl = siteConfig.blog.rssUrl;
@@ -53,7 +55,7 @@ export function BlogPosts() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [retryKey]);
 
   const formatDate = (dateStr: string) => {
     try {
@@ -90,11 +92,7 @@ export function BlogPosts() {
       )}
 
       {error && !loading && (
-        <div className="flex flex-col items-center gap-2 py-8 text-center">
-          <div className="text-2xl opacity-30">&#9998;</div>
-          <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>{t("blog.error")}</p>
-          <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>{t("blog.error_hint")}</p>
-        </div>
+        <ErrorCard title={t("blog.error")} onRetry={() => setRetryKey((k) => k + 1)} />
       )}
 
       {!loading && !error && posts.length === 0 && (
