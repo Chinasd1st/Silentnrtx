@@ -1,4 +1,4 @@
-import { Hero } from "@/components/Hero";
+﻿import { Hero } from "@/components/Hero";
 import { ProfileCard } from "@/components/ProfileCard";
 import { SocialLinks } from "@/components/SocialLinks";
 import { GitHubStats } from "@/components/GitHubStats";
@@ -9,7 +9,7 @@ import { BlogPosts } from "@/components/BlogPosts";
 import { GalleryCard } from "@/components/GalleryCard";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { WeatherCard } from "@/components/WeatherCard";
-import { SteamStatus } from "@/components/SteamStatus";
+
 import { ClockCard } from "@/components/ClockCard";
 import { MonkeytypeCard } from "@/components/MonkeytypeCard";
 import { WakatimeCard } from "@/components/WakatimeCard";
@@ -37,7 +37,7 @@ export default function Home() {
           <div className="break-inside-avoid mb-6"><LastFmStatus /></div>
           <div className="break-inside-avoid mb-6"><MusicPlayer /></div>
           <div className="break-inside-avoid mb-6"><OsuSignature /></div>
-          <div className="break-inside-avoid mb-6"><SteamStatus /></div>
+          
           <div className="break-inside-avoid mb-6"><WeatherCard /></div>
           <div className="break-inside-avoid mb-6"><EarthquakeCard /></div>
           <div className="break-inside-avoid mb-6"><BlogPosts /></div>

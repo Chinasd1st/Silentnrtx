@@ -96,13 +96,6 @@ export const siteConfig = {
     username: "Silentnrtx",
   },
 
-  steam: {
-    enabled: true,
-    /** SteamID64 (数字 ID，不是 vanity name) */
-    steamid: "76561199216426027",
-    /** Steam Web API Key — https://steamcommunity.com/dev/apikey */
-    apiKey: process.env.NEXT_PUBLIC_STEAM_API_KEY || "",
-  },
 };
 
 export type SiteConfig = typeof siteConfig;
