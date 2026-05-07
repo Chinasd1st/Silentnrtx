@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { fetchJsonp } from "@/lib/jsonp";
 import { getCache, setCache } from "@/lib/cache";
 import { useTranslation } from "@/lib/i18n";
 import { CardSkeleton } from "@/components/Skeleton";
@@ -36,8 +37,10 @@ export function SteamStatus() {
     const cached = getCache<Player>(CACHE_KEY, CACHE_TTL);
     if (cached) { setPlayer(cached); setLoading(false); return; }
 
-    fetchWithTimeout(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${cfg.apiKey}&steamids=${cfg.steamid}`)
+    const url = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${cfg.apiKey}&steamids=${cfg.steamid}`;
+    fetchWithTimeout(url)
       .then((r) => r.json())
+      .catch(() => fetchJsonp<any>(url))
       .then((data) => {
         const p = data?.response?.players?.[0];
         if (p) { setPlayer(p); setCache(CACHE_KEY, p); }
