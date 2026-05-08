@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
@@ -18,9 +18,9 @@ export function ProfileCard() {
         </div>
 
         <div className="flex-1 text-center sm:text-left">
-          <h1 className="font-heading text-2xl font-bold tracking-tight" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-2xl font-bold tracking-tight" style={{ color: "var(--md-text-primary)" }}>
             {profile.name}
-          </h1>
+          </h2>
           <p className="mt-0.5 text-sm" style={{ color: "var(--md-text-secondary)" }}>
             {t("profile.location")}
           </p>

@@ -7,16 +7,29 @@ import { ShortcutsPanel } from "@/components/ShortcutsPanel";
 import { siteConfig } from "@/config";
 import "./globals.css";
 
-const title = "Silentnrtx";
-const description = "Silentnrtx's personal homepage.";
+const title = "Silentnrtx - Personal Homepage";
+const description = "Silentnrtx's personal homepage. GitHub stats, Last.fm scrobbles, music player, weather, blog, and more.";
 const FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteConfig.profile.name,
+  url: siteConfig.seo.url,
+  image: siteConfig.seo.image,
+  sameAs: [
+    siteConfig.social.github.url,
+    siteConfig.social.twitter.url,
+    siteConfig.social.bilibili.url,
+  ],
+};
 
 export const metadata: Metadata = {
   title, description,
   authors: [{ name: siteConfig.profile.name }],
-  keywords: [siteConfig.profile.name],
+  keywords: [siteConfig.profile.name, "developer", "portfolio", "osu!", "designer"],
   openGraph: {
-    type: "website", locale: "en_US", url: siteConfig.seo.url,
+    type: "website", locale: "zh_CN", url: siteConfig.seo.url,
     siteName: title, title, description,
     images: [{ url: siteConfig.seo.image, width: 400, height: 400, alt: title }],
   },
@@ -26,12 +39,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href={FONT_URL} crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.github.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Script id="font-loader" strategy="afterInteractive">
           {`var el=document.querySelector('link[href="${FONT_URL}"][rel="preload"]');if(el)el.rel='stylesheet';`}
         </Script>

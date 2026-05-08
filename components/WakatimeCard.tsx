@@ -67,6 +67,7 @@ export function WakatimeCard() {
   const totalSec = entries.reduce((s, e) => s + (e.grand_total?.total_seconds || 0), 0);
   const totalH = Math.floor(totalSec / 3600);
   const totalM = Math.floor((totalSec % 3600) / 60);
+  const maxDay = Math.max(...entries.map((e) => e.grand_total?.total_seconds || 0), 1);
 
   const aiSum = entries.reduce(
     (s, e) => ({
@@ -117,7 +118,7 @@ export function WakatimeCard() {
           {entries.map((day, i) => {
             const g = day.grand_total;
             if (!g) return null;
-            const pct = totalSec > 0 ? (g.total_seconds / totalSec) * 100 : 0;
+            const pct = (g.total_seconds / maxDay) * 100;
             return (
               <div key={i} className="flex items-center gap-2 text-xs">
                 <span className="w-24 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>{day.range?.date || ""}</span>
