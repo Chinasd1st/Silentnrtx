@@ -88,7 +88,7 @@ export function GalleryCard() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
           onClick={closeViewer}
           onKeyDown={handleKeyDown}
-          tabIndex={-1}
+          role="button" tabIndex={-1}
         >
           <div
             className="relative max-h-[90vh] max-w-[90vw] rounded-[24px] overflow-hidden"

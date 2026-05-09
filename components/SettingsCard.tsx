@@ -62,7 +62,8 @@ export function SettingsCard() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setOpen(false)}
+          role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(false); } }}>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
           <div className="relative rounded-[24px] p-5 w-full max-w-sm" style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
             onClick={(e) => e.stopPropagation()}>

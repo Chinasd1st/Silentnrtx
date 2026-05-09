@@ -21,7 +21,7 @@ export function ProfileCard() {
           <h2 className="font-heading text-2xl font-bold tracking-tight" style={{ color: "var(--md-text-primary)" }}>
             {profile.name}
           </h2>
-          <p className="mt-0.5 text-sm" style={{ color: "var(--md-text-secondary)" }}>
+          <p className="mt-0.5 text-sm" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>
             {t("profile.location")}
           </p>
           <p className="mt-1 text-base" style={{ color: "var(--md-primary)" }}>

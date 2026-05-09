@@ -10,7 +10,6 @@ export function ThemeInit() {
     if (s.hueEnabled && s.customHue !== null) {
       document.documentElement.style.setProperty("--md-hue", String(s.customHue));
     } else {
-      // Use config default
       const defaultHue = siteConfig.theme?.hue ?? 270;
       document.documentElement.style.setProperty("--md-hue", String(defaultHue));
     }
@@ -19,9 +18,10 @@ export function ThemeInit() {
     const apply = (isLight: boolean) => {
       document.documentElement.classList.toggle("light", isLight);
     };
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
     apply(mq.matches);
-    mq.addEventListener("change", (e) => apply(e.matches));
-    return () => mq.removeEventListener("change", (e) => apply(e.matches));
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
   return null;
 }

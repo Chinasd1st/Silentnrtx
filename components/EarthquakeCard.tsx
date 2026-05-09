@@ -94,8 +94,8 @@ export function EarthquakeCard() {
             </span>
             <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
               {tab === "jma"
-                ? `震度 ${(eq as JmaItem).shindo} · 深度 ${(eq as JmaItem).depth}`
-                : `${t("earthquake.intensity")} ${(eq as CmaItem).intensity} · 深度 ${(eq as CmaItem).depth}km`}
+                ? `${t("earthquake.shindo")} ${(eq as JmaItem).shindo} · ${t("earthquake.depth")} ${(eq as JmaItem).depth}`
+                : `${t("earthquake.intensity")} ${(eq as CmaItem).intensity} · ${t("earthquake.depth")} ${(eq as CmaItem).depth}km`}
             </span>
           </div>
           <p className="mt-2 text-xs leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-secondary)" }}>

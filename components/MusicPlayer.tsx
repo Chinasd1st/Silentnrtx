@@ -122,10 +122,16 @@ export function MusicPlayer() {
         </div>
 
         <div className="relative h-1.5 w-full cursor-pointer rounded-full mt-3" style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-          onClick={(e) => {
+          role="slider" aria-label="Seek" aria-valuenow={Math.round(audio.currentTime)} aria-valuemin={0} aria-valuemax={Math.round(audio.duration) || 0}
+          tabIndex={0}
+          onPointerDown={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
             audio.seek(ratio * audio.duration);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowLeft") { e.preventDefault(); audio.seek(audio.currentTime - 5); }
+            if (e.key === "ArrowRight") { e.preventDefault(); audio.seek(audio.currentTime + 5); }
           }}>
           <div className="absolute inset-y-0 left-0 rounded-full transition-all duration-200"
             style={{ width: `${audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0}%`, backgroundColor: "var(--md-primary)" }} />

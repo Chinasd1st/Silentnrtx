@@ -95,9 +95,6 @@ export function ClockCard() {
           <div className="mt-2 text-xs tracking-wide" style={{ color: "var(--md-text-secondary)" }}>
             {t.year}年{t.month}月{t.day}日 周{t.weekday}
           </div>
-          <div className="mt-0.5 text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-            北京时间 · UTC+8
-          </div>
         </div>
       </div>
     </div>

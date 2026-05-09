@@ -45,7 +45,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const play = useCallback((url: string) => {
     const el = audioRef.current;
     if (!el) return;
-    if (el.src !== url) { el.src = url; setSrc(url); setDuration(0); setCurrentTime(0); }
+    if (el.src !== url) { el.src = url; setSrc(url); setDuration(0); }
+    el.currentTime = 0;
+    setCurrentTime(0);
     el.play().catch(() => {});
   }, []);
 

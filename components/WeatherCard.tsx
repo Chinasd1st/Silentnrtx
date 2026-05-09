@@ -105,7 +105,7 @@ export function WeatherCard() {
   useEffect(() => {
     if (!cfg.enabled) { setLoading(false); return; }
     // Re-fetch whenever settings change (city switch)
-    const interval = setInterval(() => fetchWeather(), 500);
+    const interval = setInterval(() => fetchWeather(), 30000);
     fetchWeather();
     return () => clearInterval(interval);
   }, [cfg.enabled, fetchWeather]);
@@ -144,8 +144,8 @@ export function WeatherCard() {
       <div className="grid grid-cols-4 gap-2">
         <Stat icon={<FaTint size={13} />} value={`${w.humidity}%`} label={t("weather.humidity")} />
         <WindStat dir={w.winddir16Point} speed={w.windspeedKmph} isZh={isZh} />
-        <Stat icon={<FaTint size={13} />} value={w.precipMM ? `${w.precipMM}mm` : "0mm"} label={isZh ? "降水量" : "Precip"} />
-        <Stat icon={<FaSun size={13} />} value={w.uvIndex || "0"} label="UV" />
+        <Stat icon={<FaTint size={13} />} value={w.precipMM ? `${w.precipMM}mm` : "0mm"} label={t("weather.precip")} />
+        <Stat icon={<FaSun size={13} />} value={w.uvIndex || "0"} label={t("weather.uv")} />
       </div>
     </div>
   );
