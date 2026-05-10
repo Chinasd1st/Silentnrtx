@@ -7,18 +7,11 @@ import { changeLang, getDetectedLang } from "@/lib/i18n";
 import { highlight } from "@/lib/highlight";
 import { ThemeSwitch } from "@/components/ThemeSwitch";
 import { SettingsCard } from "@/components/SettingsCard";
-import { basePath } from "@/lib/base-path";
-
-function resolveAvatarUrl(avatar: string): string {
-  if (!avatar) return '';
-  if (/^[a-z]+:/i.test(avatar)) return avatar;
-  return avatar.startsWith('/') ? `${basePath}${avatar}` : `${basePath}/images/${avatar}`;
-}
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 export function Hero() {
   const { t } = useTranslation();
   const [lang, setLang] = useState(getDetectedLang);
-  const avatarUrl = resolveAvatarUrl(siteConfig.profile.avatar);
   const bgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -62,8 +55,15 @@ export function Hero() {
       <div ref={contentRef} className="flex flex-col items-center gap-4 px-4 text-center">
         <div className="relative">
           <div className="h-28 w-28 overflow-hidden rounded-[32px] shadow-xl" style={{ boxShadow: "0 0 0 2px rgba(208,188,255,0.3)" }}>
-            <img src={avatarUrl} alt={siteConfig.profile.name} className="h-full w-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(siteConfig.profile.name)}&background=6750a4&color=fff`; }} />
+            <OptimizedImage
+              src={siteConfig.profile.avatar}
+              alt={siteConfig.profile.name}
+              fill
+              objectFit="cover"
+              sizes="7rem"
+              className="h-full w-full"
+              fallback={`https://ui-avatars.com/api/?name=${encodeURIComponent(siteConfig.profile.name)}&background=6750a4&color=fff`}
+            />
           </div>
         </div>
 
