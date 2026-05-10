@@ -28,9 +28,12 @@ export function GitHubStats() {
     const cached = getCache<{ user: GU; stars: number; forks: number }>(CACHE_KEY, CACHE_TTL);
     if (cached) { setData(cached); setLoading(false); return; }
 
+    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+    const headers: HeadersInit = token ? { Authorization: `token ${token}` } : {};
+
     try {
-      const user: GU = await fetchWithTimeout(`https://api.github.com/users/${username}`).then((r) => r.json());
-      const repos: GR[] = await fetchWithTimeout(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`).then((r) => r.json()).catch(() => []);
+      const user: GU = await fetchWithTimeout(`https://api.github.com/users/${username}`, { headers }).then((r) => r.json());
+      const repos: GR[] = await fetchWithTimeout(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, { headers }).then((r) => r.json()).catch(() => []);
       const stars = repos.reduce((s, r) => s + r.stargazers_count, 0);
       const forks = repos.reduce((s, r) => s + r.forks_count, 0);
       const d = { user, stars, forks };

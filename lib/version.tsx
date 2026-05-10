@@ -13,7 +13,10 @@ export function useVersion() {
     const cached = getCache<string>(CACHE_KEY, CACHE_TTL);
     if (cached) { setVer(cached); return; }
 
-    fetch("https://api.github.com/repos/Chinasd1st/Silentnrtx/releases/latest")
+    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+    const headers: HeadersInit = token ? { Authorization: `token ${token}` } : {};
+
+    fetch("https://api.github.com/repos/Chinasd1st/Silentnrtx/releases/latest", { headers })
       .then((r) => r.json())
       .then((d) => {
         if (d.tag_name) { setVer(d.tag_name); setCache(CACHE_KEY, d.tag_name); }

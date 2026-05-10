@@ -46,6 +46,7 @@ jobs:
         env:
           NEXT_PUBLIC_LAST_FM_API_KEY: ${{ secrets.NEXT_PUBLIC_LAST_FM_API_KEY }}
           NEXT_PUBLIC_LAST_FM_USERNAME: ${{ secrets.NEXT_PUBLIC_LAST_FM_USERNAME }}
+          NEXT_PUBLIC_GITHUB_TOKEN: ${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}
           NEXT_PUBLIC_BUILD_TIME: ${{ env.BUILD_TIME }}
           NEXT_PUBLIC_COMMIT_DATE: ${{ env.COMMIT_DATE }}
           NEXT_PUBLIC_COMMIT_SHA: ${{ env.COMMIT_SHA }}
