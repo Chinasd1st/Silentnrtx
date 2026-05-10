@@ -43,7 +43,6 @@
   "weather.title": "Weather",
   "weather.feels_like": "Feels",
   "weather.humidity": "Humidity",
-  "weather.wind": "Wind",
   "weather.precip": "Precip",
   "weather.uv": "UV",
   "error.retry": "Retry",

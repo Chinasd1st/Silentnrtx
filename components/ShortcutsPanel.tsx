@@ -38,12 +38,12 @@ export function ShortcutsPanel() {
         onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 mb-5">
           <FaKeyboard className="text-lg" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("shortcuts.title")}</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("shortcuts.title")}</h2>
         </div>
         <div className="space-y-3">
           {SHORTCUTS.map((s) => (
             <div key={s.key} className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>{t(s.descKey)}</span>
+              <span className="text-sm" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t(s.descKey)}</span>
               <kbd className="rounded-[8px] px-2.5 py-1 text-xs font-mono" style={{ backgroundColor: "var(--md-surface-variant)", color: "var(--md-on-surface-variant)" }}>
                 {s.key}
               </kbd>

@@ -15,7 +15,7 @@ export function OsuSignature() {
         </h2>
         <a href={siteConfig.social.osu.url} target="_blank" rel="noopener noreferrer"
           className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
+          onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"} suppressHydrationWarning
           onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-muted)"}>
           {t("osu.profile")} &rarr;
         </a>

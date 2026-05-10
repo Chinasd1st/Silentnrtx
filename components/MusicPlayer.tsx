@@ -90,7 +90,7 @@ export function MusicPlayer() {
       <div className="flex items-center gap-3 mb-3">
         <FaMusic className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
         <div className="min-w-0 flex-1">
-          <h2 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold truncate" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>
             {t("music.title")}
           </h2>
         </div>

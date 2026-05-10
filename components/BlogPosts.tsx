@@ -67,13 +67,13 @@ export function BlogPosts() {
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
+        <h2 className="font-heading text-lg font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>
           <FaGlobe style={{ color: "var(--md-primary)" }} />
           {t("blog.title")}
         </h2>
         <a href={siteConfig.social.blog.url} target="_blank" rel="noopener noreferrer"
           className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
+          onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"} suppressHydrationWarning
           onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-muted)"}>
           {t("blog.view_all")} &rarr;
         </a>
@@ -96,7 +96,7 @@ export function BlogPosts() {
 
       {!loading && !error && posts.length === 0 && (
         <div className="flex flex-col items-center gap-2 py-8 text-center">
-          <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>{t("blog.empty")}</p>
+          <p className="text-sm" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t("blog.empty")}</p>
         </div>
       )}
 

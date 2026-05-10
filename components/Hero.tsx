@@ -73,7 +73,7 @@ export function Hero() {
       <div className="absolute right-6 top-6 flex items-center gap-2">
         <ThemeSwitch />
         <SettingsCard />
-        <button onClick={toggleLang} aria-label={lang === "zh-CN" ? "当前语言：中文" : "Current: English"}
+        <button onClick={toggleLang} aria-label={lang === "zh-CN" ? "当前语言：中文" : "Current: English"} suppressHydrationWarning
           className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/6 active:scale-90"
           style={{ color: "var(--md-text-primary)" }}>
           {lang === "zh-CN" ? "ZH" : "EN"}

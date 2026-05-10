@@ -73,7 +73,7 @@ export function SettingsCard() {
 
   return (
     <>
-      <button onClick={() => setOpen(true)} aria-label={t("settings.title")}
+      <button onClick={() => setOpen(true)} aria-label={t("settings.title")} suppressHydrationWarning
         className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 hover:bg-white/6 active:scale-90"
         style={{ color: "var(--md-text-primary)" }}>
         <FiSettings size={15} />
@@ -89,21 +89,21 @@ export function SettingsCard() {
               <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
                 <FiSettings className="inline mr-2" size={16} />{t("settings.title")}
               </h2>
-              <button onClick={() => setOpen(false)} aria-label={t("gallery.close")} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6"
+              <button onClick={() => setOpen(false)} aria-label={t("gallery.close")} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6" suppressHydrationWarning
                 style={{ color: "var(--md-text-muted)" }}><FiX size={16} /></button>
             </div>
 
             <div className="space-y-5">
               {/* Weather source */}
               <div>
-                <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }}>{t("settings.weather_source")}</p>
+                <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t("settings.weather_source")}</p>
                 <div className="flex gap-2 mb-3">
-                  <button onClick={() => update({ weatherSource: "manual" })}
+                  <button onClick={() => update({ weatherSource: "manual" })} suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
                     style={{ backgroundColor: s.weatherSource === "manual" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: s.weatherSource === "manual" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
                     {t("settings.weather_manual")}
                   </button>
-                  <button onClick={() => update({ weatherSource: "auto" })}
+                  <button onClick={() => update({ weatherSource: "auto" })} suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
                     style={{ backgroundColor: s.weatherSource === "auto" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: s.weatherSource === "auto" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
                     {t("settings.weather_auto")}
@@ -122,14 +122,14 @@ export function SettingsCard() {
 
               {/* HUE */}
               <div>
-                <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }}>{t("settings.hue")}</p>
+                <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t("settings.hue")}</p>
                 <div className="flex gap-2 mb-3">
-                  <button onClick={() => update({ hueEnabled: true })}
+                  <button onClick={() => update({ hueEnabled: true })} suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
                     style={{ backgroundColor: s.hueEnabled ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: s.hueEnabled ? "var(--md-primary)" : "var(--md-text-muted)" }}>
                     {t("settings.hue_on")}
                   </button>
-                  <button onClick={() => update({ hueEnabled: false, customHue: null })}
+                  <button onClick={() => update({ hueEnabled: false, customHue: null })} suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
                     style={{ backgroundColor: !s.hueEnabled ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: !s.hueEnabled ? "var(--md-primary)" : "var(--md-text-muted)" }}>
                     {t("settings.hue_off")}
@@ -151,7 +151,7 @@ export function SettingsCard() {
               </div>
             </div>
 
-            <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }}>{t("settings.persist")}</p>
+            <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("settings.persist")}</p>
           </div>
         </div>
       )}

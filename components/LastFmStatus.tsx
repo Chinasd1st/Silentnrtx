@@ -71,23 +71,23 @@ export function LastFmStatus() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <FaLastfm className="text-lg shrink-0" style={{ color: c }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("lastfm.title")}</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("lastfm.title")}</h2>
         </div>
         <a href={siteConfig.social.lastfm.url} target="_blank" rel="noopener noreferrer"
           className="text-xs shrink-0 transition-colors" style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => e.currentTarget.style.color = c}
+          onMouseEnter={(e) => e.currentTarget.style.color = c} suppressHydrationWarning
           onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-muted)"}>
           {t("lastfm.profile")} &rarr;
         </a>
       </div>
 
       <div className="flex gap-1 mb-4">
-        <button onClick={() => setTab("nowplaying")}
+        <button onClick={() => setTab("nowplaying")} suppressHydrationWarning
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{ backgroundColor: tab === "nowplaying" ? activeBg : inactiveBg, color: tab === "nowplaying" ? activeFg : inactiveFg }}>
           {t("lastfm.recent")}
         </button>
-        <button onClick={() => setTab("top")}
+        <button onClick={() => setTab("top")} suppressHydrationWarning
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{ backgroundColor: tab === "top" ? activeBg : inactiveBg, color: tab === "top" ? activeFg : inactiveFg }}>
           {t("lastfm.top_albums")}
@@ -154,7 +154,7 @@ export function LastFmStatus() {
       )}
 
       {tab === "top" && albums.length === 0 && (
-        <p className="text-xs text-center py-4" style={{ color: "var(--md-text-muted)" }}>{t("lastfm.none")}</p>
+        <p className="text-xs text-center py-4" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("lastfm.none")}</p>
       )}
     </div>
   );

@@ -22,9 +22,9 @@ export function GeoCard() {
     <div className="md-card">
       <div className="flex items-center gap-3 mb-3">
         <FaMapMarkerAlt className="text-lg shrink-0" style={{ color: "var(--md-text-muted)" }} />
-        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("geo.title")}</h2>
+        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("geo.title")}</h2>
       </div>
-      <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>{t("geo.unavailable")}</p>
+      <p className="text-xs" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("geo.unavailable")}</p>
     </div>
   );
 
@@ -32,11 +32,11 @@ export function GeoCard() {
     <div className="md-card">
       <div className="flex items-center gap-3 mb-3">
         <FaMapMarkerAlt className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("geo.title")}</h2>
+        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("geo.title")}</h2>
       </div>
       <button onClick={request}
         className="rounded-full px-4 py-1.5 text-xs font-medium transition-all hover:scale-105"
-        style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}>
+        style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }} suppressHydrationWarning>
         {t("geo.request")}
       </button>
     </div>
@@ -47,7 +47,7 @@ export function GeoCard() {
       <div className="flex items-center gap-3 mb-3">
         <FaMapMarkerAlt className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
         <div className="min-w-0 flex-1">
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("geo.your_location")}</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("geo.your_location")}</h2>
         </div>
       </div>
       <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>

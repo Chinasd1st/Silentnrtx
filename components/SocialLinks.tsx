@@ -31,7 +31,7 @@ export function SocialLinks() {
               <Icon />
             </div>
             <div>
-              <p className="text-xs font-medium" style={{ color: "var(--md-text-secondary)" }}>{t(`social.${item.key}`)}</p>
+              <p className="text-xs font-medium" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t(`social.${item.key}`)}</p>
               <p className="text-sm font-semibold truncate max-w-[100px]" style={{ color: "var(--md-text-primary)" }}>{item.username}</p>
             </div>
           </div>

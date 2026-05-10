@@ -76,7 +76,7 @@ export function GitHubGrass() {
         <h2 className="font-heading text-base font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
           <FaGithub style={{ color: "var(--md-primary)" }} />{t("github.contributions")}
         </h2>
-        <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
+        <span className="text-xs" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
           {isZh ? `${t("github.last_year")} ${total.toLocaleString()}` : `${total.toLocaleString()} ${t("github.last_year")}`}
         </span>
       </div>

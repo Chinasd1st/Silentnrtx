@@ -21,20 +21,20 @@ export function BusuanziStats() {
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("stats.title")}</h2>
+        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("stats.title")}</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-[16px] p-4 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
           <p className="text-2xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>
             <span id="busuanzi_site_pv">--</span>
           </p>
-          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>{t("stats.pv")}</p>
+          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("stats.pv")}</p>
         </div>
         <div className="rounded-[16px] p-4 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
           <p className="text-2xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>
             <span id="busuanzi_site_uv">--</span>
           </p>
-          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>{t("stats.uv")}</p>
+          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("stats.uv")}</p>
         </div>
       </div>
     </div>

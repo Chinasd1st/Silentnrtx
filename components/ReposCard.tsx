@@ -82,7 +82,7 @@ export function ReposCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <FaGithub className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("github.repos")}</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("github.repos")}</h2>
         </div>
       </div>
 

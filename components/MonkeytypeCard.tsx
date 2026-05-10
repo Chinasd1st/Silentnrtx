@@ -61,7 +61,7 @@ export function MonkeytypeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <SiMonkeytype className="text-lg shrink-0" style={{ color: c }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("monkeytype.title")}</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("monkeytype.title")}</h2>
         </div>
         <a href={`https://monkeytype.com/profile/${cfg.username}`} target="_blank" rel="noopener noreferrer"
           className="text-xs shrink-0 transition-colors" style={{ color: "var(--md-text-muted)" }}
@@ -78,7 +78,7 @@ export function MonkeytypeCard() {
 
       {stats && (
         <div className="rounded-md3-sm p-2 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
-          <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
+          <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
             {stats.completedTests.toLocaleString()} {t("monkeytype.tests")} · {hours}{t("monkeytype.hours")} {t("monkeytype.typed")}
           </span>
         </div>

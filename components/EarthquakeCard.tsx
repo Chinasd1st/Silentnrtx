@@ -62,7 +62,7 @@ export function EarthquakeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <FaEarthAsia className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>
             {t("earthquake.title")}
           </h2>
         </div>
@@ -91,7 +91,7 @@ export function EarthquakeCard() {
             <span className="text-3xl font-bold font-heading leading-none" style={{ color: "var(--md-primary)" }}>
               M{(eq as EqBase).magnitude}
             </span>
-            <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
+            <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
               {tab === "jma"
                 ? `${t("earthquake.shindo")} ${(eq as JmaItem).shindo} · ${t("earthquake.depth")} ${(eq as JmaItem).depth}`
                 : `${t("earthquake.intensity")} ${(eq as CmaItem).intensity} · ${t("earthquake.depth")} ${(eq as CmaItem).depth}km`}

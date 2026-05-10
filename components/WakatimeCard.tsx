@@ -88,7 +88,7 @@ export function WakatimeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <SiWakatime className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("wakatime.title")}</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("wakatime.title")}</h2>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>{totalH}h {totalM}m</span>
@@ -102,7 +102,7 @@ export function WakatimeCard() {
       </div>
 
       <div className="flex gap-1 mb-4">
-        <button onClick={() => setTab("activity")} aria-label={t("wakatime.activity")}
+        <button onClick={() => setTab("activity")} aria-label={t("wakatime.activity")} suppressHydrationWarning
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{ backgroundColor: tab === "activity" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "activity" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
           {t("wakatime.activity")}
@@ -143,11 +143,11 @@ export function WakatimeCard() {
           </div>
           <div className="rounded-md3-sm p-3 text-xs" style={{ backgroundColor: "var(--md-primary-008)" }}>
             <div className="flex justify-between mb-1">
-              <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.input_tokens")}</span>
+              <span style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("wakatime.input_tokens")}</span>
               <span style={{ color: "var(--md-text-secondary)" }}>{fmtNum(aiSum.inTokens)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.output_ratio")}</span>
+              <span style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("wakatime.output_ratio")}</span>
               <span style={{ color: "var(--md-text-secondary)" }}>{aiSum.inTokens > 0 ? `${(aiSum.outTokens / aiSum.inTokens * 100).toFixed(1)}%` : "—"}</span>
             </div>
           </div>
