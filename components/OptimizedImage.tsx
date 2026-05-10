@@ -209,9 +209,6 @@ export function OptimizedImage({
     const [url, size] = s.trim().split(' ');
     return `${withBasePath(url)} ${size}`;
   }).join(', ') : '';
-  const blurDataURL = placeholder && isOptimized && entry.blurDataURL ? entry.blurDataURL : '';
-
-  const showPlaceholder = blurDataURL && !isLoaded;
 
   const imgAttributes: ImgHTMLAttributes<HTMLImageElement> = {
     src: finalSrc,
@@ -219,13 +216,17 @@ export function OptimizedImage({
     className,
     style: {
       ...style,
+      backgroundColor: placeholder && !isLoaded ? '#e5e7eb' : undefined,
       ...(fill && { objectFit }),
     },
     width: fill ? undefined : (width || entry.originalWidth),
     height: fill ? undefined : (height || entry.originalHeight),
     loading: effectiveLoading,
     decoding: effectiveDecoding,
-    onLoad: handleLoad,
+    onLoad: (e) => {
+      (e.target as HTMLImageElement).style.backgroundColor = 'transparent';
+      handleLoad(e);
+    },
     onError: handleError,
     ...(priority && { fetchPriority: 'high' }),
   };
@@ -249,24 +250,6 @@ export function OptimizedImage({
           {sourceAvifProps && <source {...sourceAvifProps} />}
           <source {...sourceWebpProps} />
         </picture>
-        {showPlaceholder && (
-          <img
-            src={blurDataURL}
-            alt=""
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit,
-              filter: 'blur(20px)',
-              transform: 'scale(1.1)',
-              zIndex: 0,
-              pointerEvents: 'none',
-            }}
-          />
-        )}
         <img
           {...imgAttributes}
           style={{
@@ -276,7 +259,6 @@ export function OptimizedImage({
             width: '100%',
             height: '100%',
             objectFit,
-            zIndex: 1,
           }}
         />
       </div>
@@ -287,18 +269,7 @@ export function OptimizedImage({
     <picture className="optimized-image-wrapper">
       {sourceAvifProps && <source {...sourceAvifProps} />}
       <source {...sourceWebpProps} />
-      <img
-        {...imgAttributes}
-        className={`${className} ${showPlaceholder ? 'optimized-image-fade-in' : ''}`}
-        style={{
-          ...imgAttributes.style,
-          backgroundColor: showPlaceholder ? '#e5e7eb' : undefined,
-        }}
-        onLoad={(e) => {
-          (e.target as HTMLImageElement).classList.remove('optimized-image-fade-in');
-          handleLoad(e);
-        }}
-      />
+      <img {...imgAttributes} className={className} />
     </picture>
   );
 }
