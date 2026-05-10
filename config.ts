@@ -8,14 +8,14 @@ export const siteConfig = {
     title: "Silentnrtx",
     description: "Silentnrtx's personal homepage.",
     url: "https://silentnrtx.top",
-    image: "https://silentnrtx.top/assets/avatar/SP6C_01.webp",
+    image: "https://silentnrtx.top/assets/avatar/SP6C_01.jpg",
     twitter: "@Silentnrtx",
   },
 
   profile: {
     name: "Silentnrtx",
     username: "silentnrtx",
-    avatar: "https://silentnrtx.top/assets/avatar/SP6C_01.webp",
+    avatar: "SP6C_01.jpg",
     location: "Zhejiang, PRC",
     /** Signature shown in hero. Wrap text with !! to highlight in theme color. */
     signature: "Let Our Sounds !!Soar!! Through The Clouds!",

@@ -2,17 +2,25 @@
 
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
+import { basePath } from "@/lib/base-path";
+
+function resolveAvatarUrl(avatar: string): string {
+  if (!avatar) return '';
+  if (/^[a-z]+:/i.test(avatar)) return avatar;
+  return avatar.startsWith('/') ? `${basePath}${avatar}` : `${basePath}/images/${avatar}`;
+}
 
 export function ProfileCard() {
   const { t } = useTranslation();
   const profile = siteConfig.profile;
+  const avatarUrl = resolveAvatarUrl(profile.avatar);
 
   return (
     <div className="md-card group relative overflow-hidden">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <div className="h-20 w-20 overflow-hidden rounded-md3" style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}>
-            <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover"
+            <img src={avatarUrl} alt={profile.name} className="h-full w-full object-cover"
               onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=6750a4&color=fff`; }} />
           </div>
         </div>
