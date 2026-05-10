@@ -39,14 +39,47 @@ export function MusicPlayer() {
     const song = songs[idx];
     if (!song?.url) return;
     setSelectedIdx(idx);
-    audio.play(song.url);
+    audio.play(song.url, { title: song.name, artist: song.artist, artwork: song.pic });
 
   }, [songs, audio]);
 
+  useEffect(() => {
+    const handlePlay = () => {
+      if (audio.playing) {
+        audio.resume();
+      } else if (selectedIdx !== null) {
+        const song = songs[selectedIdx];
+        if (song?.url) audio.play(song.url, { title: song.name, artist: song.artist, artwork: song.pic }, true);
+      }
+    };
+    const handlePause = () => audio.pause();
+    const handlePrev = () => { if (selectedIdx !== null && selectedIdx > 0) playSong(selectedIdx - 1); };
+    const handleNext = () => { if (selectedIdx !== null && selectedIdx < songs.length - 1) playSong(selectedIdx + 1); };
+
+    document.addEventListener('media-session-play', handlePlay);
+    document.addEventListener('media-session-pause', handlePause);
+    document.addEventListener('media-session-previous', handlePrev);
+    document.addEventListener('media-session-next', handleNext);
+
+    return () => {
+      document.removeEventListener('media-session-play', handlePlay);
+      document.removeEventListener('media-session-pause', handlePause);
+      document.removeEventListener('media-session-previous', handlePrev);
+      document.removeEventListener('media-session-next', handleNext);
+    };
+  }, [audio, selectedIdx, songs.length, playSong]);
+
   const toggle = useCallback((idx: number) => {
-    if (selectedIdx === idx && audio.playing) { audio.pause(); return; }
-    playSong(idx);
-  }, [selectedIdx, audio, playSong]);
+    const song = songs[idx];
+    if (!song?.url) return;
+    if (selectedIdx === idx && audio.playing) {
+      audio.pause();
+    } else if (selectedIdx === idx && audio.src === song.url) {
+      audio.resume();
+    } else {
+      playSong(idx);
+    }
+  }, [selectedIdx, audio, songs, playSong]);
 
   const prev = useCallback(() => {
     if (selectedIdx === null) return;
@@ -154,8 +187,9 @@ const SongItem = React.memo(function SongItem({ song, idx, selectedIdx, isPlayin
   song: Song; idx: number; selectedIdx: number; isPlaying: boolean; onToggle: (i: number) => void;
 }) {
   const sel = idx === selectedIdx;
+  const handleClick = () => onToggle(idx);
   return (
-    <button onClick={() => onToggle(idx)} aria-label={song.name}
+    <button onClick={handleClick} aria-label={song.name}
       className="flex w-full items-center gap-3 rounded-md3-sm px-3 py-2 text-left transition-all duration-200 hover:bg-white/5"
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}>
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-[10px]"

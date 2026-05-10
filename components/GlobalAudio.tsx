@@ -2,13 +2,20 @@
 
 import { createContext, useContext, useRef, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
 
+interface AudioMetadata {
+  title: string;
+  artist: string;
+  album?: string;
+  artwork?: string;
+}
+
 interface AudioState {
   src: string | null;
   playing: boolean;
   currentTime: number;
   duration: number;
   volume: number;
-  play: (url: string) => void;
+  play: (url: string, meta?: AudioMetadata, resume?: boolean) => void;
   pause: () => void;
   resume: () => void;
   seek: (t: number) => void;
@@ -18,6 +25,23 @@ interface AudioState {
 
 const AudioCtx = createContext<AudioState>(null!);
 
+function setupMediaSession() {
+  if (typeof navigator === 'undefined' || !navigator.mediaSession) return;
+
+  navigator.mediaSession.setActionHandler('play', () => {
+    document.dispatchEvent(new CustomEvent('media-session-play'));
+  });
+  navigator.mediaSession.setActionHandler('pause', () => {
+    document.dispatchEvent(new CustomEvent('media-session-pause'));
+  });
+  navigator.mediaSession.setActionHandler('previoustrack', () => {
+    document.dispatchEvent(new CustomEvent('media-session-previous'));
+  });
+  navigator.mediaSession.setActionHandler('nexttrack', () => {
+    document.dispatchEvent(new CustomEvent('media-session-next'));
+  });
+}
+
 export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [src, setSrc] = useState<string | null>(null);
@@ -25,30 +49,66 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVol] = useState(0.7);
+  const [metadata, setMetadata] = useState<AudioMetadata | null>(null);
   const onEndedRef = useRef<(() => void) | null>(null);
+  const mediaSessionSetup = useRef(false);
 
   useEffect(() => {
     const el = new Audio();
     el.volume = 0.7;
     el.addEventListener("timeupdate", () => setCurrentTime(el.currentTime));
     el.addEventListener("loadedmetadata", () => setDuration(el.duration));
-    el.addEventListener("play", () => setPlaying(true));
-    el.addEventListener("pause", () => setPlaying(false));
+    el.addEventListener("play", () => {
+      setPlaying(true);
+      if (navigator.mediaSession) navigator.mediaSession.playbackState = 'playing';
+    });
+    el.addEventListener("pause", () => {
+      setPlaying(false);
+      if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
+    });
     el.addEventListener("ended", () => {
       setPlaying(false);
+      if (navigator.mediaSession) navigator.mediaSession.playbackState = 'none';
       onEndedRef.current?.();
     });
     audioRef.current = el;
+
+    if (!mediaSessionSetup.current) {
+      mediaSessionSetup.current = true;
+      setupMediaSession();
+    }
+
     return () => { el.pause(); el.src = ""; };
   }, []);
 
-  const play = useCallback((url: string) => {
+  const play = useCallback((url: string, meta?: AudioMetadata, resume = false) => {
     const el = audioRef.current;
     if (!el) return;
-    if (el.src !== url) { el.src = url; setSrc(url); setDuration(0); }
-    el.currentTime = 0;
-    setCurrentTime(0);
+    const isNewSong = el.src !== url;
+    if (isNewSong) { el.src = url; setSrc(url); setDuration(0); }
+    if (!resume || isNewSong) {
+      el.currentTime = 0;
+      setCurrentTime(0);
+    }
     el.play().catch(() => {});
+
+    if (meta && navigator.mediaSession) {
+      setMetadata(meta);
+      let artworkUrl = meta.artwork;
+      if (artworkUrl && !artworkUrl.startsWith('http')) {
+        artworkUrl = `https:${artworkUrl}`;
+      }
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: meta.title,
+          artist: meta.artist,
+          album: meta.album,
+          artwork: artworkUrl ? [{ src: artworkUrl, sizes: '512x512', type: 'image/jpeg' }] : undefined,
+        });
+      } catch (e) {
+        console.warn('MediaSession metadata error:', e);
+      }
+    }
   }, []);
 
   const pause = useCallback(() => { audioRef.current?.pause(); }, []);

@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 import { api, fetchWithRetry, mapApiError } from "@/lib/api";
@@ -31,6 +31,7 @@ export function LastFmStatus() {
   const [state, setState] = useState<"loading" | "playing" | "recent" | "error">("loading");
   const [albums, setAlbums] = useState<Album[]>([]);
   const [tab, setTab] = useState<Tab>("nowplaying");
+  const albumsCache = useRef<{ data: Album[]; time: number } | null>(null);
 
   const fetchTrack = useCallback(() => {
     const { apiKey, username } = siteConfig.lastfm;
@@ -48,8 +49,19 @@ export function LastFmStatus() {
   const fetchAlbums = useCallback(() => {
     const { apiKey, username } = siteConfig.lastfm;
     if (!apiKey || !username) return;
+    const now = Date.now();
+    if (albumsCache.current && now - albumsCache.current.time < 5 * 60 * 1000) {
+      setAlbums(albumsCache.current.data);
+      return;
+    }
     fetchWithRetry(() => api.get<TopAlbumsResponse>(`https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&period=7day&limit=5`)).then(({ data }) => data)
-      .then((data: TopAlbumsResponse) => { if (data?.topalbums?.album) setAlbums(data.topalbums.album.slice(0, 5)); })
+      .then((data: TopAlbumsResponse) => {
+        if (data?.topalbums?.album) {
+          const albums = data.topalbums.album.slice(0, 5);
+          setAlbums(albums);
+          albumsCache.current = { data: albums, time: now };
+        }
+      })
       .catch(() => {});
   }, []);
 

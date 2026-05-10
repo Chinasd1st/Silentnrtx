@@ -2,22 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
+import { siteConfig } from "@/config";
 import { loadSettings, saveSettings, type Settings } from "@/lib/settings";
 import { fetchWithRetry } from "@/lib/api";
 import { FiSettings, FiX } from "react-icons/fi";
-
-interface IpLocation {
-  city: string;
-  region: string;
-  country: string;
-  ip: string;
-}
 
 export function SettingsCard() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [s, setS] = useState<Settings>(loadSettings);
-  const [ipLoc, setIpLoc] = useState<IpLocation | null>(null);
+  
 
   useEffect(() => { saveSettings(s); }, [s]);
 
@@ -27,14 +21,7 @@ export function SettingsCard() {
     }
   }, [s.hueEnabled, s.customHue]);
 
-  useEffect(() => {
-    if (s.weatherSource === "auto") {
-      fetchWithRetry(() => fetch("https://ipapi.co/json/"))
-        .then((r) => r.json())
-        .then((d) => { if (d.ip) setIpLoc(d); })
-        .catch(() => {});
-    }
-  }, [s.weatherSource]);
+  
 
   const update = (partial: Partial<Settings>) => setS((prev) => ({ ...prev, ...partial }));
 
@@ -112,7 +99,7 @@ export function SettingsCard() {
                 <input
                     type="text"
                     value={s.manualCity || ""}
-                    placeholder={s.weatherSource === "auto" && ipLoc ? `${ipLoc.city}, ${ipLoc.region}, ${ipLoc.country}` : "Tongxiang"}
+                    placeholder={siteConfig.weather.city}
                     disabled={s.weatherSource !== "manual"}
                     onChange={(e) => update({ manualCity: e.target.value })}
                     className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border bg-white/5 disabled:opacity-50 disabled:bg-white/[0.02]"
