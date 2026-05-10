@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
@@ -35,8 +35,7 @@ export function GitHubGrass() {
       return;
     }
 
-    fetchWithTimeout(`https://github-contributions-api.deno.dev/${username}.json`)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get<R>(`https://github-contributions-api.deno.dev/${username}.json`)).then(({ data }) => data)
       .then((data: R) => {
         const flat = data.contributions?.flat() || [];
         setAllDays(flat);

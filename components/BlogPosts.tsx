@@ -6,7 +6,7 @@ import { FaGlobe } from "react-icons/fa";
 import { useTranslation } from "@/lib/i18n";
 import { getCache, setCache } from "@/lib/cache";
 import { ErrorCard } from "@/components/ErrorCard";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 
 interface RssItem {
   title: string;
@@ -47,8 +47,7 @@ export function BlogPosts() {
     const cached = getCache<RssItem[]>("blog_rss", 30 * 60 * 1000);
     if (cached) { setPosts(cached); setLoading(false); return; }
 
-    fetchWithTimeout(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get<RssResponse>(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`)).then(({ data }) => data)
       .then((data: RssResponse) => {
         if (data.status === "ok") { const items = data.items.slice(0, siteConfig.blog.postLimit); setPosts(items); setCache("blog_rss", items); }
         else throw new Error("RSS parse failed");

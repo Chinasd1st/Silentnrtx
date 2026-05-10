@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { getCache, setCache } from "@/lib/cache";
+import { githubApi } from "@/lib/githubApi";
+import { fetchWithRetry, mapApiError } from "@/lib/api";
 
 const CACHE_KEY = "gh_version_v2";
-const CACHE_TTL = 5 * 60 * 1000; // 5 min
+const CACHE_TTL = 5 * 60 * 1000;
 
 export function useVersion() {
   const [ver, setVer] = useState("");
@@ -13,15 +15,11 @@ export function useVersion() {
     const cached = getCache<string>(CACHE_KEY, CACHE_TTL);
     if (cached) { setVer(cached); return; }
 
-    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-    const headers: HeadersInit = token ? { Authorization: `token ${token}` } : {};
-
-    fetch("https://api.github.com/repos/Chinasd1st/Silentnrtx/releases/latest", { headers })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.tag_name) { setVer(d.tag_name); setCache(CACHE_KEY, d.tag_name); }
+    fetchWithRetry(() => githubApi.get("/repos/Chinasd1st/Silentnrtx/releases/latest"))
+      .then(({ data }) => {
+        if (data?.tag_name) { setVer(data.tag_name); setCache(CACHE_KEY, data.tag_name); }
       })
-      .catch(() => {});
+      .catch((err) => { console.warn(mapApiError(err).message); });
   }, []);
 
   return ver;

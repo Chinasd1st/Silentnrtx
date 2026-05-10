@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
@@ -89,8 +89,7 @@ export function WeatherCard() {
     const enc = city ? encodeURIComponent(city) : "";
     setLoading(true);
     setError(false);
-    fetchWithTimeout(`https://wttr.in/${enc}?format=j1${isZh ? "&lang=zh" : ""}`)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get(`https://wttr.in/${enc}?format=j1${isZh ? "&lang=zh" : ""}`)).then(({ data }) => data)
       .then((data: any) => {
         if (data.current_condition?.[0]) {
           setWeather(data.current_condition[0]);
