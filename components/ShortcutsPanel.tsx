@@ -28,13 +28,7 @@ export function ShortcutsPanel() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  if (!open) return (
-    <div className="fixed bottom-4 right-4 z-50 opacity-50 hover:opacity-100 transition-opacity">
-      <kbd className="rounded-[8px] px-2.5 py-1 text-xs font-mono" style={{ backgroundColor: "var(--md-surface-variant)", color: "var(--md-on-surface-variant)" }}>
-        {t("shortcuts.toggle")}
-      </kbd>
-    </div>
-  );
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4" onClick={() => setOpen(false)}
