@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry } from "@/lib/api";
 import { fetchJsonp } from "@/lib/jsonp";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
@@ -50,7 +51,7 @@ export function WakatimeCard() {
     if (cached) { setEntries(cached); setLoading(false); return; }
     try {
       const url = `https://wakatime.com/share/@${cfg.username}/${cfg.embedId}.json`;
-      const raw = await fetchWithTimeout(url).then((r) => r.json()).catch(() => fetchJsonp<WakaResponse>(url));
+      const raw = await fetchWithRetry(() => api.get<WakaResponse>(url)).then(({ data }) => data).catch(() => fetchWithTimeout(url).then((r) => r.json()).catch(() => fetchJsonp<WakaResponse>(url)));
       const data = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
       if (Array.isArray(data) && data.length > 0) { setEntries(data); setCache(CACHE_KEY, data); }
       else throw new Error("invalid");

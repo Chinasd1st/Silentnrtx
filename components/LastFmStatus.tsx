@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
 import { FaLastfm } from "react-icons/fa";
@@ -35,8 +35,7 @@ export function LastFmStatus() {
   const fetchTrack = useCallback(() => {
     const { apiKey, username } = siteConfig.lastfm;
     if (!apiKey || !username) { setState("error"); return; }
-    fetchWithTimeout(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&limit=1`)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get<LastFmResponse>(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&limit=1`)).then(({ data }) => data)
       .then((data: LastFmResponse) => {
         const tracks = data.recenttracks?.track;
         if (!tracks?.[0]) { setTrack(null); setState("error"); return; }
@@ -49,8 +48,7 @@ export function LastFmStatus() {
   const fetchAlbums = useCallback(() => {
     const { apiKey, username } = siteConfig.lastfm;
     if (!apiKey || !username) return;
-    fetchWithTimeout(`https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&period=7day&limit=5`)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get<TopAlbumsResponse>(`https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&period=7day&limit=5`)).then(({ data }) => data)
       .then((data: TopAlbumsResponse) => { if (data?.topalbums?.album) setAlbums(data.topalbums.album.slice(0, 5)); })
       .catch(() => {});
   }, []);

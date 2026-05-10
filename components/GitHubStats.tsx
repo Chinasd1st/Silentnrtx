@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { githubApi } from "@/lib/githubApi";
+import { fetchWithRetry, mapApiError } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
@@ -19,7 +20,7 @@ export function GitHubStats() {
   const { t } = useTranslation();
   const [data, setData] = useState<{ user: GU; stars: number; forks: number } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     const username = siteConfig.github.username;
@@ -28,25 +29,22 @@ export function GitHubStats() {
     const cached = getCache<{ user: GU; stars: number; forks: number }>(CACHE_KEY, CACHE_TTL);
     if (cached) { setData(cached); setLoading(false); return; }
 
-    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-    const headers: HeadersInit = token ? { Authorization: `token ${token}` } : {};
-
     try {
-      const user: GU = await fetchWithTimeout(`https://api.github.com/users/${username}`, { headers }).then((r) => r.json());
-      const repos: GR[] = await fetchWithTimeout(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, { headers }).then((r) => r.json()).catch(() => []);
+      const { data: user } = await fetchWithRetry(() => githubApi.get<GU>(`/users/${username}`));
+      const { data: repos } = await fetchWithRetry(() => githubApi.get<GR[]>(`/users/${username}/repos?per_page=100&sort=updated`)).catch(() => ({ data: [] as GR[] }));
       const stars = repos.reduce((s, r) => s + r.stargazers_count, 0);
       const forks = repos.reduce((s, r) => s + r.forks_count, 0);
       const d = { user, stars, forks };
       setData(d);
       setCache(CACHE_KEY, d);
-    } catch { setError(true); }
+    } catch (err) { setError(mapApiError(err).message); }
     finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
   if (loading) return <CardSkeleton />;
-  if (error || !data) return <ErrorCard title={t("github.stats")} onRetry={fetchData} />;
+  if (error || !data) return <ErrorCard title={t("github.stats")} message={error || undefined} onRetry={fetchData} />;
 
   const { user, stars, forks } = data;
 

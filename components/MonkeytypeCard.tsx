@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
@@ -36,11 +36,7 @@ export function MonkeytypeCard() {
     if (cached) { setData(cached); setLoading(false); return; }
 
     try {
-      const res = await fetchWithTimeout(
-        `https://api.monkeytype.com/users/${cfg.username}/profile`,
-        { cache: "reload" }
-      );
-      const json = await res.json();
+      const { data: json } = await fetchWithRetry(() => api.get(`https://api.monkeytype.com/users/${cfg.username}/profile`, { headers: { "Cache-Control": "no-cache" } }));
       if (json.message === "Profile retrieved" && json.data) {
         setData(json.data);
         setCache(CACHE_KEY, json.data);

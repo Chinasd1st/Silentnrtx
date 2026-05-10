@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 import { useGlobalAudio } from "@/components/GlobalAudio";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
 import { FaMusic, FaPlay, FaPause, FaStepBackward, FaStepForward } from "react-icons/fa";
@@ -25,8 +25,7 @@ export function MusicPlayer() {
   useEffect(() => {
     if (!cfg.enabled) { setLoading(false); return; }
     const url = `${cfg.api}?server=${encodeURIComponent(cfg.params.server)}&type=${encodeURIComponent(cfg.params.type)}&id=${encodeURIComponent(cfg.params.id)}`;
-    fetchWithTimeout(url)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get<Song[]>(url)).then(({ data }) => data)
       .then((data: Song[]) => {
         if (!Array.isArray(data)) throw new Error("invalid");
         setSongs(data);
