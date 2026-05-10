@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: ./package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Get Git info and Build Time
         id: git_info
