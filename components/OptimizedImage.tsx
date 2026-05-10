@@ -209,9 +209,9 @@ export function OptimizedImage({
     const [url, size] = s.trim().split(' ');
     return `${withBasePath(url)} ${size}`;
   }).join(', ') : '';
-  const blurDataURL = placeholder ? entry.blurDataURL : '';
+  const blurDataURL = placeholder && isOptimized && entry.blurDataURL ? entry.blurDataURL : '';
 
-  const showPlaceholder = placeholder && blurDataURL && !isLoaded && !hasError;
+  const showPlaceholder = blurDataURL && !isLoaded;
 
   const imgAttributes: ImgHTMLAttributes<HTMLImageElement> = {
     src: finalSrc,
@@ -244,14 +244,16 @@ export function OptimizedImage({
 
   if (fill) {
     return (
-      <picture className={`optimized-image-container ${className}`} style={{ position: 'relative', display: 'block', ...style }}>
-        {sourceAvifProps && <source {...sourceAvifProps} />}
-        <source {...sourceWebpProps} />
+      <div className={`optimized-image-container ${className}`} style={{ position: 'relative', display: 'block', width: '100%', height: '100%', ...style }}>
+        <picture style={{ display: 'contents' }}>
+          {sourceAvifProps && <source {...sourceAvifProps} />}
+          <source {...sourceWebpProps} />
+        </picture>
         {showPlaceholder && (
           <img
             src={blurDataURL}
             alt=""
-            className="optimized-image-blur"
+            aria-hidden="true"
             style={{
               position: 'absolute',
               inset: 0,
@@ -260,16 +262,13 @@ export function OptimizedImage({
               objectFit,
               filter: 'blur(20px)',
               transform: 'scale(1.1)',
-              zIndex: 1,
-              transition: isLoaded ? 'opacity 0.3s ease-out' : 'none',
-              opacity: isLoaded ? 0 : 1,
+              zIndex: 0,
+              pointerEvents: 'none',
             }}
-            aria-hidden="true"
           />
         )}
         <img
           {...imgAttributes}
-          className={`${className}`}
           style={{
             ...imgAttributes.style,
             position: 'absolute',
@@ -277,12 +276,10 @@ export function OptimizedImage({
             width: '100%',
             height: '100%',
             objectFit,
-            zIndex: 2,
-            opacity: showPlaceholder ? (isLoaded ? 1 : 0) : 1,
-            transition: showPlaceholder ? 'opacity 0.3s ease-out' : 'none',
+            zIndex: 1,
           }}
         />
-      </picture>
+      </div>
     );
   }
 
