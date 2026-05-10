@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { githubApi } from "@/lib/githubApi";
+import { fetchWithRetry, mapApiError } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
@@ -32,8 +33,6 @@ function getCacheKey(list: RepoConfig[]): string {
   return `github_repos_${s}`;
 }
 
-const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-
 export function ReposCard() {
   const { t } = useTranslation();
   const [repos, setRepos] = useState<RepoData[]>([]);
@@ -49,21 +48,8 @@ export function ReposCard() {
     const cached = getCache<RepoData[]>(cacheKey, CACHE_TTL);
     if (cached) { setRepos(cached); setLoading(false); return; }
 
-    const headers: Record<string, string> = { "Accept": "application/vnd.github.v3+json" };
-    if (GITHUB_TOKEN) headers["Authorization"] = `token ${GITHUB_TOKEN}`;
-
     Promise.allSettled(
-      list.map((r) =>
-        fetchWithTimeout(`https://api.github.com/repos/${r.repo}`, { headers })
-          .then((res) => {
-            if (!res.ok) {
-              if (res.status === 403 || res.status === 429) throw new Error("rate_limit");
-              if (res.status === 404) throw new Error("not_found");
-              throw new Error("api_error");
-            }
-            return res.json();
-          })
-      )
+      list.map((r) => fetchWithRetry(() => githubApi.get(`/repos/${r.repo}`)).then((x) => x.data))
     ).then((results) => {
       const data: RepoData[] = [];
       let hasError = false;
@@ -73,7 +59,8 @@ export function ReposCard() {
         else if (r.status === "rejected" || (r.status === "fulfilled" && !r.value?.name)) {
           hasError = true;
           const err = r.status === "rejected" ? r.reason : r.value;
-          if (err?.message === "rate_limit") rateLimited = true;
+          const code = mapApiError(err).message;
+          if (code === "rate_limit") rateLimited = true;
         }
       });
       if (data.length > 0) { setRepos(data); setCache(cacheKey, data); }

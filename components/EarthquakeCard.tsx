@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { CardSkeleton } from "@/components/Skeleton";
 import { ErrorCard } from "@/components/ErrorCard";
@@ -31,8 +31,7 @@ function useEq<T>(cacheKey: string, url: string, mapFn: (r: any) => T) {
   const fetchData = useCallback(() => {
     const cached = getCache<T>(cacheKey, CACHE_TTL);
     if (cached) { setData(cached); setLoading(false); return; }
-    fetchWithTimeout(url)
-      .then((r) => r.json())
+    fetchWithRetry(() => api.get(url)).then(({ data }) => data)
       .then((raw: Record<string, any>) => {
         const keys = Object.keys(raw).filter((k) => /^No\d+$/.test(k)).sort();
         if (keys.length > 0) { const d = mapRef.current(raw[keys[0]]); setData(d); setCache(cacheKey, d); }

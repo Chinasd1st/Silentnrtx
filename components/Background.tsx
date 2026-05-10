@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { getCache, setCache } from "@/lib/cache";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { api, fetchWithRetry, mapApiError } from "@/lib/api";
 
 const CACHE_KEY = "bg_url";
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
@@ -39,8 +39,7 @@ export function Background() {
     if (cached) { setBgUrl(cached); setLoading(false); return; }
 
     if (cfg.usePixiv) {
-      fetchWithTimeout("https://api.lolicon.app/setu/v2")
-        .then((r) => r.json())
+      fetchWithRetry(() => api.get("https://api.lolicon.app/setu/v2")).then(({ data }) => data)
         .then((data) => {
           const illusts = data.illusts || data.data || [];
           if (illusts.length > 0) {
@@ -58,8 +57,7 @@ export function Background() {
     }
 
     if (cfg.useBing) {
-      fetchWithTimeout(cfg.bingApi)
-        .then((r) => r.json())
+      fetchWithRetry(() => api.get(cfg.bingApi)).then(({ data }) => data)
         .then((data) => {
           let url = data.url || data.images?.[0]?.url;
           if (!url) { document.body.style.backgroundColor = cfg.fallbackColor; return; }
