@@ -244,7 +244,7 @@ export function OptimizedImage({
 
   if (fill) {
     return (
-      <picture className={`optimized-image-container ${className}`} style={{ position: 'relative', ...style }}>
+      <picture className={`optimized-image-container ${className}`} style={{ position: 'relative', display: 'block', ...style }}>
         {sourceAvifProps && <source {...sourceAvifProps} />}
         <source {...sourceWebpProps} />
         {showPlaceholder && (
@@ -260,13 +260,16 @@ export function OptimizedImage({
               objectFit,
               filter: 'blur(20px)',
               transform: 'scale(1.1)',
+              zIndex: 1,
+              transition: isLoaded ? 'opacity 0.3s ease-out' : 'none',
+              opacity: isLoaded ? 0 : 1,
             }}
             aria-hidden="true"
           />
         )}
         <img
           {...imgAttributes}
-          className={`${className} ${showPlaceholder ? 'optimized-image-fade-in' : ''}`}
+          className={`${className}`}
           style={{
             ...imgAttributes.style,
             position: 'absolute',
@@ -274,6 +277,9 @@ export function OptimizedImage({
             width: '100%',
             height: '100%',
             objectFit,
+            zIndex: 2,
+            opacity: showPlaceholder ? (isLoaded ? 1 : 0) : 1,
+            transition: showPlaceholder ? 'opacity 0.3s ease-out' : 'none',
           }}
         />
       </picture>
