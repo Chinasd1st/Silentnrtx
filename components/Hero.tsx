@@ -48,7 +48,7 @@ export function Hero() {
       <div className="absolute inset-0 -z-20">
         <div className="h-full w-full bg-cover bg-center"
           style={{ backgroundImage: "radial-gradient(ellipse at 50% 0%, rgba(208,188,255,0.12) 0%, transparent 70%)" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--md-background)]/60 via-transparent to-[var(--md-background)]" />
+        <div className="absolute inset-0 bg-linear-to-b from-(--md-background)/60 via-transparent to-(--md-background)" />
       </div>
 
       <div ref={contentRef} className="flex flex-col items-center gap-4 px-4 text-center">
@@ -74,7 +74,7 @@ export function Hero() {
         <ThemeSwitch />
         <SettingsCard />
         <button onClick={toggleLang} aria-label={lang === "zh-CN" ? "当前语言：中文" : "Current: English"}
-          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/[0.06] active:scale-90"
+          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/6 active:scale-90"
           style={{ color: "var(--md-text-primary)" }}>
           {lang === "zh-CN" ? "ZH" : "EN"}
         </button>

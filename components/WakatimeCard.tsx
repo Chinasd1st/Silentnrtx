@@ -141,7 +141,7 @@ export function WakatimeCard() {
             <AiBox label={t("wakatime.prompts")} value={fmtNum(aiSum.prompts)} color="var(--md-accent-blue)" />
             <AiBox label={t("wakatime.output_tokens")} value={fmtNum(aiSum.outTokens)} color="var(--md-accent-pink)" />
           </div>
-          <div className="rounded-[12px] p-3 text-xs" style={{ backgroundColor: "var(--md-primary-008)" }}>
+          <div className="rounded-md3-sm p-3 text-xs" style={{ backgroundColor: "var(--md-primary-008)" }}>
             <div className="flex justify-between mb-1">
               <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.input_tokens")}</span>
               <span style={{ color: "var(--md-text-secondary)" }}>{fmtNum(aiSum.inTokens)}</span>
@@ -159,7 +159,7 @@ export function WakatimeCard() {
 
 function AiBox({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="rounded-[12px] p-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
+    <div className="rounded-md3-sm p-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
       <p className="text-lg font-bold font-heading" style={{ color }}>{value}</p>
       <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>{label}</p>
     </div>

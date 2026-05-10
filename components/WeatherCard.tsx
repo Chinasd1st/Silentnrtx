@@ -153,7 +153,7 @@ export function WeatherCard() {
 function WindStat({ dir, speed, isZh }: { dir: string; speed: string; isZh: boolean }) {
   const { value, label } = windDisplay(dir, speed, isZh);
   return (
-    <div className="rounded-[12px] p-2.5 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
+    <div className="rounded-md3-sm p-2.5 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
       <div className="flex justify-center mb-1" style={{ color: "var(--md-text-muted)" }}><FaWind size={13} /></div>
       <p className="text-sm font-semibold leading-snug truncate" style={{ color: "var(--md-text-primary)" }} title={value}>{value}</p>
       <p className="text-[9px] leading-tight mt-0.5" style={{ color: "var(--md-text-muted)" }}>{label}</p>
@@ -163,7 +163,7 @@ function WindStat({ dir, speed, isZh }: { dir: string; speed: string; isZh: bool
 
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="rounded-[12px] p-2.5 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
+    <div className="rounded-md3-sm p-2.5 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
       <div className="flex justify-center mb-1" style={{ color: "var(--md-text-muted)" }}>{icon}</div>
       <p className="text-sm font-semibold leading-snug" style={{ color: "var(--md-text-primary)" }}>{value}</p>
       <p className="text-[9px] leading-tight mt-0.5" style={{ color: "var(--md-text-muted)" }}>{label}</p>

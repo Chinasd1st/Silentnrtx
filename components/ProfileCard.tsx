@@ -11,7 +11,7 @@ export function ProfileCard() {
     <div className="md-card group relative overflow-hidden">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
-          <div className="h-20 w-20 overflow-hidden rounded-[24px]" style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}>
+          <div className="h-20 w-20 overflow-hidden rounded-md3" style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}>
             <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover"
               onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=6750a4&color=fff`; }} />
           </div>

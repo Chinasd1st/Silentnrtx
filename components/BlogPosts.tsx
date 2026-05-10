@@ -83,8 +83,8 @@ export function BlogPosts() {
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="space-y-2">
-              <div className="h-5 w-3/4 rounded bg-white/[0.06] animate-pulse" />
-              <div className="h-3 w-1/3 rounded bg-white/[0.06] animate-pulse" />
+              <div className="h-5 w-3/4 rounded-sm bg-white/6 animate-pulse" />
+              <div className="h-3 w-1/3 rounded-sm bg-white/6 animate-pulse" />
             </div>
           ))}
         </div>
@@ -104,7 +104,7 @@ export function BlogPosts() {
         <div className="space-y-4">
           {posts.map((post, idx) => (
             <a key={idx} href={post.link} target="_blank" rel="noopener noreferrer"
-              className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/[0.06] hover:translate-x-1">
+              className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:translate-x-1">
               <h3 className="font-medium text-sm leading-snug line-clamp-2" style={{ color: "var(--md-text-primary)" }}
                 onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
                 onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-primary)"}>

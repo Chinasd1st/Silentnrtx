@@ -87,7 +87,7 @@ export function EarthquakeCard() {
           <p className="text-sm font-semibold leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-primary)" }}>
             {(eq as EqBase).location}
           </p>
-          <div className="mt-2 flex items-baseline gap-3 min-h-[2rem]">
+          <div className="mt-2 flex items-baseline gap-3 min-h-8">
             <span className="text-3xl font-bold font-heading leading-none" style={{ color: "var(--md-primary)" }}>
               M{(eq as EqBase).magnitude}
             </span>

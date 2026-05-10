@@ -25,7 +25,7 @@ export function SocialLinks() {
       {socialItems.map((item) => {
         const Icon = item.icon;
         const card = (
-          <div className="md-card !p-4 h-full flex flex-col items-center justify-center gap-2 text-center cursor-pointer hover:!border-[var(--md-primary)]/20">
+          <div className="md-card p-4! h-full flex flex-col items-center justify-center gap-2 text-center cursor-pointer hover:border-(--md-primary)/20!">
             <div className="flex h-10 w-10 items-center justify-center rounded-[16px] text-lg transition-transform duration-200 hover:scale-110"
               style={{ backgroundColor: `${item.color}18`, color: item.color }}>
               <Icon />

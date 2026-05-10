@@ -97,7 +97,7 @@ export function LastFmStatus() {
       {tab === "nowplaying" && track && (
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 shrink-0">
-            <div className="absolute inset-0 flex items-center justify-center rounded-[16px] bg-white/[0.06] text-2xl opacity-40">&#9835;</div>
+            <div className="absolute inset-0 flex items-center justify-center rounded-[16px] bg-white/6 text-2xl opacity-40">&#9835;</div>
             {albumArt && (
               <img src={albumArt} alt={track.album["#text"]} loading="lazy" className="absolute inset-0 w-full h-full rounded-[16px] object-cover shadow-md"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
@@ -140,7 +140,7 @@ export function LastFmStatus() {
                 {art ? (
                   <img src={art} alt="" className="w-8 h-8 rounded-[8px] object-cover shrink-0" />
                 ) : (
-                  <div className="w-8 h-8 rounded-[8px] bg-white/[0.06] shrink-0" />
+                  <div className="w-8 h-8 rounded-[8px] bg-white/6 shrink-0" />
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate" style={{ color: "var(--md-text-primary)" }}>{album.name}</p>

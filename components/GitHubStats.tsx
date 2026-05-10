@@ -79,7 +79,7 @@ export function GitHubStats() {
 
 function SB({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
   return (
-    <div className="rounded-[16px] p-4 transition-all duration-200 hover:bg-white/[0.06] hover:scale-[1.02]" style={{ backgroundColor: "var(--md-primary-008)" }}>
+    <div className="rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]" style={{ backgroundColor: "var(--md-primary-008)" }}>
       <div className="flex items-center gap-2 text-xs" style={{ color: "var(--md-text-muted)" }}>
         <span style={{ color }}>{icon}</span>{label}
       </div>

@@ -87,7 +87,7 @@ export function Background() {
           transform: "scale(1.1)",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--md-background)]/30 to-[var(--md-background)]" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-(--md-background)/30 to-(--md-background)" />
     </div>
   );
 }

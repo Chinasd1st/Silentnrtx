@@ -35,7 +35,7 @@ export function ThemeSwitch() {
 
   return (
     <button onClick={() => setMode(next[mode])}
-      className="flex h-8 w-8 items-center justify-center rounded-full text-xs transition-all duration-200 hover:bg-white/[0.06] active:scale-90"
+      className="flex h-8 w-8 items-center justify-center rounded-full text-xs transition-all duration-200 hover:bg-white/6 active:scale-90"
       style={{ color: "var(--md-text-primary)" }}
       aria-label={`Theme: ${mode}`}>
       {mode === "light" ? <FiSun size={15} /> : mode === "dark" ? <FiMoon size={15} /> : <FiMonitor size={15} />}

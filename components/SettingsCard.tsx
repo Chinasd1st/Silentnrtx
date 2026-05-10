@@ -56,7 +56,7 @@ export function SettingsCard() {
   return (
     <>
       <button onClick={() => setOpen(true)} aria-label={t("settings.title")}
-        className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 hover:bg-white/[0.06] active:scale-90"
+        className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 hover:bg-white/6 active:scale-90"
         style={{ color: "var(--md-text-primary)" }}>
         <FiSettings size={15} />
       </button>
@@ -65,13 +65,13 @@ export function SettingsCard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setOpen(false)}
           role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(false); } }}>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
-          <div className="relative rounded-[24px] p-5 w-full max-w-sm" style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
+          <div className="relative rounded-md3 p-5 w-full max-w-sm" style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
             onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
                 <FiSettings className="inline mr-2" size={16} />{t("settings.title")}
               </h2>
-              <button onClick={() => setOpen(false)} aria-label={t("gallery.close")} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/[0.06]"
+              <button onClick={() => setOpen(false)} aria-label={t("gallery.close")} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6"
                 style={{ color: "var(--md-text-muted)" }}><FiX size={16} /></button>
             </div>
 
@@ -94,7 +94,7 @@ export function SettingsCard() {
                 {s.weatherSource === "manual" && (
                   <input type="text" value={s.manualCity} placeholder="Tongxiang"
                     onChange={(e) => update({ manualCity: e.target.value })}
-                    className="w-full rounded-[12px] px-3 py-2 text-xs outline-none border"
+                    className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border"
                     style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--md-text-primary)", borderColor: "var(--md-card-border)" }} />
                 )}
               </div>
@@ -122,7 +122,7 @@ export function SettingsCard() {
                     <input type="text" maxLength={7} placeholder="#165DFF"
                       value={s.customHue !== null ? hueToHex(s.customHue) : ""}
                       onChange={(e) => { const h = parseHex(e.target.value); if (h !== null) update({ customHue: h }); }}
-                      className="w-20 rounded-[8px] px-2 py-1 text-xs font-mono text-center outline-none border"
+                      className="w-20 rounded-[8px] px-2 py-1 text-xs font-mono text-center outline-hidden border"
                       style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--md-text-primary)", borderColor: "var(--md-card-border)" }} />
                     <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>{s.customHue ?? 250}°</span>
                   </div>

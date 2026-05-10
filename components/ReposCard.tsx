@@ -92,7 +92,7 @@ export function ReposCard() {
           const desc = cfg?.desc || repo.description || "—";
           return (
           <a key={repo.name} href={repo.html_url} target="_blank" rel="noopener noreferrer"
-            className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/[0.06] hover:translate-x-1">
+            className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:translate-x-1">
             <p className="text-sm font-semibold truncate" style={{ color: "var(--md-text-primary)" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
               onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-primary)"}>

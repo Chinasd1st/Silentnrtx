@@ -60,7 +60,7 @@ export function GalleryCard() {
           {images.map((img, idx) => (
             <button key={idx} onClick={() => openViewer(idx)}
               aria-label={desc(img) || `Image ${idx + 1}`}
-              className="break-inside-avoid mb-3 group block w-full text-left rounded-[16px] overflow-hidden border border-transparent transition-all duration-300 hover:border-[var(--md-primary)]/30 hover:scale-[1.02]"
+              className="break-inside-avoid mb-3 group block w-full text-left rounded-[16px] overflow-hidden border border-transparent transition-all duration-300 hover:border-(--md-primary)/30 hover:scale-[1.02]"
               style={{ backgroundColor: "var(--md-primary-008)" }}
             >
               <div className="overflow-hidden">
@@ -85,13 +85,13 @@ export function GalleryCard() {
 
       {viewerIdx !== null && createPortal(
         <div ref={viewerRef}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4"
           onClick={closeViewer}
           onKeyDown={handleKeyDown}
           role="button" tabIndex={-1}
         >
           <div
-            className="relative max-h-[90vh] max-w-[90vw] rounded-[24px] overflow-hidden"
+            className="relative max-h-[90vh] max-w-[90vw] rounded-md3 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
           >

@@ -156,7 +156,7 @@ const SongItem = React.memo(function SongItem({ song, idx, selectedIdx, isPlayin
   const sel = idx === selectedIdx;
   return (
     <button onClick={() => onToggle(idx)} aria-label={song.name}
-      className="flex w-full items-center gap-3 rounded-[12px] px-3 py-2 text-left transition-all duration-200 hover:bg-white/[0.05]"
+      className="flex w-full items-center gap-3 rounded-md3-sm px-3 py-2 text-left transition-all duration-200 hover:bg-white/5"
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}>
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-[10px]"
         style={{ backgroundColor: sel ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: sel ? "var(--md-primary)" : "var(--md-text-muted)" }}>
