@@ -78,5 +78,15 @@
   "monkeytype.tests": "次测试",
   "monkeytype.hours": "小时",
   "monkeytype.typed": "打字",
-  "monkeytype.wpm": "wpm"
+  "monkeytype.wpm": "wpm",
+  "shortcuts.title": "快捷键",
+  "shortcuts.toggle": "按 ? 键打开快捷键面板",
+  "shortcuts.open": "打开/关闭快捷键面板",
+  "shortcuts.play": "播放/暂停音乐",
+  "shortcuts.next": "下一首",
+  "shortcuts.close": "关闭面板",
+  "geo.title": "位置",
+  "geo.request": "显示我的位置",
+  "geo.unavailable": "定位不可用或已拒绝",
+  "geo.your_location": "您的位置"
 }

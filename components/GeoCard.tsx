@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { useTranslation } from "@/lib/i18n";
 
 export function GeoCard() {
+  const { t } = useTranslation();
   const [pos, setPos] = useState<{ lat: number; lng: number } | null>(null);
   const [error, setError] = useState(false);
 
@@ -20,9 +22,9 @@ export function GeoCard() {
     <div className="md-card">
       <div className="flex items-center gap-3 mb-3">
         <FaMapMarkerAlt className="text-lg shrink-0" style={{ color: "var(--md-text-muted)" }} />
-        <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>Location</h3>
+        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("geo.title")}</h2>
       </div>
-      <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>定位不可用或已拒绝</p>
+      <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>{t("geo.unavailable")}</p>
     </div>
   );
 
@@ -30,12 +32,12 @@ export function GeoCard() {
     <div className="md-card">
       <div className="flex items-center gap-3 mb-3">
         <FaMapMarkerAlt className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-        <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>Location</h3>
+        <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("geo.title")}</h2>
       </div>
       <button onClick={request}
         className="rounded-full px-4 py-1.5 text-xs font-medium transition-all hover:scale-105"
         style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}>
-        显示我的位置
+        {t("geo.request")}
       </button>
     </div>
   );
@@ -45,7 +47,7 @@ export function GeoCard() {
       <div className="flex items-center gap-3 mb-3">
         <FaMapMarkerAlt className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
         <div className="min-w-0 flex-1">
-          <h3 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>Your Location</h3>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("geo.your_location")}</h2>
         </div>
       </div>
       <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>

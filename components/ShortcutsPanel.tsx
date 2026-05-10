@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { FaKeyboard } from "react-icons/fa";
+import { useTranslation } from "@/lib/i18n";
 
 const SHORTCUTS = [
-  { key: "?", desc: "打开/关闭快捷键面板" },
-  { key: "Space", desc: "播放/暂停音乐" },
-  { key: "→", desc: "下一首" },
-  { key: "Escape", desc: "关闭面板" },
+  { key: "?", descKey: "shortcuts.open" },
+  { key: "Space", descKey: "shortcuts.play" },
+  { key: "→", descKey: "shortcuts.next" },
+  { key: "Escape", descKey: "shortcuts.close" },
 ];
 
 export function ShortcutsPanel() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -26,7 +28,13 @@ export function ShortcutsPanel() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  if (!open) return null;
+  if (!open) return (
+    <div className="fixed bottom-4 right-4 z-50 opacity-50 hover:opacity-100 transition-opacity">
+      <kbd className="rounded-[8px] px-2.5 py-1 text-xs font-mono" style={{ backgroundColor: "var(--md-surface-variant)", color: "var(--md-on-surface-variant)" }}>
+        {t("shortcuts.toggle")}
+      </kbd>
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4" onClick={() => setOpen(false)}
@@ -36,12 +44,12 @@ export function ShortcutsPanel() {
         onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 mb-5">
           <FaKeyboard className="text-lg" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>快捷键</h2>
+          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>{t("shortcuts.title")}</h2>
         </div>
         <div className="space-y-3">
           {SHORTCUTS.map((s) => (
             <div key={s.key} className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>{s.desc}</span>
+              <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>{t(s.descKey)}</span>
               <kbd className="rounded-[8px] px-2.5 py-1 text-xs font-mono" style={{ backgroundColor: "var(--md-surface-variant)", color: "var(--md-on-surface-variant)" }}>
                 {s.key}
               </kbd>

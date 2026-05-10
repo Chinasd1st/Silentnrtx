@@ -138,7 +138,7 @@ export function LastFmStatus() {
               <div key={i} className="flex items-center gap-3">
                 <span className="text-[10px] w-4 shrink-0 text-center" style={{ color: "var(--md-text-muted)" }}>{i + 1}</span>
                 {art ? (
-                  <img src={art} alt="" className="w-8 h-8 rounded-[8px] object-cover shrink-0" />
+                  <img src={art} alt="" className="w-8 h-8 rounded-[8px] object-cover shrink-0" aria-hidden="true" />
                 ) : (
                   <div className="w-8 h-8 rounded-[8px] bg-white/6 shrink-0" />
                 )}

@@ -12,11 +12,12 @@ export function ThemeSwitch() {
     try {
       const saved = localStorage.getItem("md-theme-mode") as Mode | null;
       if (saved) setMode(saved);
-    } catch {}
+    } catch (e) { console.warn("Failed to read theme preference:", e); }
   }, []);
 
   useEffect(() => {
-    try { localStorage.setItem("md-theme-mode", mode); } catch {}
+    try { localStorage.setItem("md-theme-mode", mode); }
+    catch (e) { console.warn("Failed to save theme preference:", e); }
 
     const mq = window.matchMedia("(prefers-color-scheme: light)");
     const apply = (isLight: boolean) => document.documentElement.classList.toggle("light", isLight);

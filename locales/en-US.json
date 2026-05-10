@@ -78,5 +78,15 @@
   "monkeytype.tests": "tests",
   "monkeytype.hours": "h",
   "monkeytype.typed": "typed",
-  "monkeytype.wpm": "wpm"
+  "monkeytype.wpm": "wpm",
+  "shortcuts.title": "Keyboard Shortcuts",
+  "shortcuts.toggle": "Press ? to toggle shortcuts",
+  "shortcuts.open": "Open/Close shortcuts panel",
+  "shortcuts.play": "Play/Pause music",
+  "shortcuts.next": "Next track",
+  "shortcuts.close": "Close panel",
+  "geo.title": "Location",
+  "geo.request": "Show my location",
+  "geo.unavailable": "Location unavailable or denied",
+  "geo.your_location": "Your Location"
 }
