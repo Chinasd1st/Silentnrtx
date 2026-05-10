@@ -4,19 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "tsx scripts/build-images.ts",
     "build": "next build",
     "export": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:images": "tsx scripts/build-images.ts"
   },
   "dependencies": {
+    "@types/sharp": "^0.31.1",
     "axios": "^1.9.0",
     "i18next": "^26.0.8",
     "next": "^16.2.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^17.0.6",
-    "react-icons": "^5.4.0"
+    "react-icons": "^5.4.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
@@ -25,6 +29,7 @@
     "@types/react-dom": "^19.1.2",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   }
 }

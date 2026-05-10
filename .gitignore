@@ -53,3 +53,8 @@ coverage/
 # 其他
 *.tsbuildinfo
 next-env.d.ts
+
+# Image optimization build artifacts
+public/optimized/
+image-manifest.json
+scripts/image-cache.json

@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
+import { basePath } from "./lib/base-path";
 
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "/Silentnrtx",
+  basePath,
   trailingSlash: true,
   images: {
     unoptimized: true,

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 import { FaImage } from "react-icons/fa";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface GalleryImage {
   url: string;
@@ -64,11 +65,12 @@ export function GalleryCard() {
               style={{ backgroundColor: "var(--md-primary-008)" }}
             >
               <div className="overflow-hidden">
-                <img
+                <OptimizedImage
                   src={img.url}
                   alt={desc(img)}
                   className="w-full h-auto transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  placeholder
                 />
               </div>
               {desc(img) && (
@@ -100,10 +102,13 @@ export function GalleryCard() {
             >
               &times;
             </button>
-            <img
+            <OptimizedImage
               src={images[viewerIdx].url}
               alt={desc(images[viewerIdx])}
               className="max-h-[75vh] w-auto object-contain"
+              sizes="90vw"
+              priority
+              placeholder={false}
             />
             {desc(images[viewerIdx]) && (
               <div className="p-4 border-t" style={{ borderColor: "var(--md-card-border)" }}>
