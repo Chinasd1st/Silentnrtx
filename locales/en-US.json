@@ -74,6 +74,7 @@
   "settings.hue_on": "Custom",
   "settings.hue_off": "Default",
   "settings.persist": "Settings auto-saved",
+  "settings.auto_location": "Auto-detected location",
   "monkeytype.title": "Monkeytype",
   "monkeytype.tests": "tests",
   "monkeytype.hours": "h",

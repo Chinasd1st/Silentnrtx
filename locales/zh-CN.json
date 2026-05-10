@@ -74,6 +74,7 @@
   "settings.hue_on": "自定义",
   "settings.hue_off": "默认",
   "settings.persist": "设置自动保存",
+  "settings.auto_location": "自动定位",
   "monkeytype.title": "Monkeytype",
   "monkeytype.tests": "次测试",
   "monkeytype.hours": "小时",

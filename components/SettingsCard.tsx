@@ -5,10 +5,18 @@ import { useTranslation } from "@/lib/i18n";
 import { loadSettings, saveSettings, type Settings } from "@/lib/settings";
 import { FiSettings, FiX } from "react-icons/fi";
 
+interface IpLocation {
+  city: string;
+  region: string;
+  country: string;
+  ip: string;
+}
+
 export function SettingsCard() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [s, setS] = useState<Settings>(loadSettings);
+  const [ipLoc, setIpLoc] = useState<IpLocation | null>(null);
 
   useEffect(() => { saveSettings(s); }, [s]);
 
@@ -17,6 +25,17 @@ export function SettingsCard() {
       document.documentElement.style.setProperty("--md-hue", String(s.customHue));
     }
   }, [s.hueEnabled, s.customHue]);
+
+  useEffect(() => {
+    if (s.weatherSource === "auto" && !ipLoc) {
+      fetch("https://ipapi.co/json/")
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.ip) setIpLoc(d);
+        })
+        .catch(() => {});
+    }
+  }, [s.weatherSource]);
 
   const update = (partial: Partial<Settings>) => setS((prev) => ({ ...prev, ...partial }));
 
@@ -91,11 +110,15 @@ export function SettingsCard() {
                     {t("settings.weather_auto")}
                   </button>
                 </div>
-                {s.weatherSource === "manual" && (
+                {s.weatherSource === "manual" ? (
                   <input type="text" value={s.manualCity} placeholder="Tongxiang"
                     onChange={(e) => update({ manualCity: e.target.value })}
                     className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border"
                     style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--md-text-primary)", borderColor: "var(--md-card-border)" }} />
+                ) : (
+                  <input type="text" disabled placeholder={ipLoc ? `${ipLoc.city}, ${ipLoc.region}, ${ipLoc.country}` : t("settings.auto_location")}
+                    className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border opacity-50"
+                    style={{ backgroundColor: "rgba(255,255,255,0.02)", color: "var(--md-text-secondary)", borderColor: "var(--md-card-border)" }} />
                 )}
               </div>
 
