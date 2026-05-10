@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { loadSettings, saveSettings, type Settings } from "@/lib/settings";
+import { fetchWithRetry } from "@/lib/api";
 import { FiSettings, FiX } from "react-icons/fi";
 
 interface IpLocation {
@@ -27,12 +28,10 @@ export function SettingsCard() {
   }, [s.hueEnabled, s.customHue]);
 
   useEffect(() => {
-    if (s.weatherSource === "auto" && !ipLoc) {
-      fetch("https://ipapi.co/json/")
+    if (s.weatherSource === "auto") {
+      fetchWithRetry(() => fetch("https://ipapi.co/json/"))
         .then((r) => r.json())
-        .then((d) => {
-          if (d.ip) setIpLoc(d);
-        })
+        .then((d) => { if (d.ip) setIpLoc(d); })
         .catch(() => {});
     }
   }, [s.weatherSource]);
@@ -110,16 +109,15 @@ export function SettingsCard() {
                     {t("settings.weather_auto")}
                   </button>
                 </div>
-                {s.weatherSource === "manual" ? (
-                  <input type="text" value={s.manualCity} placeholder="Tongxiang"
+                <input
+                    type="text"
+                    value={s.manualCity || ""}
+                    placeholder={s.weatherSource === "auto" && ipLoc ? `${ipLoc.city}, ${ipLoc.region}, ${ipLoc.country}` : "Tongxiang"}
+                    disabled={s.weatherSource !== "manual"}
                     onChange={(e) => update({ manualCity: e.target.value })}
-                    className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border"
-                    style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--md-text-primary)", borderColor: "var(--md-card-border)" }} />
-                ) : (
-                  <input type="text" disabled placeholder={ipLoc ? `${ipLoc.city}, ${ipLoc.region}, ${ipLoc.country}` : t("settings.auto_location")}
-                    className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border opacity-50"
-                    style={{ backgroundColor: "rgba(255,255,255,0.02)", color: "var(--md-text-secondary)", borderColor: "var(--md-card-border)" }} />
-                )}
+                    className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border bg-white/5 disabled:opacity-50 disabled:bg-white/[0.02]"
+                    style={{ borderColor: "var(--md-card-border)", color: s.weatherSource !== "manual" ? "var(--md-text-secondary)" : "var(--md-text-primary)" }}
+                  />
               </div>
 
               {/* HUE */}
