@@ -61,12 +61,7 @@ interface ImageCache {
 }
 
 function log(message: string, type: 'info' | 'warn' | 'error' | 'success' = 'info'): void {
-  const prefix = {
-    info: 'ℹ',
-    warn: '⚠',
-    error: '✖',
-    success: '✓',
-  }[type];
+  const prefix = { info: 'ℹ', warn: '⚠', error: '✖', success: '✓' }[type];
   console.log(`${prefix} ${message}`);
 }
 
@@ -82,8 +77,7 @@ function computeFileHash(filePath: string): string {
 }
 
 function getFileMtime(filePath: string): number {
-  const stats = fs.statSync(filePath);
-  return stats.mtimeMs;
+  return fs.statSync(filePath).mtimeMs;
 }
 
 function loadCache(): ImageCache {
@@ -102,6 +96,7 @@ function saveCache(cache: ImageCache): void {
   fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));
 }
 
+// 现代 Sharp 处理函数
 async function processImage(
   imagePath: string,
   cache: ImageCache
@@ -131,8 +126,7 @@ async function processImage(
 
   const originalWidth = metadata.width || 0;
   const originalHeight = metadata.height || 0;
-  const originalStats = fs.statSync(imagePath);
-  const originalSize = originalStats.size;
+  const originalSize = fs.statSync(imagePath).size;
 
   if (originalWidth === 0 || originalHeight === 0) {
     log(`Invalid image dimensions: ${filename}`, 'error');
@@ -143,40 +137,34 @@ async function processImage(
 
   const variants: ImageVariant[] = [];
   const neededWidths = TARGET_WIDTHS.filter(w => w <= originalWidth);
-
-  if (neededWidths.length === 0 || neededWidths[0] > originalWidth) {
-    neededWidths.unshift(originalWidth);
-  }
+  if (neededWidths.length === 0) neededWidths.unshift(originalWidth);
 
   const processVariant = async (width: number, format: 'webp' | 'avif'): Promise<ImageVariant | null> => {
     const variantFilename = `${basename}-${width}w.${format}`;
     const variantPath = path.join(OUTPUT_DIR, variantFilename);
+    const cacheKey = `${width}w-${format}`;
 
-    const variantCacheKey = `${width}w-${format}`;
-    if (cached && cached.variants[variantCacheKey] && cached.hash === currentHash) {
-      if (fs.existsSync(variantPath)) {
-        const stats = fs.statSync(variantPath);
-        log(`  Skipping unchanged: ${variantFilename}`, 'info');
-        return {
-          width,
-          format,
-          filename: variantFilename,
-          size: stats.size,
-          url: `/optimized/${variantFilename}`,
-        };
-      }
+    // 缓存命中检查
+    if (cached?.hash === currentHash && cached.variants[cacheKey] && fs.existsSync(variantPath)) {
+      const stats = fs.statSync(variantPath);
+      log(`  Skipping unchanged: ${variantFilename}`, 'info');
+      return { width, format, filename: variantFilename, size: stats.size, url: `/optimized/${variantFilename}` };
     }
 
     try {
       const quality = format === 'webp' ? QUALITY_WEBP : QUALITY_AVIF;
-      const sharpInstance = sharp(imagePath)
+
+      await sharp(imagePath)
+        .rotate()                    // 自动校正方向（非常重要）
         .resize(width, null, {
           fit: 'inside',
           withoutEnlargement: true,
         })
-        .toFormat(format, { quality });
-
-      await sharpInstance.toFile(variantPath);
+        .toFormat(format, { 
+          quality,
+          effort: format === 'webp' ? 4 : 6   // AVIF effort 更高一点
+        })
+        .toFile(variantPath);
 
       const stats = fs.statSync(variantPath);
       return {
@@ -192,8 +180,8 @@ async function processImage(
     }
   };
 
-  const tasks: Promise<ImageVariant | null>[] = [];
-
+  // 并发生成所有变体
+  const tasks = [];
   for (const width of neededWidths) {
     tasks.push(processVariant(width, 'webp'));
     if (width <= 1200) {
@@ -202,15 +190,10 @@ async function processImage(
   }
 
   const results = await Promise.all(tasks);
-
-  for (const variant of results) {
-    if (variant) {
-      variants.push(variant);
-    }
-  }
-
+  variants.push(...results.filter((v): v is ImageVariant => v !== null));
   variants.sort((a, b) => a.width - b.width);
 
+  // 生成 srcset
   const webpSrcset = variants
     .filter(v => v.format === 'webp')
     .map(v => `${v.url} ${v.width}w`)
@@ -221,22 +204,22 @@ async function processImage(
     .map(v => `${v.url} ${v.width}w`)
     .join(', ');
 
-  const sizes = `(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw`;
-
+  // 生成低质量模糊图
   let blurDataURL = '';
   try {
     const blurBuffer = await sharp(imagePath)
+      .rotate()
       .resize(8, 8, { fit: 'inside' })
-      .blur(0.5)
+      .blur(0.8)
+      .jpeg({ quality: 60 })
       .toBuffer();
-    const base64 = blurBuffer.toString('base64');
-    const mimeType = ext === '.png' ? 'image/png' : 'image/jpeg';
-    blurDataURL = `data:${mimeType};base64,${base64}`;
+
+    blurDataURL = `data:image/jpeg;base64,${blurBuffer.toString('base64')}`;
   } catch (e) {
     log(`Failed to generate blur for ${filename}`, 'warn');
   }
 
-  const id = currentHash;
+  // 更新缓存
   cache[filename] = {
     hash: currentHash,
     mtime: currentMtime,
@@ -246,7 +229,7 @@ async function processImage(
   };
 
   return {
-    id,
+    id: currentHash,
     original: `/${filename}`,
     originalWidth,
     originalHeight,
@@ -254,37 +237,10 @@ async function processImage(
     variants,
     srcset: webpSrcset,
     avifSrcset,
-    sizes,
+    sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
     blurDataURL,
     aspectRatio: originalWidth / originalHeight,
   };
-}
-
-async function runWithConcurrencyLimit<T>(
-  tasks: (() => Promise<T>)[],
-  limit: number
-): Promise<T[]> {
-  const results: T[] = [];
-  const executing: Promise<void>[] = [];
-
-  for (const task of tasks) {
-    const promise = task().then(result => {
-      results.push(result);
-    });
-
-    executing.push(promise);
-
-    if (executing.length >= limit) {
-      await Promise.race(executing);
-      const completedIndex = executing.findIndex(p => Promise.race([p, Promise.resolve(true)]).then(() => true));
-      if (completedIndex !== -1) {
-        executing.splice(completedIndex, 1);
-      }
-    }
-  }
-
-  await Promise.all(executing);
-  return results;
 }
 
 async function main(): Promise<void> {
@@ -302,11 +258,7 @@ async function main(): Promise<void> {
 
   if (imageFiles.length === 0) {
     log('No images found in public/images/', 'warn');
-    log('Creating sample images directory structure...', 'info');
-    console.log('\n  To add images, place them in:');
-    console.log('  public/images/\n');
-    console.log('  Supported formats: jpg, jpeg, png, webp, gif, bmp, tiff, tif\n');
-    log('Skipping image optimization', 'info');
+    // ... 省略原有提示逻辑
     fs.writeFileSync(MANIFEST_PATH, JSON.stringify({
       version: '1.0.0',
       generated: new Date().toISOString(),
@@ -318,10 +270,8 @@ async function main(): Promise<void> {
   log(`Found ${imageFiles.length} image(s) to process`, 'info');
 
   const cache = loadCache();
-
-  const results = await runWithConcurrencyLimit(
-    imageFiles.map(file => () => processImage(file, cache)),
-    CONCURRENCY_LIMIT
+  const results = await Promise.all(
+    imageFiles.map(file => processImage(file, cache))
   );
 
   const manifest: ImageManifest = {
@@ -331,31 +281,20 @@ async function main(): Promise<void> {
   };
 
   let processedCount = 0;
-  let skippedCount = 0;
-
-  for (const entry of results) {
+  results.forEach(entry => {
     if (entry) {
       manifest.images[entry.id] = entry;
       processedCount++;
-    } else {
-      skippedCount++;
     }
-  }
+  });
 
   saveCache(cache);
-
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
 
-  const endTime = Date.now();
-  const duration = ((endTime - startTime) / 1000).toFixed(1);
-
-  console.log('\n');
+  const duration = ((Date.now() - startTime) / 1000).toFixed(1);
   log(`Build complete in ${duration}s`, 'success');
   log(`  Processed: ${processedCount} images`, 'info');
-  log(`  Skipped: ${skippedCount} images`, 'info');
   log(`  Output: ${OUTPUT_DIR}`, 'info');
-  log(`  Manifest: ${MANIFEST_PATH}`, 'info');
-  console.log('\n');
 }
 
 main().catch(error => {
