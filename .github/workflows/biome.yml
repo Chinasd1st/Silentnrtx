@@ -1,0 +1,38 @@
+name: Biome CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  biome:
+    name: Biome Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Biome 检查
+        run: pnpm biome ci .
+
+      # 可选：生成报告（方便查看问题）
+      - name: Biome 检查（带详细输出）
+        if: failure()
+        run: pnpm biome check . --reporter=github
