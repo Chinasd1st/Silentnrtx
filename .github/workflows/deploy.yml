@@ -17,29 +17,34 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
+
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v6
+      # ==================== pnpm 设置 ====================
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
 
-      - name: Install pnpm
-        run: corepack enable pnpm
-
+      # ==================== 安装依赖 ====================
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Approve builds
+      - name: Approve builds (esbuild & sharp)
         run: pnpm approve-builds esbuild sharp
 
+      # ==================== Git 信息与构建时间 ====================
       - name: Get Git info and Build Time
         id: git_info
         run: |
@@ -47,6 +52,7 @@ jobs:
           echo "COMMIT_DATE=$(git log -1 --pretty=format:%cd --date=iso)" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
 
+      # ==================== 构建 ====================
       - name: Build static export
         run: pnpm build
         env:
@@ -58,10 +64,11 @@ jobs:
           NEXT_PUBLIC_COMMIT_SHA: ${{ env.COMMIT_SHA }}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
+  # ==================== 部署 ====================
   deploy:
     needs: build
     runs-on: ubuntu-latest
