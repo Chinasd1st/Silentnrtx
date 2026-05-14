@@ -6,25 +6,25 @@
  * and outputs an image manifest for the OptimizedImage component.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
-import sharp from 'sharp';
+import * as crypto from "node:crypto";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import sharp from "sharp";
 
-const PROJECT_ROOT = path.resolve(__dirname, '..');
-const IMAGES_DIR = path.join(PROJECT_ROOT, 'public', 'images');
-const OUTPUT_DIR = path.join(PROJECT_ROOT, 'public', 'optimized');
-const MANIFEST_PATH = path.join(PROJECT_ROOT, 'image-manifest.json');
-const CACHE_PATH = path.join(PROJECT_ROOT, 'scripts', 'image-cache.json');
+const PROJECT_ROOT = path.resolve(__dirname, "..");
+const IMAGES_DIR = path.join(PROJECT_ROOT, "public", "images");
+const OUTPUT_DIR = path.join(PROJECT_ROOT, "public", "optimized");
+const MANIFEST_PATH = path.join(PROJECT_ROOT, "image-manifest.json");
+const CACHE_PATH = path.join(PROJECT_ROOT, "scripts", "image-cache.json");
 
 const TARGET_WIDTHS = [400, 800, 1200, 1600, 2000];
 const QUALITY_WEBP = 80;
 const QUALITY_AVIF = 65;
-const CONCURRENCY_LIMIT = 4;
+const _CONCURRENCY_LIMIT = 4;
 
 interface ImageVariant {
   width: number;
-  format: 'webp' | 'avif';
+  format: "webp" | "avif";
   filename: string;
   size: number;
   url: string;
@@ -60,8 +60,8 @@ interface ImageCache {
   [filename: string]: CacheEntry;
 }
 
-function log(message: string, type: 'info' | 'warn' | 'error' | 'success' = 'info'): void {
-  const prefix = { info: 'ℹ', warn: '⚠', error: '✖', success: '✓' }[type];
+function log(message: string, type: "info" | "warn" | "error" | "success" = "info"): void {
+  const prefix = { info: "ℹ", warn: "⚠", error: "✖", success: "✓" }[type];
   console.log(`${prefix} ${message}`);
 }
 
@@ -73,7 +73,7 @@ function ensureDir(dir: string): void {
 
 function computeFileHash(filePath: string): string {
   const buffer = fs.readFileSync(filePath);
-  return crypto.createHash('sha256').update(buffer).digest('hex').slice(0, 16);
+  return crypto.createHash("sha256").update(buffer).digest("hex").slice(0, 16);
 }
 
 function getFileMtime(filePath: string): number {
@@ -83,10 +83,10 @@ function getFileMtime(filePath: string): number {
 function loadCache(): ImageCache {
   try {
     if (fs.existsSync(CACHE_PATH)) {
-      return JSON.parse(fs.readFileSync(CACHE_PATH, 'utf-8'));
+      return JSON.parse(fs.readFileSync(CACHE_PATH, "utf-8"));
     }
-  } catch (e) {
-    log('Failed to load cache, starting fresh', 'warn');
+  } catch {
+    log("Failed to load cache, starting fresh", "warn");
   }
   return {};
 }
@@ -105,8 +105,8 @@ async function processImage(
   const ext = path.extname(filename).toLowerCase();
   const basename = path.basename(filename, ext);
 
-  if (!['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.tiff', '.tif'].includes(ext)) {
-    log(`Skipping unsupported format: ${filename}`, 'warn');
+  if (![".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tiff", ".tif"].includes(ext)) {
+    log(`Skipping unsupported format: ${filename}`, "warn");
     return null;
   }
 
@@ -119,8 +119,8 @@ async function processImage(
   let metadata: sharp.Metadata;
   try {
     metadata = await sharp(imagePath).metadata();
-  } catch (e) {
-    log(`Failed to read metadata: ${filename}`, 'error');
+  } catch {
+    log(`Failed to read metadata: ${filename}`, "error");
     return null;
   }
 
@@ -129,17 +129,20 @@ async function processImage(
   const originalSize = fs.statSync(imagePath).size;
 
   if (originalWidth === 0 || originalHeight === 0) {
-    log(`Invalid image dimensions: ${filename}`, 'error');
+    log(`Invalid image dimensions: ${filename}`, "error");
     return null;
   }
 
   ensureDir(OUTPUT_DIR);
 
   const variants: ImageVariant[] = [];
-  const neededWidths = TARGET_WIDTHS.filter(w => w <= originalWidth);
+  const neededWidths = TARGET_WIDTHS.filter((w) => w <= originalWidth);
   if (neededWidths.length === 0) neededWidths.unshift(originalWidth);
 
-  const processVariant = async (width: number, format: 'webp' | 'avif'): Promise<ImageVariant | null> => {
+  const processVariant = async (
+    width: number,
+    format: "webp" | "avif"
+  ): Promise<ImageVariant | null> => {
     const variantFilename = `${basename}-${width}w.${format}`;
     const variantPath = path.join(OUTPUT_DIR, variantFilename);
     const cacheKey = `${width}w-${format}`;
@@ -147,22 +150,28 @@ async function processImage(
     // 缓存命中检查
     if (cached?.hash === currentHash && cached.variants[cacheKey] && fs.existsSync(variantPath)) {
       const stats = fs.statSync(variantPath);
-      log(`  Skipping unchanged: ${variantFilename}`, 'info');
-      return { width, format, filename: variantFilename, size: stats.size, url: `/optimized/${variantFilename}` };
+      log(`  Skipping unchanged: ${variantFilename}`, "info");
+      return {
+        width,
+        format,
+        filename: variantFilename,
+        size: stats.size,
+        url: `/optimized/${variantFilename}`,
+      };
     }
 
     try {
-      const quality = format === 'webp' ? QUALITY_WEBP : QUALITY_AVIF;
+      const quality = format === "webp" ? QUALITY_WEBP : QUALITY_AVIF;
 
       await sharp(imagePath)
-        .rotate()                    // 自动校正方向（非常重要）
+        .rotate() // 自动校正方向（非常重要）
         .resize(width, null, {
-          fit: 'inside',
+          fit: "inside",
           withoutEnlargement: true,
         })
-        .toFormat(format, { 
+        .toFormat(format, {
           quality,
-          effort: format === 'webp' ? 4 : 6   // AVIF effort 更高一点
+          effort: format === "webp" ? 4 : 6, // AVIF effort 更高一点
         })
         .toFile(variantPath);
 
@@ -175,7 +184,7 @@ async function processImage(
         url: `/optimized/${variantFilename}`,
       };
     } catch (e) {
-      log(`Failed to generate ${variantFilename}: ${e}`, 'error');
+      log(`Failed to generate ${variantFilename}: ${e}`, "error");
       return null;
     }
   };
@@ -183,9 +192,9 @@ async function processImage(
   // 并发生成所有变体
   const tasks = [];
   for (const width of neededWidths) {
-    tasks.push(processVariant(width, 'webp'));
+    tasks.push(processVariant(width, "webp"));
     if (width <= 1200) {
-      tasks.push(processVariant(width, 'avif'));
+      tasks.push(processVariant(width, "avif"));
     }
   }
 
@@ -195,37 +204,35 @@ async function processImage(
 
   // 生成 srcset
   const webpSrcset = variants
-    .filter(v => v.format === 'webp')
-    .map(v => `${v.url} ${v.width}w`)
-    .join(', ');
+    .filter((v) => v.format === "webp")
+    .map((v) => `${v.url} ${v.width}w`)
+    .join(", ");
 
   const avifSrcset = variants
-    .filter(v => v.format === 'avif')
-    .map(v => `${v.url} ${v.width}w`)
-    .join(', ');
+    .filter((v) => v.format === "avif")
+    .map((v) => `${v.url} ${v.width}w`)
+    .join(", ");
 
   // 生成低质量模糊图
-  let blurDataURL = '';
+  let blurDataURL = "";
   try {
     const blurBuffer = await sharp(imagePath)
       .rotate()
-      .resize(8, 8, { fit: 'inside' })
+      .resize(8, 8, { fit: "inside" })
       .blur(0.8)
       .jpeg({ quality: 60 })
       .toBuffer();
 
-    blurDataURL = `data:image/jpeg;base64,${blurBuffer.toString('base64')}`;
-  } catch (e) {
-    log(`Failed to generate blur for ${filename}`, 'warn');
+    blurDataURL = `data:image/jpeg;base64,${blurBuffer.toString("base64")}`;
+  } catch {
+    log(`Failed to generate blur for ${filename}`, "warn");
   }
 
   // 更新缓存
   cache[filename] = {
     hash: currentHash,
     mtime: currentMtime,
-    variants: Object.fromEntries(
-      variants.map(v => [`${v.width}w-${v.format}`, v.filename])
-    ),
+    variants: Object.fromEntries(variants.map((v) => [`${v.width}w-${v.format}`, v.filename])),
   };
 
   return {
@@ -237,51 +244,57 @@ async function processImage(
     variants,
     srcset: webpSrcset,
     avifSrcset,
-    sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
+    sizes: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
     blurDataURL,
     aspectRatio: originalWidth / originalHeight,
   };
 }
 
 async function main(): Promise<void> {
-  console.log('\n🖼️  Image Optimization Build');
-  console.log('==========================\n');
+  console.log("\n🖼️  Image Optimization Build");
+  console.log("==========================\n");
 
   const startTime = Date.now();
 
   ensureDir(IMAGES_DIR);
   ensureDir(OUTPUT_DIR);
 
-  const imageFiles = fs.readdirSync(IMAGES_DIR)
-    .filter(f => !f.startsWith('.'))
-    .map(f => path.join(IMAGES_DIR, f));
+  const imageFiles = fs
+    .readdirSync(IMAGES_DIR)
+    .filter((f) => !f.startsWith("."))
+    .map((f) => path.join(IMAGES_DIR, f));
 
   if (imageFiles.length === 0) {
-    log('No images found in public/images/', 'warn');
+    log("No images found in public/images/", "warn");
     // ... 省略原有提示逻辑
-    fs.writeFileSync(MANIFEST_PATH, JSON.stringify({
-      version: '1.0.0',
-      generated: new Date().toISOString(),
-      images: {},
-    }, null, 2));
+    fs.writeFileSync(
+      MANIFEST_PATH,
+      JSON.stringify(
+        {
+          version: "1.0.0",
+          generated: new Date().toISOString(),
+          images: {},
+        },
+        null,
+        2
+      )
+    );
     return;
   }
 
-  log(`Found ${imageFiles.length} image(s) to process`, 'info');
+  log(`Found ${imageFiles.length} image(s) to process`, "info");
 
   const cache = loadCache();
-  const results = await Promise.all(
-    imageFiles.map(file => processImage(file, cache))
-  );
+  const results = await Promise.all(imageFiles.map((file) => processImage(file, cache)));
 
   const manifest: ImageManifest = {
-    version: '1.0.0',
+    version: "1.0.0",
     generated: new Date().toISOString(),
     images: {},
   };
 
   let processedCount = 0;
-  results.forEach(entry => {
+  results.forEach((entry) => {
     if (entry) {
       manifest.images[entry.id] = entry;
       processedCount++;
@@ -292,12 +305,12 @@ async function main(): Promise<void> {
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-  log(`Build complete in ${duration}s`, 'success');
-  log(`  Processed: ${processedCount} images`, 'info');
-  log(`  Output: ${OUTPUT_DIR}`, 'info');
+  log(`Build complete in ${duration}s`, "success");
+  log(`  Processed: ${processedCount} images`, "info");
+  log(`  Output: ${OUTPUT_DIR}`, "info");
 }
 
-main().catch(error => {
-  console.error('\n✖ Build failed:', error);
+main().catch((error) => {
+  console.error("\n✖ Build failed:", error);
   process.exit(1);
 });

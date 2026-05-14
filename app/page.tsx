@@ -1,23 +1,21 @@
-﻿import { Hero } from "@/components/Hero";
-import { ProfileCard } from "@/components/ProfileCard";
-import { SocialLinks } from "@/components/SocialLinks";
-import { GitHubStats } from "@/components/GitHubStats";
-import { GitHubGrass } from "@/components/GitHubGrass";
-import { LastFmStatus } from "@/components/LastFmStatus";
-import { OsuSignature } from "@/components/OsuSignature";
-import { BlogPosts } from "@/components/BlogPosts";
-import { GalleryCard } from "@/components/GalleryCard";
-import { MusicPlayer } from "@/components/MusicPlayer";
-import { WeatherCard } from "@/components/WeatherCard";
-
-import { ClockCard } from "@/components/ClockCard";
-import { MonkeytypeCard } from "@/components/MonkeytypeCard";
-import { WakatimeCard } from "@/components/WakatimeCard";
-import { EarthquakeCard } from "@/components/EarthquakeCard";
-import { ReposCard } from "@/components/ReposCard";
-import { SettingsCard } from "@/components/SettingsCard";
+﻿import { BlogPosts } from "@/components/BlogPosts";
 import { BusuanziStats } from "@/components/BusuanziStats";
+import { ClockCard } from "@/components/ClockCard";
+import { EarthquakeCard } from "@/components/EarthquakeCard";
 import { Footer } from "@/components/Footer";
+import { GalleryCard } from "@/components/GalleryCard";
+import { GitHubGrass } from "@/components/GitHubGrass";
+import { GitHubStats } from "@/components/GitHubStats";
+import { Hero } from "@/components/Hero";
+import { LastFmStatus } from "@/components/LastFmStatus";
+import { MonkeytypeCard } from "@/components/MonkeytypeCard";
+import { MusicPlayer } from "@/components/MusicPlayer";
+import { OsuSignature } from "@/components/OsuSignature";
+import { ProfileCard } from "@/components/ProfileCard";
+import { ReposCard } from "@/components/ReposCard";
+import { SocialLinks } from "@/components/SocialLinks";
+import { WakatimeCard } from "@/components/WakatimeCard";
+import { WeatherCard } from "@/components/WeatherCard";
 
 export default function Home() {
   return (
@@ -25,24 +23,59 @@ export default function Home() {
       <Hero />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="columns-1 sm:columns-2 xl:columns-3 animate-fade-in-up" style={{ columnGap: "1.5rem" }}>
-          <div className="break-inside-avoid mb-6"><ProfileCard /></div>
-          <div className="break-inside-avoid mb-6"><SocialLinks /></div>
-          <div className="break-inside-avoid mb-6"><ClockCard /></div>
-          <div className="break-inside-avoid mb-6"><GitHubStats /></div>
-          <div className="break-inside-avoid mb-6"><GitHubGrass /></div>
-          <div className="break-inside-avoid mb-6"><WakatimeCard /></div>
-          <div className="break-inside-avoid mb-6"><MonkeytypeCard /></div>
-          <div className="break-inside-avoid mb-6"><ReposCard /></div>
-          <div className="break-inside-avoid mb-6"><LastFmStatus /></div>
-          <div className="break-inside-avoid mb-6"><MusicPlayer /></div>
-          <div className="break-inside-avoid mb-6"><OsuSignature /></div>
-          
-          <div className="break-inside-avoid mb-6"><WeatherCard /></div>
-          <div className="break-inside-avoid mb-6"><EarthquakeCard /></div>
-          <div className="break-inside-avoid mb-6"><BlogPosts /></div>
-          <div className="break-inside-avoid mb-6"><GalleryCard /></div>
-          <div className="break-inside-avoid mb-6"><BusuanziStats /></div>
+        <div
+          className="columns-1 sm:columns-2 xl:columns-3 animate-fade-in-up"
+          style={{ columnGap: "1.5rem" }}
+        >
+          <div className="break-inside-avoid mb-6">
+            <ProfileCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <SocialLinks />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <ClockCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <GitHubStats />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <GitHubGrass />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <WakatimeCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <MonkeytypeCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <ReposCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <LastFmStatus />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <MusicPlayer />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <OsuSignature />
+          </div>
+
+          <div className="break-inside-avoid mb-6">
+            <WeatherCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <EarthquakeCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <BlogPosts />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <GalleryCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <BusuanziStats />
+          </div>
         </div>
 
         <Footer />

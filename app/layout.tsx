@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Background } from "@/components/Background";
-import { I18nInit } from "@/components/I18nInit";
 import { GlobalAudioProvider } from "@/components/GlobalAudio";
+import { I18nInit } from "@/components/I18nInit";
 import { ShortcutsPanel } from "@/components/ShortcutsPanel";
 import { siteConfig } from "@/config";
 import "./globals.css";
 
 const title = "Silentnrtx - Personal Homepage";
-const description = "Silentnrtx's personal homepage. GitHub stats, Last.fm scrobbles, music player, weather, blog, and more.";
+const description =
+  "Silentnrtx's personal homepage. GitHub stats, Last.fm scrobbles, music player, weather, blog, and more.";
 const pageUrl = "https://silentnrtx.top/Silentnrtx/";
-const FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
+const FONT_URL =
+  "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -31,12 +33,17 @@ const jsonLd = {
 };
 
 export const metadata: Metadata = {
-  title, description,
+  title,
+  description,
   authors: [{ name: siteConfig.profile.name }],
   keywords: [siteConfig.profile.name, "developer", "portfolio", "osu!", "designer", "vibecoding"],
   openGraph: {
-    type: "website", locale: "zh_CN", url: pageUrl,
-    siteName: title, title, description,
+    type: "website",
+    locale: "zh_CN",
+    url: pageUrl,
+    siteName: title,
+    title,
+    description,
     images: [{ url: siteConfig.seo.image, width: 400, height: 400, alt: title }],
   },
   twitter: { card: "summary_large_image", title, description, images: [siteConfig.seo.image] },
