@@ -96,7 +96,7 @@
 
 @layer utilities {
   :root {
-    --md-hue: 270; /* default, overridden by ThemeInit with config.ts value */
+    --md-hue: 250; /* default, overridden by settings panel with config.ts value */
 
     /* Primary */
     --md-primary: oklch(0.7 0.12 var(--md-hue));
