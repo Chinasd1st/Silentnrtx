@@ -88,5 +88,7 @@
   "geo.title": "位置",
   "geo.request": "显示我的位置",
   "geo.unavailable": "定位不可用或已拒绝",
-  "geo.your_location": "您的位置"
+  "geo.your_location": "您的位置",
+  "not_found.title": "页面未找到",
+  "not_found.go_home": "返回首页"
 }

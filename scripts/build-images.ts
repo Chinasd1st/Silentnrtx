@@ -20,8 +20,6 @@ const CACHE_PATH = path.join(PROJECT_ROOT, "scripts", "image-cache.json");
 const TARGET_WIDTHS = [400, 800, 1200, 1600, 2000];
 const QUALITY_WEBP = 80;
 const QUALITY_AVIF = 65;
-const _CONCURRENCY_LIMIT = 4;
-
 interface ImageVariant {
   width: number;
   format: "webp" | "avif";

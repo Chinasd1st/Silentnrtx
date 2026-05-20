@@ -44,7 +44,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+    <section aria-label="Hero" className="relative flex min-h-screen items-center justify-center overflow-hidden">
       <div ref={bgRef} className="absolute inset-0 -z-10" />
       <div className="absolute inset-0 -z-20">
         <div className="h-full w-full bg-cover bg-center"

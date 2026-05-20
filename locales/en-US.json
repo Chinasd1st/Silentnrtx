@@ -88,5 +88,7 @@
   "geo.title": "Location",
   "geo.request": "Show my location",
   "geo.unavailable": "Location unavailable or denied",
-  "geo.your_location": "Your Location"
+  "geo.your_location": "Your Location",
+  "not_found.title": "Page not found",
+  "not_found.go_home": "Go home"
 }

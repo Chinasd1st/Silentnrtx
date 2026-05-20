@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { getCache, setCache } from "@/lib/cache";
-import { api, fetchWithRetry, mapApiError } from "@/lib/api";
+import { api, fetchWithRetry } from "@/lib/api";
 
 const CACHE_KEY = "bg_url";
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
