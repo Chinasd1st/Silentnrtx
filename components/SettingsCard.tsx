@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslation } from "@/lib/i18n";
-import { siteConfig } from "@/config";
-import { loadSettings, saveSettings, type Settings } from "@/lib/settings";
-import { fetchWithRetry } from "@/lib/api";
+import { useEffect, useState } from "react";
 import { FiSettings, FiX } from "react-icons/fi";
+import { siteConfig } from "@/config";
+import { useTranslation } from "@/lib/i18n";
+import { loadSettings, type Settings, saveSettings } from "@/lib/settings";
 
 export function SettingsCard() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [s, setS] = useState<Settings>(loadSettings);
-  
 
-  useEffect(() => { saveSettings(s); }, [s]);
+  useEffect(() => {
+    const timer = setTimeout(() => saveSettings(s), 300);
+    return () => clearTimeout(timer);
+  }, [s]);
 
   useEffect(() => {
     if (s.hueEnabled && s.customHue !== null) {
@@ -24,8 +25,6 @@ export function SettingsCard() {
     }
   }, [s.hueEnabled, s.customHue]);
 
-  
-
   const update = (partial: Partial<Settings>) => setS((prev) => ({ ...prev, ...partial }));
 
   const parseHex = (hex: string) => {
@@ -34,7 +33,8 @@ export function SettingsCard() {
       const r = parseInt(m[1].slice(0, 2), 16);
       const g = parseInt(m[1].slice(2, 4), 16);
       const b = parseInt(m[1].slice(4, 6), 16);
-      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      const max = Math.max(r, g, b),
+        min = Math.min(r, g, b);
       let hue = 0;
       if (max !== min) {
         const d = max - min;
@@ -50,98 +50,239 @@ export function SettingsCard() {
   const hueToHex = (h: number): string => {
     const c = 180;
     const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    let r = 0, g = 0, b = 0;
-    if (h < 60) { r = c; g = x; }
-    else if (h < 120) { r = x; g = c; }
-    else if (h < 180) { g = c; b = x; }
-    else if (h < 240) { g = x; b = c; }
-    else if (h < 300) { r = x; b = c; }
-    else { r = c; b = x; }
-    const toHex = (n: number) => Math.round((n / 180) * 255).toString(16).padStart(2, "0");
+    let r = 0,
+      g = 0,
+      b = 0;
+    if (h < 60) {
+      r = c;
+      g = x;
+    } else if (h < 120) {
+      r = x;
+      g = c;
+    } else if (h < 180) {
+      g = c;
+      b = x;
+    } else if (h < 240) {
+      g = x;
+      b = c;
+    } else if (h < 300) {
+      r = x;
+      b = c;
+    } else {
+      r = c;
+      b = x;
+    }
+    const toHex = (n: number) =>
+      Math.round((n / 180) * 255)
+        .toString(16)
+        .padStart(2, "0");
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
   };
 
   return (
     <>
-      <button onClick={() => setOpen(true)} aria-label={t("settings.title")} suppressHydrationWarning
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label={t("settings.title")}
+        suppressHydrationWarning
         className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 hover:bg-white/6 active:scale-90"
-        style={{ color: "var(--md-text-primary)" }}>
+        style={{ color: "var(--md-text-primary)" }}
+      >
         <FiSettings size={15} />
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setOpen(false)}
-          role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(false); } }}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setOpen(false);
+          }}
+          role="dialog"
+          aria-modal="true"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setOpen(false);
+            }
+          }}
+        >
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
-          <div className="relative rounded-md3 p-5 w-full max-w-sm" style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
-            onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative rounded-md3 p-5 w-full max-w-sm"
+            style={{
+              backgroundColor: "var(--md-card-bg)",
+              border: "1px solid var(--md-card-border)",
+            }}
+          >
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }}>
-                <FiSettings className="inline mr-2" size={16} />{t("settings.title")}
+              <h2
+                className="font-heading text-lg font-semibold"
+                style={{ color: "var(--md-text-primary)" }}
+              >
+                <FiSettings className="inline mr-2" size={16} />
+                {t("settings.title")}
               </h2>
-              <button onClick={() => setOpen(false)} aria-label={t("gallery.close")} className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6" suppressHydrationWarning
-                style={{ color: "var(--md-text-muted)" }}><FiX size={16} /></button>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label={t("gallery.close")}
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6"
+                suppressHydrationWarning
+                style={{ color: "var(--md-text-muted)" }}
+              >
+                <FiX size={16} />
+              </button>
             </div>
 
             <div className="space-y-5">
               {/* Weather source */}
               <div>
-                <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t("settings.weather_source")}</p>
+                <p
+                  className="text-xs font-medium mb-2.5"
+                  style={{ color: "var(--md-text-secondary)" }}
+                  suppressHydrationWarning
+                >
+                  {t("settings.weather_source")}
+                </p>
                 <div className="flex gap-2 mb-3">
-                  <button onClick={() => update({ weatherSource: "manual" })} suppressHydrationWarning
+                  <button
+                    type="button"
+                    onClick={() => update({ weatherSource: "manual" })}
+                    suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{ backgroundColor: s.weatherSource === "manual" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: s.weatherSource === "manual" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+                    style={{
+                      backgroundColor:
+                        s.weatherSource === "manual"
+                          ? "var(--md-primary-020)"
+                          : "rgba(255,255,255,0.05)",
+                      color:
+                        s.weatherSource === "manual" ? "var(--md-primary)" : "var(--md-text-muted)",
+                    }}
+                  >
                     {t("settings.weather_manual")}
                   </button>
-                  <button onClick={() => update({ weatherSource: "auto" })} suppressHydrationWarning
+                  <button
+                    type="button"
+                    onClick={() => update({ weatherSource: "auto" })}
+                    suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{ backgroundColor: s.weatherSource === "auto" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: s.weatherSource === "auto" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+                    style={{
+                      backgroundColor:
+                        s.weatherSource === "auto"
+                          ? "var(--md-primary-020)"
+                          : "rgba(255,255,255,0.05)",
+                      color:
+                        s.weatherSource === "auto" ? "var(--md-primary)" : "var(--md-text-muted)",
+                    }}
+                  >
                     {t("settings.weather_auto")}
                   </button>
                 </div>
                 <input
-                    type="text"
-                    value={s.manualCity || ""}
-                    placeholder={siteConfig.weather.city}
-                    disabled={s.weatherSource !== "manual"}
-                    onChange={(e) => update({ manualCity: e.target.value })}
-                    className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border bg-white/5 disabled:opacity-50 disabled:bg-white/[0.02]"
-                    style={{ borderColor: "var(--md-card-border)", color: s.weatherSource !== "manual" ? "var(--md-text-secondary)" : "var(--md-text-primary)" }}
-                  />
+                  type="text"
+                  value={s.manualCity || ""}
+                  placeholder={siteConfig.weather.city}
+                  disabled={s.weatherSource !== "manual"}
+                  onChange={(e) => update({ manualCity: e.target.value })}
+                  className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border bg-white/5 disabled:opacity-50 disabled:bg-white/[0.02]"
+                  style={{
+                    borderColor: "var(--md-card-border)",
+                    color:
+                      s.weatherSource === "manual"
+                        ? "var(--md-text-primary)"
+                        : "var(--md-text-secondary)",
+                  }}
+                />
               </div>
 
               {/* HUE */}
               <div>
-                <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>{t("settings.hue")}</p>
+                <p
+                  className="text-xs font-medium mb-2.5"
+                  style={{ color: "var(--md-text-secondary)" }}
+                  suppressHydrationWarning
+                >
+                  {t("settings.hue")}
+                </p>
                 <div className="flex gap-2 mb-3">
-                  <button onClick={() => update({ hueEnabled: true })} suppressHydrationWarning
+                  <button
+                    type="button"
+                    onClick={() => update({ hueEnabled: true })}
+                    suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{ backgroundColor: s.hueEnabled ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: s.hueEnabled ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+                    style={{
+                      backgroundColor: s.hueEnabled
+                        ? "var(--md-primary-020)"
+                        : "rgba(255,255,255,0.05)",
+                      color: s.hueEnabled ? "var(--md-primary)" : "var(--md-text-muted)",
+                    }}
+                  >
                     {t("settings.hue_on")}
                   </button>
-                  <button onClick={() => update({ hueEnabled: false, customHue: null })} suppressHydrationWarning
+                  <button
+                    type="button"
+                    onClick={() => update({ hueEnabled: false })}
+                    suppressHydrationWarning
                     className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{ backgroundColor: !s.hueEnabled ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: !s.hueEnabled ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+                    style={{
+                      backgroundColor: s.hueEnabled
+                        ? "rgba(255,255,255,0.05)"
+                        : "var(--md-primary-020)",
+                      color: s.hueEnabled ? "var(--md-text-muted)" : "var(--md-primary)",
+                    }}
+                  >
                     {t("settings.hue_off")}
                   </button>
                 </div>
                 {s.hueEnabled && (
                   <div className="flex items-center gap-3">
-                    <input type="range" min="0" max="360" value={s.customHue ?? 250}
-                      onChange={(e) => update({ customHue: parseInt(e.target.value) })}
-                      className="flex-1 h-1.5 cursor-pointer accent-current" style={{ accentColor: "var(--md-primary)" }} />
-                    <input type="text" maxLength={7} placeholder="#165DFF"
-                      value={s.customHue !== null ? hueToHex(s.customHue) : ""}
-                      onChange={(e) => { const h = parseHex(e.target.value); if (h !== null) update({ customHue: h }); }}
+                    <input
+                      type="range"
+                      min="0"
+                      max="360"
+                      defaultValue={s.customHue ?? 250}
+                      onInput={(e) => {
+                        const val = parseInt((e.target as HTMLInputElement).value, 10);
+                        document.documentElement.style.setProperty("--md-hue", String(val));
+                      }}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        update({ customHue: val });
+                      }}
+                      className="hue-slider flex-1 cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      maxLength={7}
+                      placeholder="#165DFF"
+                      value={s.customHue === null ? "" : hueToHex(s.customHue)}
+                      onChange={(e) => {
+                        const h = parseHex(e.target.value);
+                        if (h !== null) update({ customHue: h });
+                      }}
                       className="w-20 rounded-[8px] px-2 py-1 text-xs font-mono text-center outline-hidden border"
-                      style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--md-text-primary)", borderColor: "var(--md-card-border)" }} />
-                    <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>{s.customHue ?? 250}°</span>
+                      style={{
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                        color: "var(--md-text-primary)",
+                        borderColor: "var(--md-card-border)",
+                      }}
+                    />
+                    <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>
+                      {s.customHue ?? 250}°
+                    </span>
                   </div>
                 )}
               </div>
             </div>
 
-            <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("settings.persist")}</p>
+            <p
+              className="mt-4 text-[10px] text-center"
+              style={{ color: "var(--md-text-muted)" }}
+              suppressHydrationWarning
+            >
+              {t("settings.persist")}
+            </p>
           </div>
         </div>
       )}

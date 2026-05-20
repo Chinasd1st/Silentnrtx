@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { siteConfig } from "@/config";
-import { useTranslation } from "@/lib/i18n";
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
-import { api, fetchWithRetry } from "@/lib/api";
-import { fetchJsonp } from "@/lib/jsonp";
-import { getCache, setCache } from "@/lib/cache";
-import { CardSkeleton } from "@/components/Skeleton";
-import { ErrorCard } from "@/components/ErrorCard";
-import { SiWakatime } from "react-icons/si";
+import { useCallback, useEffect, useState } from "react";
 import { FaRobot } from "react-icons/fa";
+import { SiWakatime } from "react-icons/si";
+import { ErrorCard } from "@/components/ErrorCard";
+import { CardSkeleton } from "@/components/Skeleton";
+import { siteConfig } from "@/config";
+import { api, fetchWithRetry } from "@/lib/api";
+import { getCache, setCache } from "@/lib/cache";
+import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
+import { useTranslation } from "@/lib/i18n";
+import { fetchJsonp } from "@/lib/jsonp";
 
 interface DayEntry {
   grand_total: {
@@ -46,20 +46,40 @@ export function WakatimeCard() {
   const cfg = siteConfig.wakatime;
 
   const fetchStats = useCallback(async () => {
-    if (!cfg.enabled || !cfg.embedId) { setLoading(false); return; }
+    if (!cfg.enabled || !cfg.embedId) {
+      setLoading(false);
+      return;
+    }
     const cached = getCache<DayEntry[]>(CACHE_KEY, CACHE_TTL);
-    if (cached) { setEntries(cached); setLoading(false); return; }
+    if (cached) {
+      setEntries(cached);
+      setLoading(false);
+      return;
+    }
     try {
       const url = `https://wakatime.com/share/@${cfg.username}/${cfg.embedId}.json`;
-      const raw = await fetchWithRetry(() => api.get<WakaResponse>(url)).then(({ data }) => data).catch(() => fetchWithTimeout(url).then((r) => r.json()).catch(() => fetchJsonp<WakaResponse>(url)));
-      const data = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : []);
-      if (Array.isArray(data) && data.length > 0) { setEntries(data); setCache(CACHE_KEY, data); }
-      else throw new Error("invalid");
-    } catch { setError(true); }
-    finally { setLoading(false); }
-  }, [cfg.enabled, cfg.embedId, cfg.username]);
+      const raw = await fetchWithRetry(() => api.get<WakaResponse>(url))
+        .then(({ data }) => data)
+        .catch(() =>
+          fetchWithTimeout(url)
+            .then((r) => r.json())
+            .catch(() => fetchJsonp<WakaResponse>(url))
+        );
+      const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+      if (Array.isArray(data) && data.length > 0) {
+        setEntries(data);
+        setCache(CACHE_KEY, data);
+      } else throw new Error("invalid");
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  useEffect(() => { fetchStats(); }, [fetchStats]);
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   if (!cfg.enabled || !cfg.embedId) return null;
   if (loading) return <CardSkeleton />;
@@ -88,29 +108,59 @@ export function WakatimeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <SiWakatime className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("wakatime.title")}</h2>
+          <h2
+            className="font-heading text-lg font-semibold"
+            style={{ color: "var(--md-text-primary)" }}
+            suppressHydrationWarning
+          >
+            {t("wakatime.title")}
+          </h2>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>{totalH}h {totalM}m</span>
-          <a href={`https://wakatime.com/@${cfg.username}`} target="_blank" rel="noopener noreferrer"
-            className="text-xs transition-colors" style={{ color: "var(--md-text-muted)" }}
-            onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
-            onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-muted)"}>
+          <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
+            {totalH}h {totalM}m
+          </span>
+          <a
+            href={`https://wakatime.com/@${cfg.username}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs transition-colors"
+            style={{ color: "var(--md-text-muted)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-muted)")}
+          >
             @{cfg.username} &rarr;
           </a>
         </div>
       </div>
 
       <div className="flex gap-1 mb-4">
-        <button onClick={() => setTab("activity")} aria-label={t("wakatime.activity")} suppressHydrationWarning
+        <button
+          type="button"
+          onClick={() => setTab("activity")}
+          aria-label={t("wakatime.activity")}
+          suppressHydrationWarning
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
-          style={{ backgroundColor: tab === "activity" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "activity" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+          style={{
+            backgroundColor:
+              tab === "activity" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
+            color: tab === "activity" ? "var(--md-primary)" : "var(--md-text-muted)",
+          }}
+        >
           {t("wakatime.activity")}
         </button>
-        <button onClick={() => setTab("ai")} aria-label={t("wakatime.ai")}
+        <button
+          type="button"
+          onClick={() => setTab("ai")}
+          aria-label={t("wakatime.ai")}
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
-          style={{ backgroundColor: tab === "ai" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "ai" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
-          <FaRobot className="inline mr-1" size={10} />{t("wakatime.ai")}
+          style={{
+            backgroundColor: tab === "ai" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
+            color: tab === "ai" ? "var(--md-primary)" : "var(--md-text-muted)",
+          }}
+        >
+          <FaRobot className="inline mr-1" size={10} />
+          {t("wakatime.ai")}
         </button>
       </div>
 
@@ -121,12 +171,25 @@ export function WakatimeCard() {
             if (!g) return null;
             const pct = (g.total_seconds / maxDay) * 100;
             return (
-              <div key={i} className="flex items-center gap-2 text-xs">
-                <span className="w-24 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>{day.range?.date || ""}</span>
-                <div className="flex-1 h-2 rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-                  <div className="h-full rounded-full" style={{ width: `${Math.max(pct, 1)}%`, backgroundColor: "var(--md-primary)" }} />
+              <div key={day.range?.date || i} className="flex items-center gap-2 text-xs">
+                <span className="w-24 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>
+                  {day.range?.date || ""}
+                </span>
+                <div
+                  className="flex-1 h-2 rounded-full"
+                  style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+                >
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${Math.max(pct, 1)}%`, backgroundColor: "var(--md-primary)" }}
+                  />
                 </div>
-                <span className="w-16 text-right shrink-0" style={{ color: "var(--md-text-secondary)" }}>{g.text?.replace("hrs", "h").replace("hr", "h").replace("mins", "m") || ""}</span>
+                <span
+                  className="w-16 text-right shrink-0"
+                  style={{ color: "var(--md-text-secondary)" }}
+                >
+                  {g.text?.replace("hrs", "h").replace("hr", "h").replace("mins", "m") || ""}
+                </span>
               </div>
             );
           })}
@@ -136,19 +199,46 @@ export function WakatimeCard() {
       {tab === "ai" && (
         <div className="space-y-2">
           <div className="grid grid-cols-2 gap-2">
-            <AiBox label={t("wakatime.ai_additions")} value={fmtNum(aiSum.add)} color="var(--md-accent-green)" />
-            <AiBox label={t("wakatime.ai_deletions")} value={fmtNum(aiSum.del)} color="var(--md-accent-yellow)" />
-            <AiBox label={t("wakatime.prompts")} value={fmtNum(aiSum.prompts)} color="var(--md-accent-blue)" />
-            <AiBox label={t("wakatime.output_tokens")} value={fmtNum(aiSum.outTokens)} color="var(--md-accent-pink)" />
+            <AiBox
+              label={t("wakatime.ai_additions")}
+              value={fmtNum(aiSum.add)}
+              color="var(--md-accent-green)"
+            />
+            <AiBox
+              label={t("wakatime.ai_deletions")}
+              value={fmtNum(aiSum.del)}
+              color="var(--md-accent-yellow)"
+            />
+            <AiBox
+              label={t("wakatime.prompts")}
+              value={fmtNum(aiSum.prompts)}
+              color="var(--md-accent-blue)"
+            />
+            <AiBox
+              label={t("wakatime.output_tokens")}
+              value={fmtNum(aiSum.outTokens)}
+              color="var(--md-accent-pink)"
+            />
           </div>
-          <div className="rounded-md3-sm p-3 text-xs" style={{ backgroundColor: "var(--md-primary-008)" }}>
+          <div
+            className="rounded-md3-sm p-3 text-xs"
+            style={{ backgroundColor: "var(--md-primary-008)" }}
+          >
             <div className="flex justify-between mb-1">
-              <span style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("wakatime.input_tokens")}</span>
+              <span style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
+                {t("wakatime.input_tokens")}
+              </span>
               <span style={{ color: "var(--md-text-secondary)" }}>{fmtNum(aiSum.inTokens)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("wakatime.output_ratio")}</span>
-              <span style={{ color: "var(--md-text-secondary)" }}>{aiSum.inTokens > 0 ? `${(aiSum.outTokens / aiSum.inTokens * 100).toFixed(1)}%` : "—"}</span>
+              <span style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
+                {t("wakatime.output_ratio")}
+              </span>
+              <span style={{ color: "var(--md-text-secondary)" }}>
+                {aiSum.inTokens > 0
+                  ? `${((aiSum.outTokens / aiSum.inTokens) * 100).toFixed(1)}%`
+                  : "—"}
+              </span>
             </div>
           </div>
         </div>
@@ -159,9 +249,16 @@ export function WakatimeCard() {
 
 function AiBox({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="rounded-md3-sm p-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
-      <p className="text-lg font-bold font-heading" style={{ color }}>{value}</p>
-      <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>{label}</p>
+    <div
+      className="rounded-md3-sm p-3 text-center"
+      style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
+    >
+      <p className="text-lg font-bold font-heading" style={{ color }}>
+        {value}
+      </p>
+      <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>
+        {label}
+      </p>
     </div>
   );
 }

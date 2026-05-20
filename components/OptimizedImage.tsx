@@ -9,11 +9,17 @@
  * - Type-safe image metadata
  */
 
-'use client';
+"use client";
 
-import { useState, useCallback, useMemo, type ImgHTMLAttributes, type SourceHTMLAttributes, type HTMLAttributes } from 'react';
-import { getImageByPath, getImageById, getManifestInfo, type ImageManifestEntry } from '@/lib/image-manifest';
-import { basePath } from '@/lib/base-path';
+import {
+  type ImgHTMLAttributes,
+  type SourceHTMLAttributes,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+import { basePath } from "@/lib/base-path";
+import { getImageById, getImageByPath, type ImageManifestEntry } from "@/lib/image-manifest";
 
 export interface OptimizedImageProps {
   /**
@@ -49,12 +55,12 @@ export interface OptimizedImageProps {
    * Loading behavior
    * @default "lazy"
    */
-  loading?: 'lazy' | 'eager';
+  loading?: "lazy" | "eager";
   /**
    * Decoding behavior
    * @default "async"
    */
-  decoding?: 'async' | 'sync';
+  decoding?: "async" | "sync";
   /**
    * Show blur placeholder while loading
    * @default true
@@ -95,7 +101,7 @@ export interface OptimizedImageProps {
    * Object-fit property when using fill
    * @default "cover"
    */
-  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+  objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 }
 
 interface ImageEntryResult {
@@ -106,7 +112,7 @@ interface ImageEntryResult {
 
 function withBasePath(url: string): string {
   if (!url) return url;
-  if (url.startsWith('http') || url.startsWith('data:')) return url;
+  if (url.startsWith("http") || url.startsWith("data:")) return url;
   return `${basePath}${url}`;
 }
 
@@ -115,21 +121,21 @@ function withBasePath(url: string): string {
  */
 function resolveImage(src: string): ImageEntryResult {
   if (!src) {
-    return { entry: null, isOptimized: false, src: '' };
+    return { entry: null, isOptimized: false, src: "" };
   }
 
   let entry = getImageByPath(src);
-  
-  if (!entry && !src.startsWith('/')) {
+
+  if (!entry && !src.startsWith("/")) {
     entry = getImageByPath(`/images/${src}`);
   }
-  
+
   if (!entry) {
     entry = getImageById(src);
   }
 
   if (entry) {
-    const webpVariant = entry.variants.find(v => v.format === 'webp' && v.width >= 800);
+    const webpVariant = entry.variants.find((v) => v.format === "webp" && v.width >= 800);
     return {
       entry,
       isOptimized: true,
@@ -137,19 +143,19 @@ function resolveImage(src: string): ImageEntryResult {
     };
   }
 
-  const normalizedSrc = src.startsWith('/') ? src : `/${src}`;
+  const normalizedSrc = src.startsWith("/") ? src : `/${src}`;
   return { entry: null, isOptimized: false, src: normalizedSrc };
 }
 
 export function OptimizedImage({
   src,
   alt,
-  className = '',
+  className = "",
   style = {},
-  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
   priority = false,
   loading: loadingProp,
-  decoding = 'async',
+  decoding = "async",
   placeholder = true,
   fallback,
   onLoad,
@@ -158,30 +164,33 @@ export function OptimizedImage({
   height,
   disableAvif = false,
   fill = false,
-  objectFit = 'cover',
+  objectFit = "cover",
 }: OptimizedImageProps): React.ReactElement {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const { entry, isOptimized, src: resolvedSrc } = useMemo(
-    () => resolveImage(src),
-    [src]
+  const { entry, isOptimized, src: resolvedSrc } = useMemo(() => resolveImage(src), [src]);
+
+  const finalSrc = hasError ? fallback || resolvedSrc : resolvedSrc;
+
+  const effectiveLoading = priority ? "eager" : loadingProp || "lazy";
+  const effectiveDecoding = priority ? "sync" : decoding;
+
+  const handleLoad = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      setIsLoaded(true);
+      onLoad?.(e);
+    },
+    [onLoad]
   );
 
-  const finalSrc = hasError ? (fallback || resolvedSrc) : resolvedSrc;
-
-  const effectiveLoading = priority ? 'eager' : (loadingProp || 'lazy');
-  const effectiveDecoding = priority ? 'sync' : decoding;
-
-  const handleLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    setIsLoaded(true);
-    onLoad?.(e);
-  }, [onLoad]);
-
-  const handleError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    setHasError(true);
-    onError?.(e);
-  }, [onError]);
+  const handleError = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      setHasError(true);
+      onError?.(e);
+    },
+    [onError]
+  );
 
   if (!isOptimized || !entry) {
     return (
@@ -200,15 +209,23 @@ export function OptimizedImage({
     );
   }
 
-  const webpSrcset = entry.srcset.split(',').map(s => {
-    const [url, size] = s.trim().split(' ');
-    return `${withBasePath(url)} ${size}`;
-  }).join(', ');
+  const webpSrcset = entry.srcset
+    .split(",")
+    .map((s) => {
+      const [url, size] = s.trim().split(" ");
+      return `${withBasePath(url)} ${size}`;
+    })
+    .join(", ");
 
-  const avifSrcset = !disableAvif ? entry.avifSrcset.split(',').map(s => {
-    const [url, size] = s.trim().split(' ');
-    return `${withBasePath(url)} ${size}`;
-  }).join(', ') : '';
+  const avifSrcset = disableAvif
+    ? ""
+    : entry.avifSrcset
+        .split(",")
+        .map((s) => {
+          const [url, size] = s.trim().split(" ");
+          return `${withBasePath(url)} ${size}`;
+        })
+        .join(", ");
 
   const imgAttributes: ImgHTMLAttributes<HTMLImageElement> = {
     src: finalSrc,
@@ -216,48 +233,54 @@ export function OptimizedImage({
     className,
     style: {
       ...style,
-      backgroundColor: placeholder && !isLoaded ? '#e5e7eb' : undefined,
+      backgroundColor: placeholder && !isLoaded ? "#e5e7eb" : undefined,
       ...(fill && { objectFit }),
     },
-    width: fill ? undefined : (width || entry.originalWidth),
-    height: fill ? undefined : (height || entry.originalHeight),
+    width: fill ? undefined : width || entry.originalWidth,
+    height: fill ? undefined : height || entry.originalHeight,
     loading: effectiveLoading,
     decoding: effectiveDecoding,
     onLoad: (e) => {
-      (e.target as HTMLImageElement).style.backgroundColor = 'transparent';
+      (e.target as HTMLImageElement).style.backgroundColor = "transparent";
       handleLoad(e);
     },
     onError: handleError,
-    ...(priority && { fetchPriority: 'high' }),
+    ...(priority && { fetchPriority: "high" }),
   };
 
-  const sourceAvifProps: SourceHTMLAttributes<HTMLSourceElement> | null = avifSrcset ? {
-    srcSet: avifSrcset,
-    sizes,
-    type: 'image/avif',
-  } : null;
+  const sourceAvifProps: SourceHTMLAttributes<HTMLSourceElement> | null = avifSrcset
+    ? {
+        srcSet: avifSrcset,
+        sizes,
+        type: "image/avif",
+      }
+    : null;
 
   const sourceWebpProps: SourceHTMLAttributes<HTMLSourceElement> = {
     srcSet: webpSrcset,
     sizes,
-    type: 'image/webp',
+    type: "image/webp",
   };
 
   if (fill) {
     return (
-      <div className={`optimized-image-container ${className}`} style={{ position: 'relative', display: 'block', width: '100%', height: '100%', ...style }}>
-        <picture style={{ display: 'contents' }}>
+      <div
+        className={`optimized-image-container ${className}`}
+        style={{ position: "relative", display: "block", width: "100%", height: "100%", ...style }}
+      >
+        <picture style={{ display: "contents" }}>
           {sourceAvifProps && <source {...sourceAvifProps} />}
           <source {...sourceWebpProps} />
         </picture>
         <img
           {...imgAttributes}
+          alt={alt}
           style={{
             ...imgAttributes.style,
-            position: 'absolute',
+            position: "absolute",
             inset: 0,
-            width: '100%',
-            height: '100%',
+            width: "100%",
+            height: "100%",
             objectFit,
           }}
         />
@@ -269,7 +292,7 @@ export function OptimizedImage({
     <picture className="optimized-image-wrapper">
       {sourceAvifProps && <source {...sourceAvifProps} />}
       <source {...sourceWebpProps} />
-      <img {...imgAttributes} className={className} />
+      <img {...imgAttributes} alt={alt} className={className} />
     </picture>
   );
 }

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
-import { getCache, setCache } from "@/lib/cache";
 import { api, fetchWithRetry } from "@/lib/api";
+import { getCache, setCache } from "@/lib/cache";
 
 const CACHE_KEY = "bg_url";
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
@@ -36,44 +36,59 @@ export function Background() {
     }
 
     const cached = getCache<string>(CACHE_KEY, CACHE_TTL);
-    if (cached) { setBgUrl(cached); setLoading(false); return; }
+    if (cached) {
+      setBgUrl(cached);
+      setLoading(false);
+      return;
+    }
 
     if (cfg.usePixiv) {
-      fetchWithRetry(() => api.get("https://api.lolicon.app/setu/v2")).then(({ data }) => data)
+      fetchWithRetry(() => api.get("https://api.lolicon.app/setu/v2"))
+        .then(({ data }) => data)
         .then((data) => {
           const illusts = data.illusts || data.data || [];
           if (illusts.length > 0) {
             const pick = illusts[Math.floor(Math.random() * Math.min(illusts.length, 10))];
             const url = pick.url || pick.original || pick.large || pick.image_url;
-            if (url) { setBgUrl(url); setCache(CACHE_KEY, url); }
-            else document.body.style.backgroundColor = cfg.fallbackColor;
+            if (url) {
+              setBgUrl(url);
+              setCache(CACHE_KEY, url);
+            } else document.body.style.backgroundColor = cfg.fallbackColor;
           } else {
             document.body.style.backgroundColor = cfg.fallbackColor;
           }
         })
-        .catch(() => { document.body.style.backgroundColor = cfg.fallbackColor; })
+        .catch(() => {
+          document.body.style.backgroundColor = cfg.fallbackColor;
+        })
         .finally(() => setLoading(false));
       return;
     }
 
     if (cfg.useBing) {
-      fetchWithRetry(() => api.get(cfg.bingApi)).then(({ data }) => data)
+      fetchWithRetry(() => api.get(cfg.bingApi))
+        .then(({ data }) => data)
         .then((data) => {
           let url = data.url || data.images?.[0]?.url;
-          if (!url) { document.body.style.backgroundColor = cfg.fallbackColor; return; }
+          if (!url) {
+            document.body.style.backgroundColor = cfg.fallbackColor;
+            return;
+          }
           if (url.startsWith("//")) url = `https:${url}`;
           else if (url.startsWith("/")) url = `https://www.bing.com${url}`;
           setBgUrl(url);
           setCache(CACHE_KEY, url);
         })
-        .catch(() => { document.body.style.backgroundColor = cfg.fallbackColor; })
+        .catch(() => {
+          document.body.style.backgroundColor = cfg.fallbackColor;
+        })
         .finally(() => setLoading(false));
       return;
     }
 
     document.body.style.backgroundColor = cfg.fallbackColor;
     setLoading(false);
-  }, [cfg.enabled, cfg.imageUrl, cfg.usePixiv, cfg.useBing, cfg.bingApi, cfg.fallbackColor]);
+  }, []);
 
   if (loading || !bgUrl) return null;
 

@@ -1,1 +1,1 @@
-export const basePath = '/Silentnrtx';
+export const basePath = "/Silentnrtx";

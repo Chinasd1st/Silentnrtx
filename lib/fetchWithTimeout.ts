@@ -5,6 +5,5 @@ export function fetchWithTimeout(
 ): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-  return fetch(url, { ...options, signal: controller.signal })
-    .finally(() => clearTimeout(id));
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(id));
 }

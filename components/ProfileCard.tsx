@@ -1,8 +1,8 @@
 ﻿"use client";
 
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
-import { OptimizedImage } from "@/components/OptimizedImage";
 
 export function ProfileCard() {
   const { t } = useTranslation();
@@ -12,7 +12,10 @@ export function ProfileCard() {
     <div className="md-card group relative overflow-hidden">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
-          <div className="h-20 w-20 overflow-hidden rounded-md3" style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}>
+          <div
+            className="h-20 w-20 overflow-hidden rounded-md3"
+            style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}
+          >
             <OptimizedImage
               src={profile.avatar}
               alt={profile.name}
@@ -26,10 +29,17 @@ export function ProfileCard() {
         </div>
 
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="font-heading text-2xl font-bold tracking-tight" style={{ color: "var(--md-text-primary)" }}>
+          <h2
+            className="font-heading text-2xl font-bold tracking-tight"
+            style={{ color: "var(--md-text-primary)" }}
+          >
             {profile.name}
           </h2>
-          <p className="mt-0.5 text-sm" style={{ color: "var(--md-text-secondary)" }} suppressHydrationWarning>
+          <p
+            className="mt-0.5 text-sm"
+            style={{ color: "var(--md-text-secondary)" }}
+            suppressHydrationWarning
+          >
             {t("profile.location")}
           </p>
           <p className="mt-1 text-base" style={{ color: "var(--md-primary)" }}>

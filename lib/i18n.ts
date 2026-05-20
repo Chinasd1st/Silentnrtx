@@ -2,8 +2,8 @@
 
 import i18next from "i18next";
 import { initReactI18next, useTranslation as useOrigTranslation } from "react-i18next";
-import zh from "@/locales/zh-CN.json";
 import en from "@/locales/en-US.json";
+import zh from "@/locales/zh-CN.json";
 
 const lang = getDetectedLang();
 
@@ -27,15 +27,17 @@ export function getDetectedLang(): string {
     if (nav.startsWith("zh")) return "zh-CN";
     return "en-US";
   } catch {
-    if (process.env.NODE_ENV === 'development') console.warn('[i18n] getDetectedLang error');
+    if (process.env.NODE_ENV === "development") console.warn("[i18n] getDetectedLang error");
     return "zh-CN";
   }
 }
 
 export function changeLang(lng: string) {
   i18next.changeLanguage(lng);
-  try { localStorage.setItem("md-lang", lng); } catch {
-    if (process.env.NODE_ENV === 'development') console.warn('[i18n] changeLang error');
+  try {
+    localStorage.setItem("md-lang", lng);
+  } catch {
+    if (process.env.NODE_ENV === "development") console.warn("[i18n] changeLang error");
   }
 }
 

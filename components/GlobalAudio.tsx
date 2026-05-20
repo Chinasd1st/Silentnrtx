@@ -1,6 +1,15 @@
 "use client";
 
-import { createContext, useContext, useRef, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 interface AudioMetadata {
   title: string;
@@ -26,19 +35,19 @@ interface AudioState {
 const AudioCtx = createContext<AudioState>(null!);
 
 function setupMediaSession() {
-  if (typeof navigator === 'undefined' || !navigator.mediaSession) return;
+  if (typeof navigator === "undefined" || !navigator.mediaSession) return;
 
-  navigator.mediaSession.setActionHandler('play', () => {
-    document.dispatchEvent(new CustomEvent('media-session-play'));
+  navigator.mediaSession.setActionHandler("play", () => {
+    document.dispatchEvent(new CustomEvent("media-session-play"));
   });
-  navigator.mediaSession.setActionHandler('pause', () => {
-    document.dispatchEvent(new CustomEvent('media-session-pause'));
+  navigator.mediaSession.setActionHandler("pause", () => {
+    document.dispatchEvent(new CustomEvent("media-session-pause"));
   });
-  navigator.mediaSession.setActionHandler('previoustrack', () => {
-    document.dispatchEvent(new CustomEvent('media-session-previous'));
+  navigator.mediaSession.setActionHandler("previoustrack", () => {
+    document.dispatchEvent(new CustomEvent("media-session-previous"));
   });
-  navigator.mediaSession.setActionHandler('nexttrack', () => {
-    document.dispatchEvent(new CustomEvent('media-session-next'));
+  navigator.mediaSession.setActionHandler("nexttrack", () => {
+    document.dispatchEvent(new CustomEvent("media-session-next"));
   });
 }
 
@@ -49,7 +58,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVol] = useState(0.7);
-  const [metadata, setMetadata] = useState<AudioMetadata | null>(null);
+  const [_metadata, setMetadata] = useState<AudioMetadata | null>(null);
   const onEndedRef = useRef<(() => void) | null>(null);
   const mediaSessionSetup = useRef(false);
 
@@ -60,15 +69,15 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     el.addEventListener("loadedmetadata", () => setDuration(el.duration));
     el.addEventListener("play", () => {
       setPlaying(true);
-      if (navigator.mediaSession) navigator.mediaSession.playbackState = 'playing';
+      if (navigator.mediaSession) navigator.mediaSession.playbackState = "playing";
     });
     el.addEventListener("pause", () => {
       setPlaying(false);
-      if (navigator.mediaSession) navigator.mediaSession.playbackState = 'paused';
+      if (navigator.mediaSession) navigator.mediaSession.playbackState = "paused";
     });
     el.addEventListener("ended", () => {
       setPlaying(false);
-      if (navigator.mediaSession) navigator.mediaSession.playbackState = 'none';
+      if (navigator.mediaSession) navigator.mediaSession.playbackState = "none";
       onEndedRef.current?.();
     });
     audioRef.current = el;
@@ -78,14 +87,21 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       setupMediaSession();
     }
 
-    return () => { el.pause(); el.src = ""; };
+    return () => {
+      el.pause();
+      el.src = "";
+    };
   }, []);
 
   const play = useCallback((url: string, meta?: AudioMetadata, resume = false) => {
     const el = audioRef.current;
     if (!el) return;
     const isNewSong = el.src !== url;
-    if (isNewSong) { el.src = url; setSrc(url); setDuration(0); }
+    if (isNewSong) {
+      el.src = url;
+      setSrc(url);
+      setDuration(0);
+    }
     if (!resume || isNewSong) {
       el.currentTime = 0;
       setCurrentTime(0);
@@ -95,7 +111,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     if (meta && navigator.mediaSession) {
       setMetadata(meta);
       let artworkUrl = meta.artwork;
-      if (artworkUrl && !artworkUrl.startsWith('http')) {
+      if (artworkUrl && !artworkUrl.startsWith("http")) {
         artworkUrl = `https:${artworkUrl}`;
       }
       try {
@@ -103,30 +119,51 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
           title: meta.title,
           artist: meta.artist,
           album: meta.album,
-          artwork: artworkUrl ? [{ src: artworkUrl, sizes: '512x512', type: 'image/jpeg' }] : undefined,
+          artwork: artworkUrl
+            ? [{ src: artworkUrl, sizes: "512x512", type: "image/jpeg" }]
+            : undefined,
         });
       } catch (e) {
-        console.warn('MediaSession metadata error:', e);
+        console.warn("MediaSession metadata error:", e);
       }
     }
   }, []);
 
-  const pause = useCallback(() => { audioRef.current?.pause(); }, []);
-  const resume = useCallback(() => { audioRef.current?.play().catch(() => {}); }, []);
-  const seek = useCallback((t: number) => { if (audioRef.current) audioRef.current.currentTime = t; }, []);
-  const setVolume = useCallback((v: number) => { setVol(v); if (audioRef.current) audioRef.current.volume = v; }, []);
-  const setOnEnded = useCallback((fn: (() => void) | null) => { onEndedRef.current = fn; }, []);
+  const pause = useCallback(() => {
+    audioRef.current?.pause();
+  }, []);
+  const resume = useCallback(() => {
+    audioRef.current?.play().catch(() => {});
+  }, []);
+  const seek = useCallback((t: number) => {
+    if (audioRef.current) audioRef.current.currentTime = t;
+  }, []);
+  const setVolume = useCallback((v: number) => {
+    setVol(v);
+    if (audioRef.current) audioRef.current.volume = v;
+  }, []);
+  const setOnEnded = useCallback((fn: (() => void) | null) => {
+    onEndedRef.current = fn;
+  }, []);
 
-  const value = useMemo<AudioState>(() => ({
-    src, playing, currentTime, duration, volume,
-    play, pause, resume, seek, setVolume, setOnEnded,
-  }), [src, playing, currentTime, duration, volume, play, pause, resume, seek, setVolume, setOnEnded]);
-
-  return (
-    <AudioCtx.Provider value={value}>
-      {children}
-    </AudioCtx.Provider>
+  const value = useMemo<AudioState>(
+    () => ({
+      src,
+      playing,
+      currentTime,
+      duration,
+      volume,
+      play,
+      pause,
+      resume,
+      seek,
+      setVolume,
+      setOnEnded,
+    }),
+    [src, playing, currentTime, duration, volume, play, pause, resume, seek, setVolume, setOnEnded]
   );
+
+  return <AudioCtx.Provider value={value}>{children}</AudioCtx.Provider>;
 }
 
 export function useGlobalAudio() {

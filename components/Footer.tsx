@@ -14,10 +14,16 @@ export function Footer() {
 
   useEffect(() => {
     const built = new Date(buildTime);
-    setTimeStr(built.toLocaleString(undefined, {
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit", timeZoneName: "short",
-    }));
+    setTimeStr(
+      built.toLocaleString(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZoneName: "short",
+      })
+    );
   }, []);
 
   const sha = commitSha ? `(${commitSha})` : "";
@@ -25,10 +31,17 @@ export function Footer() {
 
   return (
     <footer className="pb-8 pt-2 text-center space-y-2">
-      <p className="text-xs leading-relaxed" style={{ color: "var(--md-text-muted)" }}
-        dangerouslySetInnerHTML={cfg.customHtml ? { __html: displayText } : undefined}>
-        {cfg.customHtml ? undefined : displayText}
-      </p>
+      {cfg.customHtml ? (
+        <p
+          className="text-xs leading-relaxed"
+          style={{ color: "var(--md-text-muted)" }}
+          dangerouslySetInnerHTML={{ __html: displayText }}
+        />
+      ) : (
+        <p className="text-xs leading-relaxed" style={{ color: "var(--md-text-muted)" }}>
+          {displayText}
+        </p>
+      )}
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
         {meta}
       </p>

@@ -18,13 +18,15 @@ export function loadSettings(): Settings {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return { ...DEFAULTS, ...JSON.parse(raw) };
   } catch {
-    if (process.env.NODE_ENV === 'development') console.warn('[settings] loadSettings error');
+    if (process.env.NODE_ENV === "development") console.warn("[settings] loadSettings error");
   }
   return { ...DEFAULTS };
 }
 
 export function saveSettings(s: Settings) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {
-    if (process.env.NODE_ENV === 'development') console.warn('[settings] saveSettings error');
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  } catch {
+    if (process.env.NODE_ENV === "development") console.warn("[settings] saveSettings error");
   }
 }

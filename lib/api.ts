@@ -1,10 +1,12 @@
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 
 export const api = axios.create({ timeout: 8000 });
 
 export async function fetchWithRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
-    try { return await fn(); } catch (err) {
+    try {
+      return await fn();
+    } catch (err) {
       if (i === maxRetries - 1) throw err;
       await new Promise((r) => setTimeout(r, 1000));
     }

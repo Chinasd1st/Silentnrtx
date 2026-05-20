@@ -1,15 +1,21 @@
 ﻿"use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { siteConfig } from "@/config";
-import { api, fetchWithRetry, mapApiError } from "@/lib/api";
-import { getCache, setCache } from "@/lib/cache";
-import { CardSkeleton } from "@/components/Skeleton";
-import { ErrorCard } from "@/components/ErrorCard";
+import { useCallback, useEffect, useState } from "react";
 import { SiMonkeytype } from "react-icons/si";
+import { ErrorCard } from "@/components/ErrorCard";
+import { CardSkeleton } from "@/components/Skeleton";
+import { siteConfig } from "@/config";
+import { api, fetchWithRetry } from "@/lib/api";
+import { getCache, setCache } from "@/lib/cache";
 import { useTranslation } from "@/lib/i18n";
 
-interface PBEntry { wpm: number; acc: number; language: string; numbers: boolean; punctuation: boolean; }
+interface PBEntry {
+  wpm: number;
+  acc: number;
+  language: string;
+  numbers: boolean;
+  punctuation: boolean;
+}
 interface ProfileData {
   personalBests?: { time?: Record<string, PBEntry[]> };
   typingStats?: { completedTests: number; timeTyping: number };
@@ -31,21 +37,37 @@ export function MonkeytypeCard() {
   const cfg = siteConfig.monkeytype;
 
   const fetchProfile = useCallback(async () => {
-    if (!cfg.enabled) { setLoading(false); return; }
+    if (!cfg.enabled) {
+      setLoading(false);
+      return;
+    }
     const cached = getCache<ProfileData>(CACHE_KEY, CACHE_TTL);
-    if (cached) { setData(cached); setLoading(false); return; }
+    if (cached) {
+      setData(cached);
+      setLoading(false);
+      return;
+    }
 
     try {
-      const { data: json } = await fetchWithRetry(() => api.get(`https://api.monkeytype.com/users/${cfg.username}/profile`, { headers: { "Cache-Control": "no-cache" } }));
+      const { data: json } = await fetchWithRetry(() =>
+        api.get(`https://api.monkeytype.com/users/${cfg.username}/profile`, {
+          headers: { "Cache-Control": "no-cache" },
+        })
+      );
       if (json.message === "Profile retrieved" && json.data) {
         setData(json.data);
         setCache(CACHE_KEY, json.data);
       } else throw new Error("api error");
-    } catch { setError(true); }
-    finally { setLoading(false); }
-  }, [cfg.enabled, cfg.username]);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  useEffect(() => { fetchProfile(); }, [fetchProfile]);
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   if (loading) return <CardSkeleton />;
   if (error) return <ErrorCard title={t("monkeytype.title")} onRetry={fetchProfile} />;
@@ -61,25 +83,56 @@ export function MonkeytypeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <SiMonkeytype className="text-lg shrink-0" style={{ color: c }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>{t("monkeytype.title")}</h2>
+          <h2
+            className="font-heading text-lg font-semibold"
+            style={{ color: "var(--md-text-primary)" }}
+            suppressHydrationWarning
+          >
+            {t("monkeytype.title")}
+          </h2>
         </div>
-        <a href={`https://monkeytype.com/profile/${cfg.username}`} target="_blank" rel="noopener noreferrer"
-          className="text-xs shrink-0 transition-colors" style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => e.currentTarget.style.color = "var(--md-primary)"}
-          onMouseLeave={(e) => e.currentTarget.style.color = "var(--md-text-muted)"}>
+        <a
+          href={`https://monkeytype.com/profile/${cfg.username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs shrink-0 transition-colors"
+          style={{ color: "var(--md-text-muted)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-muted)")}
+        >
           @{cfg.username} &rarr;
         </a>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
-        <Mini num={best15?.wpm} acc={best15?.acc} label="15s" color={c} unit={t("monkeytype.wpm")} />
-        <Mini num={best60?.wpm} acc={best60?.acc} label="60s" color={c} unit={t("monkeytype.wpm")} />
+        <Mini
+          num={best15?.wpm}
+          acc={best15?.acc}
+          label="15s"
+          color={c}
+          unit={t("monkeytype.wpm")}
+        />
+        <Mini
+          num={best60?.wpm}
+          acc={best60?.acc}
+          label="60s"
+          color={c}
+          unit={t("monkeytype.wpm")}
+        />
       </div>
 
       {stats && (
-        <div className="rounded-md3-sm p-2 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
-          <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
-            {stats.completedTests.toLocaleString()} {t("monkeytype.tests")} · {hours}{t("monkeytype.hours")} {t("monkeytype.typed")}
+        <div
+          className="rounded-md3-sm p-2 text-center"
+          style={{ backgroundColor: "var(--md-primary-008)" }}
+        >
+          <span
+            className="text-[10px]"
+            style={{ color: "var(--md-text-muted)" }}
+            suppressHydrationWarning
+          >
+            {stats.completedTests.toLocaleString()} {t("monkeytype.tests")} · {hours}
+            {t("monkeytype.hours")} {t("monkeytype.typed")}
           </span>
         </div>
       )}
@@ -87,12 +140,33 @@ export function MonkeytypeCard() {
   );
 }
 
-function Mini({ num, acc, label, color, unit }: { num?: number; acc?: number; label: string; color: string; unit: string }) {
+function Mini({
+  num,
+  acc,
+  label,
+  color,
+  unit,
+}: {
+  num?: number;
+  acc?: number;
+  label: string;
+  color: string;
+  unit: string;
+}) {
   return (
-    <div className="rounded-md3-sm p-3 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
-      <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>{label}</p>
-      <p className="text-xl font-bold font-heading mt-1" style={{ color }}>{num ?? "--"}</p>
-      <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>{acc ? `${acc}%` : unit}</p>
+    <div
+      className="rounded-md3-sm p-3 text-center"
+      style={{ backgroundColor: "var(--md-primary-008)" }}
+    >
+      <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>
+        {label}
+      </p>
+      <p className="text-xl font-bold font-heading mt-1" style={{ color }}>
+        {num ?? "--"}
+      </p>
+      <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
+        {acc ? `${acc}%` : unit}
+      </p>
     </div>
   );
 }

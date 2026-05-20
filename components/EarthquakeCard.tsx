@@ -1,19 +1,24 @@
 ﻿"use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
-import { useTranslation } from "@/lib/i18n";
-import { api, fetchWithRetry, mapApiError } from "@/lib/api";
-import { getCache, setCache } from "@/lib/cache";
-import { CardSkeleton } from "@/components/Skeleton";
-import { ErrorCard } from "@/components/ErrorCard";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaEarthAsia } from "react-icons/fa6";
+import { ErrorCard } from "@/components/ErrorCard";
+import { CardSkeleton } from "@/components/Skeleton";
+import { api, fetchWithRetry } from "@/lib/api";
+import { getCache, setCache } from "@/lib/cache";
+import { useTranslation } from "@/lib/i18n";
 
 interface EqBase {
-  time: string; location: string; magnitude: string;
-  depth: string; latitude: string; longitude: string;
+  time: string;
+  location: string;
+  magnitude: string;
+  depth: string;
+  latitude: string;
+  longitude: string;
 }
 interface JmaItem extends EqBase {
-  shindo: string; info?: string;
+  shindo: string;
+  info?: string;
 }
 interface CmaItem extends EqBase {
   intensity: string;
@@ -30,18 +35,30 @@ function useEq<T>(cacheKey: string, url: string, mapFn: (r: any) => T) {
 
   const fetchData = useCallback(() => {
     const cached = getCache<T>(cacheKey, CACHE_TTL);
-    if (cached) { setData(cached); setLoading(false); return; }
-    fetchWithRetry(() => api.get(url)).then(({ data }) => data)
+    if (cached) {
+      setData(cached);
+      setLoading(false);
+      return;
+    }
+    fetchWithRetry(() => api.get(url))
+      .then(({ data }) => data)
       .then((raw: Record<string, any>) => {
-        const keys = Object.keys(raw).filter((k) => /^No\d+$/.test(k)).sort();
-        if (keys.length > 0) { const d = mapRef.current(raw[keys[0]]); setData(d); setCache(cacheKey, d); }
-        else throw new Error("no data");
+        const keys = Object.keys(raw)
+          .filter((k) => /^No\d+$/.test(k))
+          .sort();
+        if (keys.length > 0) {
+          const d = mapRef.current(raw[keys[0]]);
+          setData(d);
+          setCache(cacheKey, d);
+        } else throw new Error("no data");
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [cacheKey, url]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   return { data, loading, error, retry: fetchData };
 }
 
@@ -62,19 +79,37 @@ export function EarthquakeCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <FaEarthAsia className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h2 className="font-heading text-lg font-semibold" style={{ color: "var(--md-text-primary)" }} suppressHydrationWarning>
+          <h2
+            className="font-heading text-lg font-semibold"
+            style={{ color: "var(--md-text-primary)" }}
+            suppressHydrationWarning
+          >
             {t("earthquake.title")}
           </h2>
         </div>
         <div className="flex gap-1 shrink-0">
-          <button onClick={() => setTab("jma")} aria-label="JMA"
+          <button
+            type="button"
+            onClick={() => setTab("jma")}
+            aria-label="JMA"
             className="rounded-full px-3 py-1 text-xs font-medium transition-all"
-            style={{ backgroundColor: tab === "jma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "jma" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+            style={{
+              backgroundColor: tab === "jma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
+              color: tab === "jma" ? "var(--md-primary)" : "var(--md-text-muted)",
+            }}
+          >
             JMA
           </button>
-          <button onClick={() => setTab("cma")} aria-label="CMA"
+          <button
+            type="button"
+            onClick={() => setTab("cma")}
+            aria-label="CMA"
             className="rounded-full px-3 py-1 text-xs font-medium transition-all"
-            style={{ backgroundColor: tab === "cma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "cma" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
+            style={{
+              backgroundColor: tab === "cma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
+              color: tab === "cma" ? "var(--md-primary)" : "var(--md-text-muted)",
+            }}
+          >
             CMA
           </button>
         </div>
@@ -83,27 +118,45 @@ export function EarthquakeCard() {
       {active.error && !eq && <ErrorCard title={t("earthquake.title")} onRetry={active.retry} />}
 
       {eq && (
-        <div className="rounded-[16px] p-3 mb-3" style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}>
-          <p className="text-sm font-semibold leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-primary)" }}>
+        <div
+          className="rounded-[16px] p-3 mb-3"
+          style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}
+        >
+          <p
+            className="text-sm font-semibold leading-snug min-h-[1.25em]"
+            style={{ color: "var(--md-text-primary)" }}
+          >
             {(eq as EqBase).location}
           </p>
           <div className="mt-2 flex items-baseline gap-3 min-h-8">
-            <span className="text-3xl font-bold font-heading leading-none" style={{ color: "var(--md-primary)" }}>
+            <span
+              className="text-3xl font-bold font-heading leading-none"
+              style={{ color: "var(--md-primary)" }}
+            >
               M{(eq as EqBase).magnitude}
             </span>
-            <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
+            <span
+              className="text-xs leading-none"
+              style={{ color: "var(--md-text-muted)" }}
+              suppressHydrationWarning
+            >
               {tab === "jma"
                 ? `${t("earthquake.shindo")} ${(eq as JmaItem).shindo} · ${t("earthquake.depth")} ${(eq as JmaItem).depth}`
                 : `${t("earthquake.intensity")} ${(eq as CmaItem).intensity} · ${t("earthquake.depth")} ${(eq as CmaItem).depth}km`}
             </span>
           </div>
-          <p className="mt-2 text-xs leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-secondary)" }}>
+          <p
+            className="mt-2 text-xs leading-snug min-h-[1.25em]"
+            style={{ color: "var(--md-text-secondary)" }}
+          >
             {(eq as EqBase).time}
           </p>
-          <p className="mt-1 text-[10px] leading-snug min-h-[1.25em]" style={{ color: "var(--md-text-muted)" }}>
+          <p
+            className="mt-1 text-[10px] leading-snug min-h-[1.25em]"
+            style={{ color: "var(--md-text-muted)" }}
+          >
             {(eq as EqBase).latitude}, {(eq as EqBase).longitude}
           </p>
-
         </div>
       )}
     </div>

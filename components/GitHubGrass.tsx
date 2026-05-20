@@ -1,16 +1,24 @@
 ﻿"use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { siteConfig } from "@/config";
-import { useTranslation } from "@/lib/i18n";
-import { api, fetchWithRetry, mapApiError } from "@/lib/api";
-import { getCache, setCache } from "@/lib/cache";
-import { CardSkeleton } from "@/components/Skeleton";
-import { ErrorCard } from "@/components/ErrorCard";
+import { useCallback, useEffect, useState } from "react";
 import { FaGithub } from "react-icons/fa";
+import { ErrorCard } from "@/components/ErrorCard";
+import { CardSkeleton } from "@/components/Skeleton";
+import { siteConfig } from "@/config";
+import { api, fetchWithRetry } from "@/lib/api";
+import { getCache, setCache } from "@/lib/cache";
+import { useTranslation } from "@/lib/i18n";
 
-interface D { contributionCount: number; contributionLevel: string; date: string; color: string; }
-interface R { contributions: D[][]; totalContributions: number; }
+interface D {
+  contributionCount: number;
+  contributionLevel: string;
+  date: string;
+  color: string;
+}
+interface R {
+  contributions: D[][];
+  totalContributions: number;
+}
 
 const CACHE_KEY = "github_grass";
 const CACHE_TTL = 60 * 60 * 1000;
@@ -24,7 +32,10 @@ export function GitHubGrass() {
 
   const fetchGrass = useCallback(() => {
     const username = siteConfig.github.username;
-    if (!username) { setLoading(false); return; }
+    if (!username) {
+      setLoading(false);
+      return;
+    }
 
     const cached = getCache<R>(CACHE_KEY, CACHE_TTL);
     if (cached) {
@@ -35,7 +46,8 @@ export function GitHubGrass() {
       return;
     }
 
-    fetchWithRetry(() => api.get<R>(`https://github-contributions-api.deno.dev/${username}.json`)).then(({ data }) => data)
+    fetchWithRetry(() => api.get<R>(`https://github-contributions-api.deno.dev/${username}.json`))
+      .then(({ data }) => data)
       .then((data: R) => {
         const flat = data.contributions?.flat() || [];
         setAllDays(flat);
@@ -46,7 +58,9 @@ export function GitHubGrass() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { fetchGrass(); }, [fetchGrass]);
+  useEffect(() => {
+    fetchGrass();
+  }, [fetchGrass]);
 
   const lc = (level: string) => {
     const hues = [
@@ -68,24 +82,38 @@ export function GitHubGrass() {
   const isZh = i18n.language === "zh-CN";
 
   if (loading) return <CardSkeleton />;
-  if (error || allDays.length === 0) return <ErrorCard title={t("github.contributions")} onRetry={fetchGrass} />;
+  if (error || allDays.length === 0)
+    return <ErrorCard title={t("github.contributions")} onRetry={fetchGrass} />;
 
   return (
     <div className="md-card">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-heading text-base font-semibold flex items-center gap-2" style={{ color: "var(--md-text-primary)" }}>
-          <FaGithub style={{ color: "var(--md-primary)" }} />{t("github.contributions")}
+        <h2
+          className="font-heading text-base font-semibold flex items-center gap-2"
+          style={{ color: "var(--md-text-primary)" }}
+        >
+          <FaGithub style={{ color: "var(--md-primary)" }} />
+          {t("github.contributions")}
         </h2>
-        <span className="text-xs" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>
-          {isZh ? `${t("github.last_year")} ${total.toLocaleString()}` : `${total.toLocaleString()} ${t("github.last_year")}`}
+        <span
+          className="text-xs"
+          style={{ color: "var(--md-text-muted)" }}
+          suppressHydrationWarning
+        >
+          {isZh
+            ? `${t("github.last_year")} ${total.toLocaleString()}`
+            : `${total.toLocaleString()} ${t("github.last_year")}`}
         </span>
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(8px,1fr))] gap-[2px] sm:gap-[3px]">
-        {allDays.map((day, i) => (
-          <div key={i} className="aspect-square rounded-[1px] transition-colors duration-200 hover:scale-110 hover:z-10"
+        {allDays.map((day) => (
+          <div
+            key={day.date}
+            className="aspect-square rounded-[1px] transition-colors duration-200 hover:scale-110 hover:z-10"
             style={{ backgroundColor: lc(day.contributionLevel) }}
-            title={`${day.date}: ${day.contributionCount} contributions`} />
+            title={`${day.date}: ${day.contributionCount} contributions`}
+          />
         ))}
       </div>
     </div>
