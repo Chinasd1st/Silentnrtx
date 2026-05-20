@@ -39,10 +39,7 @@ export function ShortcutsPanel() {
       role="dialog"
       aria-modal="true"
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          setOpen(false);
-        }
+        if (e.key === "Escape") setOpen(false);
       }}
     >
       <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />

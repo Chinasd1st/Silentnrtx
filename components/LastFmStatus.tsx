@@ -248,7 +248,7 @@ export function LastFmStatus() {
               album.image?.[2]?.["#text"] ||
               "";
             return (
-              <div key={album.mbid || i} className="flex items-center gap-3">
+              <div key={`${album.name}-${album.playcount}`} className="flex items-center gap-3">
                 <span
                   className="text-[10px] w-4 shrink-0 text-center"
                   style={{ color: "var(--md-text-muted)" }}

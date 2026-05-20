@@ -214,18 +214,8 @@
   appearance: none;
   height: 6px;
   border-radius: 3px;
-  background: linear-gradient(
-    to right,
-    hsl(0, 100%, 50%),
-    hsl(60, 100%, 50%),
-    hsl(120, 100%, 50%),
-    hsl(180, 100%, 50%),
-    hsl(240, 100%, 50%),
-    hsl(300, 100%, 50%),
-    hsl(360, 100%, 50%)
-  );
+  background: var(--md-primary);
   outline: none;
-  transition: opacity 0.2s;
 }
 .hue-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -233,8 +223,8 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: white;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: var(--md-primary);
+  border: 2px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: transform 0.15s;
@@ -246,8 +236,8 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: white;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: var(--md-primary);
+  border: 2px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }

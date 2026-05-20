@@ -271,7 +271,7 @@ export function MusicPlayer() {
       <div className="space-y-0.5 max-h-[180px] overflow-y-auto">
         {songs.map((song, i) => (
           <SongItem
-            key={song.id}
+            key={song.url}
             song={song}
             idx={i}
             selectedIdx={idx}

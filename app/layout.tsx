@@ -5,12 +5,13 @@ import { GlobalAudioProvider } from "@/components/GlobalAudio";
 import { I18nInit } from "@/components/I18nInit";
 import { ShortcutsPanel } from "@/components/ShortcutsPanel";
 import { siteConfig } from "@/config";
+import { basePath } from "@/lib/base-path";
 import "./globals.css";
 
 const title = "Silentnrtx - Personal Homepage";
 const description =
   "Silentnrtx's personal homepage. GitHub stats, Last.fm scrobbles, music player, weather, blog, and more.";
-const pageUrl = "https://silentnrtx.top/Silentnrtx/";
+const pageUrl = `${siteConfig.seo.url.replace(/\/+$/, "")}${basePath}/`;
 const FONT_URL =
   "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
 
@@ -66,6 +67,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="font-loader" strategy="afterInteractive">
           {`var el=document.querySelector('link[href="${FONT_URL}"][rel="preload"]');if(el)el.rel='stylesheet';`}
         </Script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var l=localStorage.getItem("md-lang");if(!l){l=(navigator.language||"").startsWith("zh")?"zh-CN":"en-US"}document.documentElement.lang=l;var m=document.querySelector('meta[property="og:locale"]');if(m)m.setAttribute("content",l==="zh-CN"?"zh_CN":"en_US")}catch(e){}})()`,
+          }}
+        />
       </head>
       <body>
         <I18nInit />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FiSettings, FiX } from "react-icons/fi";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
@@ -27,57 +27,7 @@ export function SettingsCard() {
 
   const update = (partial: Partial<Settings>) => setS((prev) => ({ ...prev, ...partial }));
 
-  const parseHex = (hex: string) => {
-    const m = hex.match(/^#?([0-9a-fA-F]{6})$/);
-    if (m) {
-      const r = parseInt(m[1].slice(0, 2), 16);
-      const g = parseInt(m[1].slice(2, 4), 16);
-      const b = parseInt(m[1].slice(4, 6), 16);
-      const max = Math.max(r, g, b),
-        min = Math.min(r, g, b);
-      let hue = 0;
-      if (max !== min) {
-        const d = max - min;
-        if (max === r) hue = ((g - b) / d + (g < b ? 6 : 0)) * 60;
-        else if (max === g) hue = ((b - r) / d + 2) * 60;
-        else hue = ((r - g) / d + 4) * 60;
-      }
-      return Math.round(hue);
-    }
-    return null;
-  };
-
-  const hueToHex = (h: number): string => {
-    const c = 180;
-    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    let r = 0,
-      g = 0,
-      b = 0;
-    if (h < 60) {
-      r = c;
-      g = x;
-    } else if (h < 120) {
-      r = x;
-      g = c;
-    } else if (h < 180) {
-      g = c;
-      b = x;
-    } else if (h < 240) {
-      g = x;
-      b = c;
-    } else if (h < 300) {
-      r = x;
-      b = c;
-    } else {
-      r = c;
-      b = x;
-    }
-    const toHex = (n: number) =>
-      Math.round((n / 180) * 255)
-        .toString(16)
-        .padStart(2, "0");
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
-  };
+  const commitHue = useCallback((val: number) => setS((prev) => ({ ...prev, customHue: val })), []);
 
   return (
     <>
@@ -101,10 +51,7 @@ export function SettingsCard() {
           role="dialog"
           aria-modal="true"
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              setOpen(false);
-            }
+            if (e.key === "Escape") setOpen(false);
           }}
         >
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
@@ -235,44 +182,7 @@ export function SettingsCard() {
                     {t("settings.hue_off")}
                   </button>
                 </div>
-                {s.hueEnabled && (
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min="0"
-                      max="360"
-                      defaultValue={s.customHue ?? 250}
-                      onInput={(e) => {
-                        const val = parseInt((e.target as HTMLInputElement).value, 10);
-                        document.documentElement.style.setProperty("--md-hue", String(val));
-                      }}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        update({ customHue: val });
-                      }}
-                      className="hue-slider flex-1 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      maxLength={7}
-                      placeholder="#165DFF"
-                      value={s.customHue === null ? "" : hueToHex(s.customHue)}
-                      onChange={(e) => {
-                        const h = parseHex(e.target.value);
-                        if (h !== null) update({ customHue: h });
-                      }}
-                      className="w-20 rounded-[8px] px-2 py-1 text-xs font-mono text-center outline-hidden border"
-                      style={{
-                        backgroundColor: "rgba(255,255,255,0.05)",
-                        color: "var(--md-text-primary)",
-                        borderColor: "var(--md-card-border)",
-                      }}
-                    />
-                    <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>
-                      {s.customHue ?? 250}°
-                    </span>
-                  </div>
-                )}
+                {s.hueEnabled && <HueSlider value={s.customHue ?? 250} onCommit={commitHue} />}
               </div>
             </div>
 
@@ -287,5 +197,42 @@ export function SettingsCard() {
         </div>
       )}
     </>
+  );
+}
+
+function HueSlider({ value, onCommit }: { value: number; onCommit: (v: number) => void }) {
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty("--md-hue", String(value));
+  }, [value]);
+
+  useEffect(() => {
+    if (ref.current) ref.current.value = String(value);
+  }, [value]);
+
+  const commit = () => {
+    if (!ref.current) return;
+    const val = parseInt(ref.current.value, 10);
+    document.documentElement.style.setProperty("--md-hue", String(val));
+    onCommit(val);
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        ref={ref}
+        type="range"
+        min="0"
+        max="360"
+        defaultValue={value}
+        onPointerUp={commit}
+        onBlur={commit}
+        className="hue-slider flex-1 cursor-pointer"
+      />
+      <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>
+        {value}°
+      </span>
+    </div>
   );
 }

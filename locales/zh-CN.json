@@ -19,6 +19,8 @@
   "github.contributions": "Contributions",
   "github.last_year": "近一年",
   "github.error": "加载失败",
+  "github.rate_limit": "API 请求频率超限",
+  "github.not_found": "用户未找到",
   "lastfm.title": "Last.fm",
   "lastfm.now_playing": "正在播放",
   "lastfm.last_played": "最近播放",

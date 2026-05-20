@@ -209,22 +209,16 @@ export function OptimizedImage({
     );
   }
 
-  const webpSrcset = entry.srcset
-    .split(",")
-    .map((s) => {
-      const [url, size] = s.trim().split(" ");
-      return `${withBasePath(url)} ${size}`;
-    })
+  const webpSrcset = entry.variants
+    .filter((v) => v.format === "webp")
+    .map((v) => `${withBasePath(v.url)} ${v.width}w`)
     .join(", ");
 
   const avifSrcset = disableAvif
     ? ""
-    : entry.avifSrcset
-        .split(",")
-        .map((s) => {
-          const [url, size] = s.trim().split(" ");
-          return `${withBasePath(url)} ${size}`;
-        })
+    : entry.variants
+        .filter((v) => v.format === "avif")
+        .map((v) => `${withBasePath(v.url)} ${v.width}w`)
         .join(", ");
 
   const imgAttributes: ImgHTMLAttributes<HTMLImageElement> = {
@@ -233,7 +227,7 @@ export function OptimizedImage({
     className,
     style: {
       ...style,
-      backgroundColor: placeholder && !isLoaded ? "#e5e7eb" : undefined,
+      backgroundColor: placeholder && !isLoaded ? "var(--md-surface-variant)" : undefined,
       ...(fill && { objectFit }),
     },
     width: fill ? undefined : width || entry.originalWidth,

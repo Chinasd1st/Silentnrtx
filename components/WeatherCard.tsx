@@ -111,10 +111,16 @@ export function WeatherCard() {
       setLoading(false);
       return;
     }
-    // Re-fetch whenever settings change (city switch)
-    const interval = setInterval(() => fetchWeather(), 30000);
     fetchWeather();
-    return () => clearInterval(interval);
+    const interval = setInterval(() => fetchWeather(), 300_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchWeather();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [fetchWeather]);
 
   const desc = isZh ? weather?.lang_zh?.[0]?.value || "" : weather?.weatherDesc?.[0]?.value || "";

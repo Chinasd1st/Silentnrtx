@@ -19,6 +19,8 @@
   "github.contributions": "Contributions",
   "github.last_year": "last year",
   "github.error": "Failed to load",
+  "github.rate_limit": "API rate limit exceeded",
+  "github.not_found": "User not found",
   "lastfm.title": "Last.fm",
   "lastfm.now_playing": "Now Playing",
   "lastfm.last_played": "Last Played",
