@@ -107,10 +107,10 @@ export function WakatimeCard() {
           style={{ backgroundColor: tab === "activity" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "activity" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
           {t("wakatime.activity")}
         </button>
-        <button onClick={() => setTab("ai")} aria-label="AI"
+        <button onClick={() => setTab("ai")} aria-label={t("wakatime.ai")}
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{ backgroundColor: tab === "ai" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)", color: tab === "ai" ? "var(--md-primary)" : "var(--md-text-muted)" }}>
-          <FaRobot className="inline mr-1" size={10} />AI
+          <FaRobot className="inline mr-1" size={10} />{t("wakatime.ai")}
         </button>
       </div>
 

@@ -25,13 +25,13 @@ export function BusuanziStats() {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-[16px] p-4 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
-          <p className="text-2xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>
+          <p className="text-2xl font-bold font-heading" style={{ color: "var(--md-primary)" }} aria-live="polite" aria-atomic="true">
             <span id="busuanzi_site_pv">--</span>
           </p>
           <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("stats.pv")}</p>
         </div>
         <div className="rounded-[16px] p-4 text-center" style={{ backgroundColor: "var(--md-primary-008)" }}>
-          <p className="text-2xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>
+          <p className="text-2xl font-bold font-heading" style={{ color: "var(--md-primary)" }} aria-live="polite" aria-atomic="true">
             <span id="busuanzi_site_uv">--</span>
           </p>
           <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }} suppressHydrationWarning>{t("stats.uv")}</p>

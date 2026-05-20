@@ -18,6 +18,9 @@ export function SettingsCard() {
   useEffect(() => {
     if (s.hueEnabled && s.customHue !== null) {
       document.documentElement.style.setProperty("--md-hue", String(s.customHue));
+    } else {
+      const defaultHue = siteConfig.theme?.hue ?? 270;
+      document.documentElement.style.setProperty("--md-hue", String(defaultHue));
     }
   }, [s.hueEnabled, s.customHue]);
 

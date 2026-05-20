@@ -13,11 +13,16 @@ export function getCache<T>(key: string, ttlMs: number): T | null {
       return null;
     }
     return entry.data;
-  } catch { return null; }
+  } catch {
+    if (process.env.NODE_ENV === 'development') console.warn('[cache] getCache error', key);
+    return null;
+  }
 }
 
 export function setCache<T>(key: string, data: T): void {
   try {
     localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
-  } catch {}
+  } catch {
+    if (process.env.NODE_ENV === 'development') console.warn('[cache] setCache error', key);
+  }
 }

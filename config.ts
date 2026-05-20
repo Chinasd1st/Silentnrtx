@@ -85,9 +85,7 @@ export const siteConfig = {
   wakatime: {
     enabled: true,
     /** Embed ID for Coding Activity chart */
-    embedId: "56247b3f-2af8-4855-95f6-0258665b4197",
-    /** Embed ID for Languages chart (create from wakatime.com/share) */
-    langEmbedId: "5882c88d-c8a5-45cd-b536-821a27c2ad55",
+    embedId: "a75a616e-d2dd-4f2d-92db-1c7046817cc2",
     username: "Silentnrtx",
   },
 
