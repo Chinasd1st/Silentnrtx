@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaImage } from "react-icons/fa";
-import { OptimizedImage } from "@/components/OptimizedImage";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 

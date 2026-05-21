@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getCache, setCache } from "@/lib/cache";
-import { githubApi } from "@/lib/githubApi";
+import { githubApi } from "@/lib/api/github";
 import { fetchWithRetry, mapApiError } from "@/lib/api";
 
 const CACHE_KEY = "gh_version_v2";

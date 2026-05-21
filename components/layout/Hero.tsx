@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
-import { OptimizedImage } from "@/components/OptimizedImage";
-import { SettingsCard } from "@/components/SettingsCard";
-import { ThemeSwitch } from "@/components/ThemeSwitch";
+import { SettingsCard } from "@/components/dialogs/SettingsCard";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
+import { ThemeSwitch } from "@/components/widgets/ThemeSwitch";
 import { siteConfig } from "@/config";
 import { highlight } from "@/lib/highlight";
 import { changeLang, getDetectedLang, useTranslation } from "@/lib/i18n";

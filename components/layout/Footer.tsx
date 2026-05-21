@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { buildTime, commitSha } from "@/lib/buildTime";
-import { useVersion } from "@/lib/version";
+import { useVersion } from "@/lib/hooks/useVersion";
 
 export function Footer() {
   const cfg = siteConfig.footer;

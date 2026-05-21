@@ -26,3 +26,18 @@ export function setCache<T>(key: string, data: T): void {
     if (process.env.NODE_ENV === "development") console.warn("[cache] setCache error", key);
   }
 }
+
+const CACHE_PREFIXES = ["blog_", "github_", "monkeytype", "wakatime", "earthquake", "lastfm_"];
+
+export function clearAllCache(): void {
+  try {
+    const keys = Object.keys(localStorage);
+    for (const key of keys) {
+      if (CACHE_PREFIXES.some((p) => key.startsWith(p))) {
+        localStorage.removeItem(key);
+      }
+    }
+  } catch {
+    if (process.env.NODE_ENV === "development") console.warn("[cache] clearAllCache error");
+  }
+}

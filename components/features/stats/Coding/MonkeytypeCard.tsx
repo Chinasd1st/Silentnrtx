@@ -1,12 +1,14 @@
-﻿"use client";
+"use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { SiMonkeytype } from "react-icons/si";
-import { ErrorCard } from "@/components/ErrorCard";
-import { CardSkeleton } from "@/components/Skeleton";
+import { Card } from "@/components/ui/Card";
+import { CardHeader } from "@/components/ui/CardHeader";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { ExternalLink } from "@/components/ui/ExternalLink";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
-import { getCache, setCache } from "@/lib/cache";
+import { useSafeFetch } from "@/lib/hooks/useSafeFetch";
 import { useTranslation } from "@/lib/i18n";
 
 interface PBEntry {
@@ -31,46 +33,26 @@ function bestOf(pbs: PBEntry[] | undefined): PBEntry | undefined {
 
 export function MonkeytypeCard() {
   const { t } = useTranslation();
-  const [data, setData] = useState<ProfileData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const cfg = siteConfig.monkeytype;
-
-  const fetchProfile = useCallback(async () => {
-    if (!cfg.enabled) {
-      setLoading(false);
-      return;
-    }
-    const cached = getCache<ProfileData>(CACHE_KEY, CACHE_TTL);
-    if (cached) {
-      setData(cached);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { data: json } = await fetchWithRetry(() =>
+  const { data, loading, error, execute } = useSafeFetch<ProfileData>({
+    fetchFn: (signal) =>
+      fetchWithRetry(() =>
         api.get(`https://api.monkeytype.com/users/${cfg.username}/profile`, {
+          signal,
           headers: { "Cache-Control": "no-cache" },
         })
-      );
-      if (json.message === "Profile retrieved" && json.data) {
-        setData(json.data);
-        setCache(CACHE_KEY, json.data);
-      } else throw new Error("api error");
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      ).then((r) => {
+        if (r.data?.message === "Profile retrieved" && r.data?.data) return r.data.data;
+        throw new Error("api_error");
+      }),
+    cacheKey: CACHE_KEY,
+    cacheTTL: CACHE_TTL,
+    immediate: cfg.enabled,
+  });
 
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
-
+  if (!cfg.enabled) return null;
   if (loading) return <CardSkeleton />;
-  if (error) return <ErrorCard title={t("monkeytype.title")} onRetry={fetchProfile} />;
+  if (error) return <ErrorCard title={t("monkeytype.title")} onRetry={execute} />;
 
   const best15 = bestOf(data?.personalBests?.time?.["15"]);
   const best60 = bestOf(data?.personalBests?.time?.["60"]);
@@ -79,30 +61,16 @@ export function MonkeytypeCard() {
   const c = "var(--md-primary)";
 
   return (
-    <div className="md-card">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <SiMonkeytype className="text-lg shrink-0" style={{ color: c }} />
-          <h2
-            className="font-heading text-lg font-semibold"
-            style={{ color: "var(--md-text-primary)" }}
-            suppressHydrationWarning
-          >
-            {t("monkeytype.title")}
-          </h2>
-        </div>
-        <a
-          href={`https://monkeytype.com/profile/${cfg.username}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs shrink-0 transition-colors"
-          style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-muted)")}
-        >
-          @{cfg.username} &rarr;
-        </a>
-      </div>
+    <Card>
+      <CardHeader
+        icon={<SiMonkeytype />}
+        title={t("monkeytype.title")}
+        action={
+          <ExternalLink href={`https://monkeytype.com/profile/${cfg.username}`}>
+            @{cfg.username} &rarr;
+          </ExternalLink>
+        }
+      />
 
       <div className="grid grid-cols-2 gap-3 mb-3">
         <Mini
@@ -136,7 +104,7 @@ export function MonkeytypeCard() {
           </span>
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 

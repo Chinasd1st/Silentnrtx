@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { OptimizedImage } from "@/components/OptimizedImage";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";
 

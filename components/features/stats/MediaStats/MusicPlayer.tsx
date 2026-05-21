@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
 import React, { useCallback, useEffect, useState } from "react";
 import { FaMusic, FaPause, FaPlay, FaStepBackward, FaStepForward } from "react-icons/fa";
-import { ErrorCard } from "@/components/ErrorCard";
-import { useGlobalAudio } from "@/components/GlobalAudio";
-import { CardSkeleton } from "@/components/Skeleton";
+import { useGlobalAudio } from "@/components/audio/GlobalAudio";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
@@ -33,16 +33,21 @@ export function MusicPlayer() {
       setLoading(false);
       return;
     }
+    const controller = new AbortController();
     const url = `${cfg.api}?server=${encodeURIComponent(cfg.params.server)}&type=${encodeURIComponent(cfg.params.type)}&id=${encodeURIComponent(cfg.params.id)}`;
-    fetchWithRetry(() => api.get<Song[]>(url))
+    fetchWithRetry(() => api.get<Song[]>(url, { signal: controller.signal }))
       .then(({ data }) => data)
       .then((data: Song[]) => {
         if (!Array.isArray(data)) throw new Error("invalid");
         setSongs(data);
         if (data.length > 0) setSelectedIdx(0);
       })
-      .catch(() => setError(true))
+      .catch(() => {
+        if (controller.signal.aborted) return;
+        setError(true);
+      })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const playSong = useCallback(

@@ -189,24 +189,18 @@
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
-/* Global scrollbar — thin, matches card surface */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Scrollbar — thin rounded thumb, transparent track */
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar { width: 6px; height: 6px; background: transparent }
+  ::-webkit-scrollbar-track { background: transparent; border: none }
+  ::-webkit-scrollbar-track-piece { background: transparent }
+  ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.35); border-radius: 3px }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.55) }
+  ::-webkit-scrollbar-button { display: none; width: 0; height: 0 }
+  ::-webkit-scrollbar-corner { background: transparent }
 }
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--md-surface-variant);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--md-outline);
-}
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--md-surface-variant) transparent;
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-width: thin; scrollbar-color: rgba(128,128,128,0.35) transparent }
 }
 
 .hue-slider {

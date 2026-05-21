@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaLastfm } from "react-icons/fa";
-import { ErrorCard } from "@/components/ErrorCard";
-import { CardSkeleton } from "@/components/Skeleton";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
@@ -79,13 +79,20 @@ export function LastFmStatus() {
     }
     fetchWithRetry(() =>
       api.get<TopAlbumsResponse>(
-        `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&period=7day&limit=5`
+        `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${encodeURIComponent(apiKey)}&format=json&period=7day&limit=10`
       )
     )
       .then(({ data }) => data)
       .then((data: TopAlbumsResponse) => {
         if (data?.topalbums?.album) {
-          const albums = data.topalbums.album.slice(0, 5);
+          const seen = new Set<string>();
+          const unique = data.topalbums.album.filter((a) => {
+            const key = `${a.name}|${a.artist.name}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          const albums = unique.slice(0, 5);
           setAlbums(albums);
           albumsCache.current = { data: albums, time: now };
         }
@@ -248,7 +255,7 @@ export function LastFmStatus() {
               album.image?.[2]?.["#text"] ||
               "";
             return (
-              <div key={`${album.name}-${album.playcount}`} className="flex items-center gap-3">
+              <div key={`${album.name}-${album.artist.name}`} className="flex items-center gap-3">
                 <span
                   className="text-[10px] w-4 shrink-0 text-center"
                   style={{ color: "var(--md-text-muted)" }}

@@ -1,11 +1,13 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useState } from "react";
 import { FaGlobe } from "react-icons/fa";
-import { ErrorCard } from "@/components/ErrorCard";
+import { Card } from "@/components/ui/Card";
+import { CardHeader } from "@/components/ui/CardHeader";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { ExternalLink } from "@/components/ui/ExternalLink";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
-import { getCache, setCache } from "@/lib/cache";
+import { useSafeFetch } from "@/lib/hooks/useSafeFetch";
 import { useTranslation } from "@/lib/i18n";
 
 interface RssItem {
@@ -35,42 +37,27 @@ function descText(description: string) {
 
 export function BlogPosts() {
   const { t } = useTranslation();
-  const [posts, setPosts] = useState<RssItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [_retryKey, setRetryKey] = useState(0);
-
-  useEffect(() => {
-    const rssUrl = siteConfig.blog.rssUrl;
-    if (!rssUrl) {
-      setLoading(false);
-      setError(true);
-      return;
-    }
-
-    const cached = getCache<RssItem[]>("blog_rss", 30 * 60 * 1000);
-    if (cached) {
-      setPosts(cached);
-      setLoading(false);
-      return;
-    }
-
-    fetchWithRetry(() =>
-      api.get<RssResponse>(
-        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`
-      )
-    )
-      .then(({ data }) => data)
-      .then((data: RssResponse) => {
-        if (data.status === "ok") {
-          const items = data.items.slice(0, siteConfig.blog.postLimit);
-          setPosts(items);
-          setCache("blog_rss", items);
-        } else throw new Error("RSS parse failed");
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, []);
+  const rssUrl = siteConfig.blog.rssUrl;
+  const {
+    data: posts,
+    loading,
+    error,
+    execute,
+  } = useSafeFetch<RssItem[]>({
+    fetchFn: (signal) =>
+      fetchWithRetry(() =>
+        api.get<RssResponse>(
+          `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`,
+          { signal }
+        )
+      ).then(({ data }) => {
+        if (data.status === "ok") return data.items.slice(0, siteConfig.blog.postLimit);
+        throw new Error("RSS parse failed");
+      }),
+    cacheKey: "blog_rss",
+    cacheTTL: 30 * 60 * 1000,
+    immediate: !!rssUrl,
+  });
 
   const formatDate = (dateStr: string) => {
     try {
@@ -84,30 +71,17 @@ export function BlogPosts() {
     }
   };
 
+  const hasPosts = posts && posts.length > 0;
+
   return (
-    <div className="md-card">
-      <div className="flex items-center justify-between mb-5">
-        <h2
-          className="font-heading text-lg font-semibold flex items-center gap-2"
-          style={{ color: "var(--md-text-primary)" }}
-          suppressHydrationWarning
-        >
-          <FaGlobe style={{ color: "var(--md-primary)" }} />
-          {t("blog.title")}
-        </h2>
-        <a
-          href={siteConfig.social.blog.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs transition-colors"
-          style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
-          suppressHydrationWarning
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-muted)")}
-        >
-          {t("blog.view_all")} &rarr;
-        </a>
-      </div>
+    <Card>
+      <CardHeader
+        icon={<FaGlobe />}
+        title={t("blog.title")}
+        action={
+          <ExternalLink href={siteConfig.social.blog.url}>{t("blog.view_all")} &rarr;</ExternalLink>
+        }
+      />
 
       {loading && (
         <div className="space-y-4">
@@ -120,11 +94,9 @@ export function BlogPosts() {
         </div>
       )}
 
-      {error && !loading && (
-        <ErrorCard title={t("blog.error")} onRetry={() => setRetryKey((k) => k + 1)} />
-      )}
+      {error && !loading && <ErrorCard title={t("blog.error")} onRetry={execute} />}
 
-      {!loading && !error && posts.length === 0 && (
+      {!loading && !error && !hasPosts && (
         <div className="flex flex-col items-center gap-2 py-8 text-center">
           <p
             className="text-sm"
@@ -136,7 +108,7 @@ export function BlogPosts() {
         </div>
       )}
 
-      {!loading && !error && posts.length > 0 && (
+      {!loading && !error && hasPosts && (
         <div className="space-y-4">
           {posts.map((post) => (
             <a
@@ -190,6 +162,6 @@ export function BlogPosts() {
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

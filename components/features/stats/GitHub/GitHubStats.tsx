@@ -1,13 +1,15 @@
-﻿"use client";
+"use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { FaBook, FaCodeBranch, FaGithub, FaStar, FaUsers } from "react-icons/fa";
-import { ErrorCard } from "@/components/ErrorCard";
-import { CardSkeleton } from "@/components/Skeleton";
+import { Card } from "@/components/ui/Card";
+import { CardHeader } from "@/components/ui/CardHeader";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { ExternalLink } from "@/components/ui/ExternalLink";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { fetchWithRetry, mapApiError } from "@/lib/api";
-import { getCache, setCache } from "@/lib/cache";
-import { githubApi } from "@/lib/githubApi";
+import { githubApi } from "@/lib/api/github";
+import { useSafeFetch } from "@/lib/hooks/useSafeFetch";
 import { useTranslation } from "@/lib/i18n";
 
 interface GU {
@@ -20,83 +22,57 @@ interface GR {
   forks_count: number;
 }
 
+interface StatsData {
+  user: GU;
+  stars: number;
+  forks: number;
+}
+
 const CACHE_KEY = "github_stats";
 const CACHE_TTL = 10 * 60 * 1000;
 
 export function GitHubStats() {
   const { t } = useTranslation();
-  const [data, setData] = useState<{ user: GU; stars: number; forks: number } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = useCallback(async () => {
-    const username = siteConfig.github.username;
-    if (!username) {
-      setLoading(false);
-      return;
-    }
-
-    const cached = getCache<{ user: GU; stars: number; forks: number }>(CACHE_KEY, CACHE_TTL);
-    if (cached) {
-      setData(cached);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { data: user } = await fetchWithRetry(() => githubApi.get<GU>(`/users/${username}`));
+  const username = siteConfig.github.username;
+  const { data, loading, error, execute } = useSafeFetch<StatsData, string>({
+    fetchFn: async (signal) => {
+      const { data: user } = await fetchWithRetry(() =>
+        githubApi.get<GU>(`/users/${username}`, { signal })
+      );
       const { data: repos } = await fetchWithRetry(() =>
-        githubApi.get<GR[]>(`/users/${username}/repos?per_page=100&sort=updated`)
+        githubApi.get<GR[]>(`/users/${username}/repos?per_page=100&sort=updated`, { signal })
       ).catch(() => ({ data: [] as GR[] }));
       const stars = repos.reduce((s, r) => s + r.stargazers_count, 0);
       const forks = repos.reduce((s, r) => s + r.forks_count, 0);
-      const d = { user, stars, forks };
-      setData(d);
-      setCache(CACHE_KEY, d);
-    } catch (err) {
-      setError(mapApiError(err).message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return { user, stars, forks };
+    },
+    cacheKey: CACHE_KEY,
+    cacheTTL: CACHE_TTL,
+    errorMap: (err) => mapApiError(err).message,
+    immediate: !!username,
+  });
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
+  if (!username) return null;
   if (loading) return <CardSkeleton />;
   if (error || !data)
-    return <ErrorCard title={t("github.stats")} message={error || undefined} onRetry={fetchData} />;
+    return <ErrorCard title={t("github.stats")} message={error || undefined} onRetry={execute} />;
 
   const { user, stars, forks } = data;
 
   return (
-    <div className="md-card overflow-hidden relative">
+    <Card className="overflow-hidden relative">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-purple-500/5 blur-3xl" />
         <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-blue-500/5 blur-3xl" />
       </div>
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-5">
-          <h2
-            className="font-heading text-lg font-semibold flex items-center gap-2"
-            style={{ color: "var(--md-text-primary)" }}
-          >
-            <FaGithub />
-            {t("github.stats")}
-          </h2>
-          <a
-            href={user.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs transition-colors"
-            style={{ color: "var(--md-text-muted)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-muted)")}
-          >
-            @{siteConfig.github.username} &rarr;
-          </a>
-        </div>
+        <CardHeader
+          icon={<FaGithub />}
+          title={t("github.stats")}
+          action={
+            <ExternalLink href={user.html_url}>@{siteConfig.github.username} &rarr;</ExternalLink>
+          }
+        />
         <div className="grid grid-cols-2 gap-3">
           <SB
             icon={<FaBook />}
@@ -124,7 +100,7 @@ export function GitHubStats() {
           />
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 

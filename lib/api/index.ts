@@ -7,6 +7,7 @@ export async function fetchWithRetry<T>(fn: () => Promise<T>, maxRetries = 3): P
     try {
       return await fn();
     } catch (err) {
+      if (axios.isCancel(err)) throw err;
       if (i === maxRetries - 1) throw err;
       await new Promise((r) => setTimeout(r, 1000));
     }

@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCloudSun, FaSun, FaTint, FaWind } from "react-icons/fa";
-import { ErrorCard } from "@/components/ErrorCard";
-import { CardSkeleton } from "@/components/Skeleton";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";

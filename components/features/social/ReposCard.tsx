@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { FaCodeBranch, FaGithub, FaStar } from "react-icons/fa";
-import { ErrorCard } from "@/components/ErrorCard";
-import { CardSkeleton } from "@/components/Skeleton";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { fetchWithRetry, mapApiError } from "@/lib/api";
+import { githubApi } from "@/lib/api/github";
 import { getCache, setCache } from "@/lib/cache";
-import { githubApi } from "@/lib/githubApi";
 import { useTranslation } from "@/lib/i18n";
 
 interface RepoData {

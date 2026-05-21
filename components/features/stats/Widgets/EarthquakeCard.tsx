@@ -1,9 +1,12 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaEarthAsia } from "react-icons/fa6";
-import { ErrorCard } from "@/components/ErrorCard";
-import { CardSkeleton } from "@/components/Skeleton";
+import { Card } from "@/components/ui/Card";
+import { CardHeader } from "@/components/ui/CardHeader";
+import { ErrorCard } from "@/components/ui/ErrorCard";
+import { PillButton } from "@/components/ui/PillButton";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 import { api, fetchWithRetry } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
 import { useTranslation } from "@/lib/i18n";
@@ -75,45 +78,21 @@ export function EarthquakeCard() {
   const eq = active.data;
 
   return (
-    <div className="md-card">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <FaEarthAsia className="text-lg shrink-0" style={{ color: "var(--md-primary)" }} />
-          <h2
-            className="font-heading text-lg font-semibold"
-            style={{ color: "var(--md-text-primary)" }}
-            suppressHydrationWarning
-          >
-            {t("earthquake.title")}
-          </h2>
-        </div>
-        <div className="flex gap-1 shrink-0">
-          <button
-            type="button"
-            onClick={() => setTab("jma")}
-            aria-label="JMA"
-            className="rounded-full px-3 py-1 text-xs font-medium transition-all"
-            style={{
-              backgroundColor: tab === "jma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
-              color: tab === "jma" ? "var(--md-primary)" : "var(--md-text-muted)",
-            }}
-          >
-            JMA
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("cma")}
-            aria-label="CMA"
-            className="rounded-full px-3 py-1 text-xs font-medium transition-all"
-            style={{
-              backgroundColor: tab === "cma" ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
-              color: tab === "cma" ? "var(--md-primary)" : "var(--md-text-muted)",
-            }}
-          >
-            CMA
-          </button>
-        </div>
-      </div>
+    <Card>
+      <CardHeader
+        icon={<FaEarthAsia />}
+        title={t("earthquake.title")}
+        action={
+          <div className="flex gap-1">
+            <PillButton active={tab === "jma"} onClick={() => setTab("jma")}>
+              JMA
+            </PillButton>
+            <PillButton active={tab === "cma"} onClick={() => setTab("cma")}>
+              CMA
+            </PillButton>
+          </div>
+        }
+      />
 
       {active.error && !eq && <ErrorCard title={t("earthquake.title")} onRetry={active.retry} />}
 
@@ -159,6 +138,6 @@ export function EarthquakeCard() {
           </p>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

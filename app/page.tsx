@@ -1,21 +1,22 @@
-﻿import { BlogPosts } from "@/components/BlogPosts";
-import { BusuanziStats } from "@/components/BusuanziStats";
-import { ClockCard } from "@/components/ClockCard";
-import { EarthquakeCard } from "@/components/EarthquakeCard";
-import { Footer } from "@/components/Footer";
-import { GalleryCard } from "@/components/GalleryCard";
-import { GitHubGrass } from "@/components/GitHubGrass";
-import { GitHubStats } from "@/components/GitHubStats";
-import { Hero } from "@/components/Hero";
-import { LastFmStatus } from "@/components/LastFmStatus";
-import { MonkeytypeCard } from "@/components/MonkeytypeCard";
-import { MusicPlayer } from "@/components/MusicPlayer";
-import { OsuSignature } from "@/components/OsuSignature";
-import { ProfileCard } from "@/components/ProfileCard";
-import { ReposCard } from "@/components/ReposCard";
-import { SocialLinks } from "@/components/SocialLinks";
-import { WakatimeCard } from "@/components/WakatimeCard";
-import { WeatherCard } from "@/components/WeatherCard";
+import { BlogPosts } from "@/components/features/blog/BlogPosts";
+import { GalleryCard } from "@/components/features/gallery/GalleryCard";
+import { ProfileCard } from "@/components/features/profile/ProfileCard";
+import { OsuSignature } from "@/components/features/social/OsuSignature";
+import { ReposCard } from "@/components/features/social/ReposCard";
+import { SocialLinks } from "@/components/features/social/SocialLinks";
+import { MonkeytypeCard } from "@/components/features/stats/Coding/MonkeytypeCard";
+import { WakaAICard } from "@/components/features/stats/Coding/WakaAICard";
+import { WakatimeCard } from "@/components/features/stats/Coding/WakatimeCard";
+import { GitHubGrass } from "@/components/features/stats/GitHub/GitHubGrass";
+import { GitHubStats } from "@/components/features/stats/GitHub/GitHubStats";
+import { LastFmStatus } from "@/components/features/stats/MediaStats/LastFmStatus";
+import { MusicPlayer } from "@/components/features/stats/MediaStats/MusicPlayer";
+import { BusuanziStats } from "@/components/features/stats/Widgets/BusuanziStats";
+import { ClockCard } from "@/components/features/stats/Widgets/ClockCard";
+import { EarthquakeCard } from "@/components/features/stats/Widgets/EarthquakeCard";
+import { WeatherCard } from "@/components/features/stats/Widgets/WeatherCard";
+import { Footer } from "@/components/layout/Footer";
+import { Hero } from "@/components/layout/Hero";
 
 export default function Home() {
   return (
@@ -44,6 +45,9 @@ export default function Home() {
           </div>
           <div className="break-inside-avoid mb-6">
             <WakatimeCard />
+          </div>
+          <div className="break-inside-avoid mb-6">
+            <WakaAICard />
           </div>
           <div className="break-inside-avoid mb-6">
             <MonkeytypeCard />

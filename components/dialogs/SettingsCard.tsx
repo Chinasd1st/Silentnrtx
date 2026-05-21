@@ -1,8 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FiSettings, FiX } from "react-icons/fi";
+import { FiSettings, FiTrash2, FiX } from "react-icons/fi";
+import { PillButton } from "@/components/ui/PillButton";
 import { siteConfig } from "@/config";
+import { clearAllCache } from "@/lib/cache";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 import { loadSettings, type Settings, saveSettings } from "@/lib/settings";
 
@@ -28,6 +31,7 @@ export function SettingsCard() {
   const update = (partial: Partial<Settings>) => setS((prev) => ({ ...prev, ...partial }));
 
   const commitHue = useCallback((val: number) => setS((prev) => ({ ...prev, customHue: val })), []);
+  const dialogRef = useFocusTrap(open);
 
   return (
     <>
@@ -44,12 +48,14 @@ export function SettingsCard() {
 
       {open && (
         <div
+          ref={dialogRef}
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) setOpen(false);
           }}
           role="dialog"
           aria-modal="true"
+          tabIndex={-1}
           onKeyDown={(e) => {
             if (e.key === "Escape") setOpen(false);
           }}
@@ -93,38 +99,20 @@ export function SettingsCard() {
                   {t("settings.weather_source")}
                 </p>
                 <div className="flex gap-2 mb-3">
-                  <button
-                    type="button"
+                  <PillButton
+                    active={s.weatherSource === "manual"}
                     onClick={() => update({ weatherSource: "manual" })}
-                    suppressHydrationWarning
-                    className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{
-                      backgroundColor:
-                        s.weatherSource === "manual"
-                          ? "var(--md-primary-020)"
-                          : "rgba(255,255,255,0.05)",
-                      color:
-                        s.weatherSource === "manual" ? "var(--md-primary)" : "var(--md-text-muted)",
-                    }}
+                    className="px-3.5 py-1.5"
                   >
                     {t("settings.weather_manual")}
-                  </button>
-                  <button
-                    type="button"
+                  </PillButton>
+                  <PillButton
+                    active={s.weatherSource === "auto"}
                     onClick={() => update({ weatherSource: "auto" })}
-                    suppressHydrationWarning
-                    className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{
-                      backgroundColor:
-                        s.weatherSource === "auto"
-                          ? "var(--md-primary-020)"
-                          : "rgba(255,255,255,0.05)",
-                      color:
-                        s.weatherSource === "auto" ? "var(--md-primary)" : "var(--md-text-muted)",
-                    }}
+                    className="px-3.5 py-1.5"
                   >
                     {t("settings.weather_auto")}
-                  </button>
+                  </PillButton>
                 </div>
                 <input
                   type="text"
@@ -153,37 +141,28 @@ export function SettingsCard() {
                   {t("settings.hue")}
                 </p>
                 <div className="flex gap-2 mb-3">
-                  <button
-                    type="button"
+                  <PillButton
+                    active={s.hueEnabled}
                     onClick={() => update({ hueEnabled: true })}
-                    suppressHydrationWarning
-                    className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{
-                      backgroundColor: s.hueEnabled
-                        ? "var(--md-primary-020)"
-                        : "rgba(255,255,255,0.05)",
-                      color: s.hueEnabled ? "var(--md-primary)" : "var(--md-text-muted)",
-                    }}
+                    className="px-3.5 py-1.5"
                   >
                     {t("settings.hue_on")}
-                  </button>
-                  <button
-                    type="button"
+                  </PillButton>
+                  <PillButton
+                    active={!s.hueEnabled}
                     onClick={() => update({ hueEnabled: false })}
-                    suppressHydrationWarning
-                    className="rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
-                    style={{
-                      backgroundColor: s.hueEnabled
-                        ? "rgba(255,255,255,0.05)"
-                        : "var(--md-primary-020)",
-                      color: s.hueEnabled ? "var(--md-text-muted)" : "var(--md-primary)",
-                    }}
+                    className="px-3.5 py-1.5"
                   >
                     {t("settings.hue_off")}
-                  </button>
+                  </PillButton>
                 </div>
                 {s.hueEnabled && <HueSlider value={s.customHue ?? 250} onCommit={commitHue} />}
               </div>
+            </div>
+
+            {/* Clear cache */}
+            <div>
+              <ClearCacheButton />
             </div>
 
             <p
@@ -197,6 +176,33 @@ export function SettingsCard() {
         </div>
       )}
     </>
+  );
+}
+
+function ClearCacheButton() {
+  const { t } = useTranslation();
+  const [cleared, setCleared] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        clearAllCache();
+        setCleared(true);
+        setTimeout(() => setCleared(false), 2000);
+      }}
+      className="flex w-full items-center justify-center gap-2 rounded-md3-sm px-3 py-2 text-xs transition-all hover:bg-white/6 active:scale-95"
+      style={{ color: "var(--md-text-muted)" }}
+    >
+      {cleared ? (
+        t("settings.cache_cleared")
+      ) : (
+        <>
+          <FiTrash2 size={12} />
+          {t("settings.clear_cache")}
+        </>
+      )}
+    </button>
   );
 }
 

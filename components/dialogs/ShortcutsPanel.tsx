@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FaKeyboard } from "react-icons/fa";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 
 const SHORTCUTS = [
@@ -28,16 +29,20 @@ export function ShortcutsPanel() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  const dialogRef = useFocusTrap(open);
+
   if (!open) return null;
 
   return (
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-100 flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) setOpen(false);
       }}
       role="dialog"
       aria-modal="true"
+      tabIndex={-1}
       onKeyDown={(e) => {
         if (e.key === "Escape") setOpen(false);
       }}
