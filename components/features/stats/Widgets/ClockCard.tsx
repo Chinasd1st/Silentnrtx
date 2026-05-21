@@ -1,8 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const DAYS = ["日", "一", "二", "三", "四", "五", "六"];
+import { useTranslation } from "@/lib/i18n";
 
 function now() {
   const d = new Date();
@@ -15,11 +14,11 @@ function now() {
     year: cst.getFullYear(),
     month: cst.getMonth() + 1,
     day: cst.getDate(),
-    weekday: DAYS[cst.getDay()],
   };
 }
 
 export function ClockCard() {
+  const { i18n } = useTranslation();
   const [t, setT] = useState<ReturnType<typeof now> | null>(null);
   const totalSec = useRef(0);
   const prevS = useRef(-1);
@@ -144,7 +143,13 @@ export function ClockCard() {
             </span>
           </div>
           <div className="mt-2 text-xs tracking-wide" style={{ color: "var(--md-text-secondary)" }}>
-            {t.year}年{t.month}月{t.day}日 周{t.weekday}
+            {new Intl.DateTimeFormat(i18n.language, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              weekday: "long",
+              timeZone: "Asia/Shanghai",
+            }).format(new Date(Date.UTC(t.year, t.month - 1, t.day)))}
           </div>
         </div>
       </div>

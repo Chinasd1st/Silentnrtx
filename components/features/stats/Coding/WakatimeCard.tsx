@@ -41,7 +41,7 @@ const CACHE_TTL = 30 * 60 * 1000;
 const SHOW_DAYS_DEFAULT = 7;
 
 export function WakatimeCard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [entries, setEntries] = useState<DayEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -94,6 +94,46 @@ export function WakatimeCard() {
     fetchStats();
   }, [fetchStats]);
 
+  const aiSum = useMemo(
+    () =>
+      entries.reduce(
+        (s, e) => {
+          const gt = e.grand_total;
+          const agentCosts = gt?.ai_agent_costs;
+          const dayCost = agentCosts ? Object.values(agentCosts).reduce((sum, v) => sum + v, 0) : 0;
+          const agents = agentCosts ? Object.keys(agentCosts) : [];
+          for (const name of agents) {
+            s.agents[name] = (s.agents[name] || 0) + (agentCosts?.[name] || 0);
+          }
+          return {
+            add: s.add + (gt?.ai_additions || 0),
+            del: s.del + (gt?.ai_deletions || 0),
+            prompts: s.prompts + (gt?.ai_prompt_events || 0),
+            inTokens: s.inTokens + (gt?.ai_input_tokens || 0),
+            outTokens: s.outTokens + (gt?.ai_output_tokens || 0),
+            cost: s.cost + dayCost,
+            humanAdd: s.humanAdd + (gt?.human_additions || 0),
+            humanDel: s.humanDel + (gt?.human_deletions || 0),
+            agents: s.agents,
+          };
+        },
+        {
+          add: 0,
+          del: 0,
+          prompts: 0,
+          inTokens: 0,
+          outTokens: 0,
+          cost: 0,
+          humanAdd: 0,
+          humanDel: 0,
+          agents: {} as Record<string, number>,
+        }
+      ),
+    [entries]
+  );
+
+  const fmtNum = (n: number) => n.toLocaleString();
+
   if (!cfg.enabled || !cfg.embedId) return null;
   if (loading) return <CardSkeleton />;
   if (error) return <ErrorCard title={t("wakatime.title")} onRetry={fetchStats} />;
@@ -103,42 +143,6 @@ export function WakatimeCard() {
   const totalH = Math.floor(totalSec / 3600);
   const totalM = Math.floor((totalSec % 3600) / 60);
   const maxDay = Math.max(...entries.map((e) => e.grand_total?.total_seconds || 0), 1);
-
-  const aiSum = entries.reduce(
-    (s, e) => {
-      const gt = e.grand_total;
-      const agentCosts = gt?.ai_agent_costs;
-      const dayCost = agentCosts ? Object.values(agentCosts).reduce((sum, v) => sum + v, 0) : 0;
-      const agents = agentCosts ? Object.keys(agentCosts) : [];
-      for (const name of agents) {
-        s.agents[name] = (s.agents[name] || 0) + (agentCosts?.[name] || 0);
-      }
-      return {
-        add: s.add + (gt?.ai_additions || 0),
-        del: s.del + (gt?.ai_deletions || 0),
-        prompts: s.prompts + (gt?.ai_prompt_events || 0),
-        inTokens: s.inTokens + (gt?.ai_input_tokens || 0),
-        outTokens: s.outTokens + (gt?.ai_output_tokens || 0),
-        cost: s.cost + dayCost,
-        humanAdd: s.humanAdd + (gt?.human_additions || 0),
-        humanDel: s.humanDel + (gt?.human_deletions || 0),
-        agents: s.agents,
-      };
-    },
-    {
-      add: 0,
-      del: 0,
-      prompts: 0,
-      inTokens: 0,
-      outTokens: 0,
-      cost: 0,
-      humanAdd: 0,
-      humanDel: 0,
-      agents: {} as Record<string, number>,
-    }
-  );
-
-  const fmtNum = (n: number) => n.toLocaleString();
 
   return (
     <>
@@ -161,6 +165,7 @@ export function WakatimeCard() {
         <div
           className="rounded-[16px] p-3 space-y-1"
           style={{ backgroundColor: "var(--md-primary-008)" }}
+          aria-live="polite"
         >
           {visible.map((day, i) => {
             const g = day.grand_total;
@@ -204,9 +209,9 @@ export function WakatimeCard() {
           )}
         </div>
         {cacheTime && (
-          <p className="text-[9px] text-right mt-0.5" style={{ color: "var(--md-text-secondary)" }}>
+          <p className="text-[9px] text-right mt-3" style={{ color: "var(--md-text-muted)" }}>
             {t("wakatime.cached_at")}{" "}
-            {new Date(cacheTime).toLocaleString(undefined, {
+            {new Date(cacheTime).toLocaleString(i18n.language, {
               month: "short",
               day: "numeric",
               hour: "2-digit",
@@ -287,17 +292,18 @@ function WakaModal({
       >
         <div
           className="flex items-center justify-between px-5 py-4 border-b"
-          style={{ borderColor: "var(--md-card-border)" }}
+          style={{ borderColor: "rgba(255,255,255,0.06)" }}
         >
           <h2
             className="font-heading text-base font-semibold"
             style={{ color: "var(--md-text-primary)" }}
           >
-            {t("wakatime.title")} �?30 {t("wakatime.days")}
+            {t("wakatime.title")} — {t("wakatime.days")}
           </h2>
           <button
             type="button"
             onClick={onClose}
+            aria-label={t("wakatime.close")}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
           >
             &times;
@@ -337,7 +343,7 @@ function WakaModal({
           })}
         </div>
 
-        <div className="border-t px-5 py-4" style={{ borderColor: "var(--md-card-border)" }}>
+        <div className="border-t px-5 py-4" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
           <p
             className="text-xs font-medium mb-3 text-center"
             style={{ color: "var(--md-text-muted)" }}
@@ -445,36 +451,4 @@ function PieSlice({
   const large = pct > 50 ? 1 : 0;
   const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
   return <path d={d} fill={color} />;
-}
-
-function _StatBox({ label, value }: { label: string; value: string }) {
-  return (
-    <div
-      className="rounded-[16px] p-4 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
-      style={{ backgroundColor: "var(--md-primary-008)" }}
-    >
-      <p className="text-lg font-bold font-heading" style={{ color: "var(--md-primary)" }}>
-        {value}
-      </p>
-      <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>
-        {label}
-      </p>
-    </div>
-  );
-}
-
-function _CostBox({ label, value }: { label: string; value: string }) {
-  return (
-    <div
-      className="rounded-[16px] p-4 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
-      style={{ backgroundColor: "var(--md-primary-008)" }}
-    >
-      <p className="text-xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>
-        {value}
-      </p>
-      <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>
-        {label}
-      </p>
-    </div>
-  );
 }

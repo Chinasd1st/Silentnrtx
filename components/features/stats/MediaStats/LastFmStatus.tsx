@@ -33,7 +33,7 @@ interface TopAlbumsResponse {
 type Tab = "nowplaying" | "top";
 
 export function LastFmStatus() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [track, setTrack] = useState<LastFmTrack | null>(null);
   const [state, setState] = useState<"loading" | "playing" | "recent" | "error">("loading");
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -97,13 +97,16 @@ export function LastFmStatus() {
           albumsCache.current = { data: albums, time: now };
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (process.env.NODE_ENV === "development")
+          console.warn("[LastFmStatus] fetchAlbums failed");
+      });
   }, []);
 
   useEffect(() => {
     fetchTrack();
     fetchAlbums();
-  }, [fetchTrack, fetchAlbums]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchTrack, fetchAlbums]);
 
   const albumArt =
     track?.image?.find((i) => i.size === "medium")?.["#text"] ||
@@ -136,11 +139,8 @@ export function LastFmStatus() {
           href={siteConfig.social.lastfm.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs shrink-0 transition-colors"
+          className="text-xs shrink-0 transition-colors hover:text-[var(--md-primary)]"
           style={{ color: "var(--md-text-muted)" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = c)}
-          suppressHydrationWarning
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-muted)")}
         >
           {t("lastfm.profile")} &rarr;
         </a>
@@ -174,7 +174,7 @@ export function LastFmStatus() {
       </div>
 
       {tab === "nowplaying" && track && (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4" aria-live="polite">
           <div className="relative w-16 h-16 shrink-0">
             <div className="absolute inset-0 flex items-center justify-center rounded-[16px] bg-white/6 text-2xl opacity-40">
               &#9835;
@@ -234,7 +234,7 @@ export function LastFmStatus() {
             )}
             {track.date?.uts && (
               <p className="text-[10px] mt-1" style={{ color: "var(--md-text-muted)" }}>
-                {new Date(Number(track.date.uts) * 1000).toLocaleString(undefined, {
+                {new Date(Number(track.date.uts) * 1000).toLocaleString(i18n.language, {
                   year: "numeric",
                   month: "short",
                   day: "numeric",

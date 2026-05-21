@@ -29,7 +29,7 @@ interface CmaItem extends EqBase {
 
 const CACHE_TTL = 5 * 60 * 1000;
 
-function useEq<T>(cacheKey: string, url: string, mapFn: (r: any) => T) {
+function useEq<T>(cacheKey: string, url: string, mapFn: (r: unknown) => T) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -45,7 +45,7 @@ function useEq<T>(cacheKey: string, url: string, mapFn: (r: any) => T) {
     }
     fetchWithRetry(() => api.get(url))
       .then(({ data }) => data)
-      .then((raw: Record<string, any>) => {
+      .then((raw: Record<string, unknown>) => {
         const keys = Object.keys(raw)
           .filter((k) => /^No\d+$/.test(k))
           .sort();
@@ -69,8 +69,12 @@ export function EarthquakeCard() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<"jma" | "cma">("jma");
 
-  const jma = useEq<JmaItem>("eq_jma", "https://api.wolfx.jp/jma_eqlist.json", (r) => r);
-  const cma = useEq<CmaItem>("eq_cma", "https://api.wolfx.jp/cenc_eqlist.json", (r) => r);
+  const jma = useEq<JmaItem>("eq_jma", "https://api.wolfx.jp/jma_eqlist.json", (r) => r as JmaItem);
+  const cma = useEq<CmaItem>(
+    "eq_cma",
+    "https://api.wolfx.jp/cenc_eqlist.json",
+    (r) => r as CmaItem
+  );
 
   if (jma.loading && cma.loading) return <CardSkeleton />;
 
@@ -95,6 +99,17 @@ export function EarthquakeCard() {
       />
 
       {active.error && !eq && <ErrorCard title={t("earthquake.title")} onRetry={active.retry} />}
+
+      {!active.error && !eq && (
+        <div
+          className="rounded-[16px] p-3 mb-3 flex items-center justify-center"
+          style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}
+        >
+          <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>
+            {t("earthquake.no_data")}
+          </p>
+        </div>
+      )}
 
       {eq && (
         <div

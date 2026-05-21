@@ -114,7 +114,11 @@ export function SettingsCard() {
                     {t("settings.weather_auto")}
                   </PillButton>
                 </div>
+                <label htmlFor="manual-city" className="sr-only">
+                  {t("settings.weather_manual")}
+                </label>
                 <input
+                  id="manual-city"
                   type="text"
                   value={s.manualCity || ""}
                   placeholder={siteConfig.weather.city}
@@ -156,7 +160,13 @@ export function SettingsCard() {
                     {t("settings.hue_off")}
                   </PillButton>
                 </div>
-                {s.hueEnabled && <HueSlider value={s.customHue ?? 250} onCommit={commitHue} />}
+                {s.hueEnabled && (
+                  <HueSlider
+                    value={s.customHue ?? 250}
+                    onCommit={commitHue}
+                    ariaLabel={t("settings.hue")}
+                  />
+                )}
               </div>
             </div>
 
@@ -187,6 +197,7 @@ function ClearCacheButton() {
     <button
       type="button"
       onClick={() => {
+        if (!window.confirm(t("settings.clear_cache_confirm"))) return;
         clearAllCache();
         setCleared(true);
         setTimeout(() => setCleared(false), 2000);
@@ -206,7 +217,15 @@ function ClearCacheButton() {
   );
 }
 
-function HueSlider({ value, onCommit }: { value: number; onCommit: (v: number) => void }) {
+function HueSlider({
+  value,
+  onCommit,
+  ariaLabel,
+}: {
+  value: number;
+  onCommit: (v: number) => void;
+  ariaLabel?: string;
+}) {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -234,6 +253,7 @@ function HueSlider({ value, onCommit }: { value: number; onCommit: (v: number) =
         defaultValue={value}
         onPointerUp={commit}
         onBlur={commit}
+        aria-label={ariaLabel}
         className="hue-slider flex-1 cursor-pointer"
       />
       <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>

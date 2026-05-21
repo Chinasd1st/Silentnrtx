@@ -18,7 +18,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 ## Design
 
 - **Material Design 3–like** — 24px rounded elevated cards, `oklch()` dynamic color palette driven by a single `--md-hue` variable
-- **Always-dark first** — dark mode default, automatic light mode follows `prefers-color-scheme`, plus manual toggle (☀️ / 🌙 / 🖥️)
+- **Always-dark first** — dark mode default, automatic light mode follows `prefers-color-scheme`, three-state toggle via ThemeSwitch
 - **Glassmorphism background** — Bing daily wallpaper with `backdrop-filter` blur (disabled in light mode)
 - **Masonry waterfall layout** — CSS `columns`, cards auto-flow by content height
 - **Pure CSS animations** — no JavaScript animation libraries
@@ -29,12 +29,13 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 |---|---|
 | Framework | Next.js 16 (App Router) + Turbopack |
 | Language | TypeScript (strict) |
-| Styling | Tailwind CSS v3 + CSS Custom Properties |
+| Styling | Tailwind CSS v4 + CSS Custom Properties |
 | Icons | react-icons (FontAwesome / Simple Icons) |
 | L10n | react-i18next (zh-CN / en-US, browser auto-detect) |
 | Build | `output: "export"` — fully static |
 | Deploy | GitHub Pages at `/Silentnrtx` subpath |
 | CI/CD | GitHub Actions (push → build → deploy) |
+| Package Manager | pnpm 10 |
 
 ## Data Sources (100% client-side, no server)
 
@@ -78,9 +79,9 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 ## Getting Started
 
 ```bash
-npm ci
-npm run dev     # dev server at localhost:3000
-npm run build   # static export to ./out/
+pnpm install --frozen-lockfile
+pnpm run dev     # dev server at localhost:3000
+pnpm run build   # static export to ./out/
 ```
 
 ### Environment Variables

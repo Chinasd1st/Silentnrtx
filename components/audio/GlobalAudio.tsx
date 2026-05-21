@@ -106,7 +106,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       el.currentTime = 0;
       setCurrentTime(0);
     }
-    el.play().catch(() => {});
+    el.play().catch(() => {
+      if (process.env.NODE_ENV === "development") console.warn("[GlobalAudio] play() rejected");
+    });
 
     if (meta && navigator.mediaSession) {
       setMetadata(meta);
@@ -133,7 +135,9 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     audioRef.current?.pause();
   }, []);
   const resume = useCallback(() => {
-    audioRef.current?.play().catch(() => {});
+    audioRef.current?.play().catch(() => {
+      if (process.env.NODE_ENV === "development") console.warn("[GlobalAudio] resume() rejected");
+    });
   }, []);
   const seek = useCallback((t: number) => {
     if (audioRef.current) audioRef.current.currentTime = t;

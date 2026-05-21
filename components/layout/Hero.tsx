@@ -106,12 +106,12 @@ export function Hero() {
         <button
           type="button"
           onClick={toggleLang}
-          aria-label={lang === "zh-CN" ? "当前语言：中文" : "Current: English"}
+          aria-label={t(lang === "zh-CN" ? "lang.zh_aria" : "lang.en_aria")}
           suppressHydrationWarning
           className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/6 active:scale-90"
           style={{ color: "var(--md-text-primary)" }}
         >
-          {lang === "zh-CN" ? "ZH" : "EN"}
+          {t(lang === "zh-CN" ? "lang.zh" : "lang.en")}
         </button>
       </div>
 

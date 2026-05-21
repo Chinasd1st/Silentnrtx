@@ -91,7 +91,7 @@ export function MonkeytypeCard() {
 
       {stats && (
         <div
-          className="rounded-md3-sm p-2 text-center"
+          className="rounded-[16px] p-2 text-center"
           style={{ backgroundColor: "var(--md-primary-008)" }}
         >
           <span
@@ -99,8 +99,7 @@ export function MonkeytypeCard() {
             style={{ color: "var(--md-text-muted)" }}
             suppressHydrationWarning
           >
-            {stats.completedTests.toLocaleString()} {t("monkeytype.tests")} · {hours}
-            {t("monkeytype.hours")} {t("monkeytype.typed")}
+            {t("monkeytype.stats", { tests: stats.completedTests.toLocaleString(), hours })}
           </span>
         </div>
       )}
@@ -123,7 +122,7 @@ function Mini({
 }) {
   return (
     <div
-      className="rounded-md3-sm p-3 text-center"
+      className="rounded-[16px] p-3 text-center"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>

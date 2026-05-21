@@ -18,7 +18,7 @@
 ## 设计风格
 
 - **Material Design 3–like** — 24px 圆角卡片、`oklch()` 动态配色，由单个 `--md-hue` 变量驱动全局色板
-- **深色优先** — 默认深色模式，跟随系统 `prefers-color-scheme` 自动切换浅色，支持手动三档切换（☀️ / 🌙 / 🖥️）
+- **深色优先** — 默认深色模式，跟随系统 `prefers-color-scheme` 自动切换浅色，支持三档 ThemeSwitch 手动切换
 - **毛玻璃背景** — Bing 每日壁纸 + `backdrop-filter` 模糊（浅色模式自动关闭）
 - **瀑布流布局** — CSS `columns`，卡片高度自适应排列
 - **纯 CSS 动画** — 未引入任何 JavaScript 动画库
@@ -29,12 +29,13 @@
 |---|---|
 | 框架 | Next.js 16 (App Router) + Turbopack |
 | 语言 | TypeScript (strict) |
-| 样式 | Tailwind CSS v3 + CSS Custom Properties |
+| 样式 | Tailwind CSS v4 + CSS Custom Properties |
 | 图标 | react-icons (FontAwesome / Simple Icons) |
 | 本地化 | react-i18next (zh-CN / en-US，浏览器自动检测) |
 | 构建 | `output: "export"` — 纯静态导出 |
 | 部署 | GitHub Pages，子路径 `/Silentnrtx` |
 | CI/CD | GitHub Actions (push → 构建 → 部署) |
+| 包管理器 | pnpm 10 |
 
 ## 数据源（全客户端，无服务器）
 
@@ -69,7 +70,7 @@
 - 图片灯箱（createPortal）
 - 时钟（UTC+8，SVG 模拟 + 数字 + 装饰圆盘）
 - 快捷键面板（按 `?` 打开）
-- 三态主题切换（☀️ / 🌙 / 🖥️）
+- 三态主题切换（ThemeSwitch）
 - 中英文 i18n
 - 站点访问统计
 - 构建时间 + commit SHA
@@ -78,9 +79,9 @@
 ## 本地开发
 
 ```bash
-npm ci
-npm run dev     # 启动开发服务器 localhost:3000
-npm run build   # 构建静态导出到 ./out/
+pnpm install --frozen-lockfile
+pnpm run dev     # 启动开发服务器 localhost:3000
+pnpm run build   # 构建静态导出到 ./out/
 ```
 
 ### 环境变量

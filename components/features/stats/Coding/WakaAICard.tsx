@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaLightbulb } from "react-icons/fa";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
@@ -38,11 +38,20 @@ const CACHE_KEY = "wakatime";
 const CACHE_TTL = 30 * 60 * 1000;
 
 export function WakaAICard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [entries, setEntries] = useState<DayEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [_retryCount, setRetryCount] = useState(0);
+  const skipCacheRef = useRef(false);
   const cfg = siteConfig.wakatime;
+
+  const retry = useCallback(() => {
+    skipCacheRef.current = true;
+    setError(false);
+    setLoading(true);
+    setRetryCount((c) => c + 1);
+  }, []);
 
   const cacheTime = useMemo(() => {
     try {
@@ -59,7 +68,8 @@ export function WakaAICard() {
       setLoading(false);
       return;
     }
-    const cached = getCache<DayEntry[]>(CACHE_KEY, CACHE_TTL);
+    const cached = skipCacheRef.current ? null : getCache<DayEntry[]>(CACHE_KEY, CACHE_TTL);
+    skipCacheRef.current = false;
     if (cached) {
       setEntries(cached);
       setLoading(false);
@@ -84,51 +94,54 @@ export function WakaAICard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!cfg.enabled || !cfg.embedId) return null;
-  if (loading) return <CardSkeleton />;
-  if (error)
-    return <ErrorCard title={t("wakatime.title")} onRetry={() => window.location.reload()} />;
-
-  const aiSum = entries.reduce(
-    (s, e) => {
-      const gt = e.grand_total;
-      const agentCosts = gt?.ai_agent_costs;
-      const dayCost = agentCosts ? Object.values(agentCosts).reduce((sum, v) => sum + v, 0) : 0;
-      const agents = agentCosts ? Object.keys(agentCosts) : [];
-      for (const name of agents) {
-        s.agents[name] = (s.agents[name] || 0) + (agentCosts?.[name] || 0);
-      }
-      return {
-        add: s.add + (gt?.ai_additions || 0),
-        del: s.del + (gt?.ai_deletions || 0),
-        prompts: s.prompts + (gt?.ai_prompt_events || 0),
-        inTokens: s.inTokens + (gt?.ai_input_tokens || 0),
-        outTokens: s.outTokens + (gt?.ai_output_tokens || 0),
-        cost: s.cost + dayCost,
-        humanAdd: s.humanAdd + (gt?.human_additions || 0),
-        humanDel: s.humanDel + (gt?.human_deletions || 0),
-        agents: s.agents,
-      };
-    },
-    {
-      add: 0,
-      del: 0,
-      prompts: 0,
-      inTokens: 0,
-      outTokens: 0,
-      cost: 0,
-      humanAdd: 0,
-      humanDel: 0,
-      agents: {} as Record<string, number>,
-    }
+  const aiSum = useMemo(
+    () =>
+      entries.reduce(
+        (s, e) => {
+          const gt = e.grand_total;
+          const agentCosts = gt?.ai_agent_costs;
+          const dayCost = agentCosts ? Object.values(agentCosts).reduce((sum, v) => sum + v, 0) : 0;
+          const agents = agentCosts ? Object.keys(agentCosts) : [];
+          for (const name of agents) {
+            s.agents[name] = (s.agents[name] || 0) + (agentCosts?.[name] || 0);
+          }
+          return {
+            add: s.add + (gt?.ai_additions || 0),
+            del: s.del + (gt?.ai_deletions || 0),
+            prompts: s.prompts + (gt?.ai_prompt_events || 0),
+            inTokens: s.inTokens + (gt?.ai_input_tokens || 0),
+            outTokens: s.outTokens + (gt?.ai_output_tokens || 0),
+            cost: s.cost + dayCost,
+            humanAdd: s.humanAdd + (gt?.human_additions || 0),
+            humanDel: s.humanDel + (gt?.human_deletions || 0),
+            agents: s.agents,
+          };
+        },
+        {
+          add: 0,
+          del: 0,
+          prompts: 0,
+          inTokens: 0,
+          outTokens: 0,
+          cost: 0,
+          humanAdd: 0,
+          humanDel: 0,
+          agents: {} as Record<string, number>,
+        }
+      ),
+    [entries]
   );
 
   const fmtNum = (n: number) => n.toLocaleString();
 
+  if (!cfg.enabled || !cfg.embedId) return null;
+  if (loading) return <CardSkeleton />;
+  if (error) return <ErrorCard title={t("wakatime.title")} onRetry={retry} />;
+
   return (
     <Card>
       <CardHeader icon={<FaLightbulb />} title="Vibe Coding" />
-      <div className="space-y-2">
+      <div className="space-y-2" aria-live="polite">
         <div className="grid grid-cols-2 gap-3">
           <StatBox label={t("wakatime.ai_additions")} value={fmtNum(aiSum.add)} />
           <StatBox label={t("wakatime.ai_deletions")} value={fmtNum(aiSum.del)} />
@@ -152,9 +165,9 @@ export function WakaAICard() {
         />
       </div>
       {cacheTime && (
-        <p className="text-[9px] text-right mt-0.5" style={{ color: "var(--md-text-secondary)" }}>
+        <p className="text-[9px] text-right mt-3" style={{ color: "var(--md-text-muted)" }}>
           {t("wakatime.cached_at")}{" "}
-          {new Date(cacheTime).toLocaleString(undefined, {
+          {new Date(cacheTime).toLocaleString(i18n.language, {
             month: "short",
             day: "numeric",
             hour: "2-digit",
