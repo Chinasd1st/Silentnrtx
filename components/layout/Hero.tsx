@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { SettingsCard } from "@/components/dialogs/SettingsCard";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { ThemeSwitch } from "@/components/widgets/ThemeSwitch";
 import { siteConfig } from "@/config";
 import { highlight } from "@/lib/highlight";
-import { changeLang, getDetectedLang, useTranslation } from "@/lib/i18n";
+import { changeLang, useTranslation } from "@/lib/i18n";
 
 export function Hero() {
-  const { t } = useTranslation();
-  const [lang, setLang] = useState(getDetectedLang);
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const bgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const toggleLang = () => {
     const next = lang === "zh-CN" ? "en-US" : "zh-CN";
-    setLang(next);
     changeLang(next);
   };
 
@@ -87,7 +86,6 @@ export function Hero() {
           <p
             className="mt-3 text-sm leading-[1.4]"
             style={{ color: "var(--md-text-secondary)", letterSpacing: "0.08em" }}
-            suppressHydrationWarning
           >
             {t("profile.location")}
           </p>
@@ -107,7 +105,6 @@ export function Hero() {
           type="button"
           onClick={toggleLang}
           aria-label={t(lang === "zh-CN" ? "lang.zh_aria" : "lang.en_aria")}
-          suppressHydrationWarning
           className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/6 active:scale-90"
           style={{ color: "var(--md-text-primary)" }}
         >

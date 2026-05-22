@@ -98,11 +98,7 @@ export function BlogPosts() {
 
       {!loading && !error && !hasPosts && (
         <div className="flex flex-col items-center gap-2 py-8 text-center">
-          <p
-            className="text-sm"
-            style={{ color: "var(--md-text-secondary)" }}
-            suppressHydrationWarning
-          >
+          <p className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
             {t("blog.empty")}
           </p>
         </div>

@@ -39,7 +39,6 @@ export function SettingsCard() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={t("settings.title")}
-        suppressHydrationWarning
         className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 hover:bg-white/6 active:scale-90"
         style={{ color: "var(--md-text-primary)" }}
       >
@@ -81,7 +80,6 @@ export function SettingsCard() {
                 onClick={() => setOpen(false)}
                 aria-label={t("gallery.close")}
                 className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6"
-                suppressHydrationWarning
                 style={{ color: "var(--md-text-muted)" }}
               >
                 <FiX size={16} />
@@ -94,7 +92,6 @@ export function SettingsCard() {
                 <p
                   className="text-xs font-medium mb-2.5"
                   style={{ color: "var(--md-text-secondary)" }}
-                  suppressHydrationWarning
                 >
                   {t("settings.weather_source")}
                 </p>
@@ -140,7 +137,6 @@ export function SettingsCard() {
                 <p
                   className="text-xs font-medium mb-2.5"
                   style={{ color: "var(--md-text-secondary)" }}
-                  suppressHydrationWarning
                 >
                   {t("settings.hue")}
                 </p>
@@ -175,11 +171,7 @@ export function SettingsCard() {
               <ClearCacheButton />
             </div>
 
-            <p
-              className="mt-4 text-[10px] text-center"
-              style={{ color: "var(--md-text-muted)" }}
-              suppressHydrationWarning
-            >
+            <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }}>
               {t("settings.persist")}
             </p>
           </div>

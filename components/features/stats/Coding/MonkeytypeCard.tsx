@@ -94,11 +94,7 @@ export function MonkeytypeCard() {
           className="rounded-[16px] p-2 text-center"
           style={{ backgroundColor: "var(--md-primary-008)" }}
         >
-          <span
-            className="text-[10px]"
-            style={{ color: "var(--md-text-muted)" }}
-            suppressHydrationWarning
-          >
+          <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
             {t("monkeytype.stats", { tests: stats.completedTests.toLocaleString(), hours })}
           </span>
         </div>

@@ -35,11 +35,7 @@ export function ProfileCard() {
           >
             {profile.name}
           </h2>
-          <p
-            className="mt-0.5 text-sm"
-            style={{ color: "var(--md-text-secondary)" }}
-            suppressHydrationWarning
-          >
+          <p className="mt-0.5 text-sm" style={{ color: "var(--md-text-secondary)" }}>
             {t("profile.location")}
           </p>
           <p className="mt-1 text-base" style={{ color: "var(--md-primary)" }}>

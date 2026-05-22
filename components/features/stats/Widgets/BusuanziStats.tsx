@@ -26,7 +26,6 @@ export function BusuanziStats() {
         <h2
           className="font-heading text-lg font-semibold"
           style={{ color: "var(--md-text-primary)" }}
-          suppressHydrationWarning
         >
           {t("stats.title")}
         </h2>
@@ -44,11 +43,7 @@ export function BusuanziStats() {
           >
             <span id="busuanzi_site_pv">--</span>
           </p>
-          <p
-            className="text-xs mt-1"
-            style={{ color: "var(--md-text-muted)" }}
-            suppressHydrationWarning
-          >
+          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>
             {t("stats.pv")}
           </p>
         </div>
@@ -64,11 +59,7 @@ export function BusuanziStats() {
           >
             <span id="busuanzi_site_uv">--</span>
           </p>
-          <p
-            className="text-xs mt-1"
-            style={{ color: "var(--md-text-muted)" }}
-            suppressHydrationWarning
-          >
+          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>
             {t("stats.uv")}
           </p>
         </div>

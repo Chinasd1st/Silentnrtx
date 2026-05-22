@@ -71,11 +71,7 @@ export function GitHubGrass() {
         title={t("github.contributions")}
         className="mb-3"
         action={
-          <span
-            className="text-xs"
-            style={{ color: "var(--md-text-muted)" }}
-            suppressHydrationWarning
-          >
+          <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
             {isZh
               ? `${t("github.last_year")} ${total.toLocaleString()}`
               : `${total.toLocaleString()} ${t("github.last_year")}`}

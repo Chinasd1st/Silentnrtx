@@ -5,14 +5,12 @@ import { initReactI18next, useTranslation as useOrigTranslation } from "react-i1
 import en from "@/locales/en-US.json";
 import zh from "@/locales/zh-CN.json";
 
-const lang = getDetectedLang();
-
 i18next.use(initReactI18next).init({
   resources: {
     "zh-CN": { translation: zh },
     "en-US": { translation: en },
   },
-  lng: lang,
+  lng: "zh-CN",
   fallbackLng: "zh-CN",
   interpolation: { escapeValue: false },
   returnNull: false,

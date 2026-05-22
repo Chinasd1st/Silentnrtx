@@ -99,7 +99,6 @@ export function ReposCard() {
           <h2
             className="font-heading text-lg font-semibold"
             style={{ color: "var(--md-text-primary)" }}
-            suppressHydrationWarning
           >
             {t("github.repos")}
           </h2>

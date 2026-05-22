@@ -157,11 +157,7 @@ export function WeatherCard() {
         >
           {w.temp_C}°C
         </div>
-        <p
-          className="text-xs mt-2"
-          style={{ color: "var(--md-text-secondary)" }}
-          suppressHydrationWarning
-        >
+        <p className="text-xs mt-2" style={{ color: "var(--md-text-secondary)" }}>
           {t("weather.feels_like")} {w.FeelsLikeC}°C{desc ? ` · ${desc}` : ""}
         </p>
       </div>

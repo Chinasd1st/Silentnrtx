@@ -7,8 +7,12 @@ import { useVersion } from "@/lib/hooks/useVersion";
 
 export function Footer() {
   const cfg = siteConfig.footer;
-  const year = new Date().getFullYear();
+  const [year, setYear] = useState(new Date().getFullYear());
   const displayText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
   const ver = useVersion();
   const [timeStr, setTimeStr] = useState("");
 

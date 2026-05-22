@@ -57,7 +57,6 @@ export function ShortcutsPanel() {
           <h2
             className="font-heading text-lg font-semibold"
             style={{ color: "var(--md-text-primary)" }}
-            suppressHydrationWarning
           >
             {t("shortcuts.title")}
           </h2>
@@ -65,11 +64,7 @@ export function ShortcutsPanel() {
         <div className="space-y-3">
           {SHORTCUTS.map((s) => (
             <div key={s.key} className="flex items-center justify-between">
-              <span
-                className="text-sm"
-                style={{ color: "var(--md-text-secondary)" }}
-                suppressHydrationWarning
-              >
+              <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
                 {t(s.descKey)}
               </span>
               <kbd

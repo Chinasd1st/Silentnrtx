@@ -19,7 +19,6 @@ export function CardHeader({ icon, title, action, className = "" }: CardHeaderPr
         <h2
           className="font-heading text-lg font-semibold truncate"
           style={{ color: "var(--md-text-primary)" }}
-          suppressHydrationWarning
         >
           {title}
         </h2>

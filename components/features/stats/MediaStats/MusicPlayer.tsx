@@ -161,7 +161,6 @@ export function MusicPlayer() {
           <h2
             className="font-heading text-lg font-semibold truncate"
             style={{ color: "var(--md-text-primary)" }}
-            suppressHydrationWarning
           >
             {t("music.title")}
           </h2>

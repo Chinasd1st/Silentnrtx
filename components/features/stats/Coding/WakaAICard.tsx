@@ -53,13 +53,15 @@ export function WakaAICard() {
     setRetryCount((c) => c + 1);
   }, []);
 
-  const cacheTime = useMemo(() => {
+  const [cacheTime, setCacheTime] = useState<number | null>(null);
+
+  useEffect(() => {
     try {
       const raw = localStorage.getItem(CACHE_KEY);
-      if (!raw) return null;
-      return (JSON.parse(raw) as { ts: number }).ts;
+      if (!raw) return;
+      setCacheTime((JSON.parse(raw) as { ts: number }).ts);
     } catch {
-      return null;
+      /* noop */
     }
   }, []);
 

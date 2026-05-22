@@ -129,11 +129,7 @@ export function EarthquakeCard() {
             >
               M{(eq as EqBase).magnitude}
             </span>
-            <span
-              className="text-xs leading-none"
-              style={{ color: "var(--md-text-muted)" }}
-              suppressHydrationWarning
-            >
+            <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
               {tab === "jma"
                 ? `${t("earthquake.shindo")} ${(eq as JmaItem).shindo} · ${t("earthquake.depth")} ${(eq as JmaItem).depth}`
                 : `${t("earthquake.intensity")} ${(eq as CmaItem).intensity} · ${t("earthquake.depth")} ${(eq as CmaItem).depth}km`}

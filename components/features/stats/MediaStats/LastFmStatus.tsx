@@ -130,7 +130,6 @@ export function LastFmStatus() {
           <h2
             className="font-heading text-lg font-semibold"
             style={{ color: "var(--md-text-primary)" }}
-            suppressHydrationWarning
           >
             {t("lastfm.title")}
           </h2>
@@ -150,7 +149,6 @@ export function LastFmStatus() {
         <button
           type="button"
           onClick={() => setTab("nowplaying")}
-          suppressHydrationWarning
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{
             backgroundColor: tab === "nowplaying" ? activeBg : inactiveBg,
@@ -162,7 +160,6 @@ export function LastFmStatus() {
         <button
           type="button"
           onClick={() => setTab("top")}
-          suppressHydrationWarning
           className="rounded-full px-3 py-1 text-xs font-medium transition-all"
           style={{
             backgroundColor: tab === "top" ? activeBg : inactiveBg,
@@ -293,11 +290,7 @@ export function LastFmStatus() {
       )}
 
       {tab === "top" && albums.length === 0 && (
-        <p
-          className="text-xs text-center py-4"
-          style={{ color: "var(--md-text-muted)" }}
-          suppressHydrationWarning
-        >
+        <p className="text-xs text-center py-4" style={{ color: "var(--md-text-muted)" }}>
           {t("lastfm.none")}
         </p>
       )}
