@@ -51,6 +51,8 @@
   "stats.title": "Site Stats",
   "stats.pv": "Page Views",
   "stats.uv": "Visitors",
+  "stats.page_pv": "Page PV",
+  "stats.page_uv": "Page UV",
   "earthquake.title": "Earthquake",
   "earthquake.time": "Time",
   "earthquake.intensity": "Intensity",

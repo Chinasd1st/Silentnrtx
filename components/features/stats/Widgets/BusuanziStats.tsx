@@ -28,7 +28,9 @@ export function BusuanziStats() {
           {t("stats.title")}
         </h2>
       </div>
+      {/* 保持 grid-cols-2 不变，自动变为 2×2 布局 */}
       <div className="grid grid-cols-2 gap-3">
+        {/* 原有：全站 PV */}
         <div
           className="rounded-[16px] p-4 text-center"
           style={{ backgroundColor: "var(--md-primary-008)" }}
@@ -45,6 +47,7 @@ export function BusuanziStats() {
             {t("stats.pv")}
           </p>
         </div>
+
         <div
           className="rounded-[16px] p-4 text-center"
           style={{ backgroundColor: "var(--md-primary-008)" }}
@@ -59,6 +62,38 @@ export function BusuanziStats() {
           </p>
           <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>
             {t("stats.uv")}
+          </p>
+        </div>
+        <div
+          className="rounded-[16px] p-4 text-center"
+          style={{ backgroundColor: "var(--md-primary-008)" }}
+        >
+          <p
+            className="text-2xl font-bold font-heading"
+            style={{ color: "var(--md-primary)" }}
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <span id="busuanzi_page_pv">--</span>
+          </p>
+          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>
+            {t("stats.page_pv")}
+          </p>
+        </div>
+        <div
+          className="rounded-[16px] p-4 text-center"
+          style={{ backgroundColor: "var(--md-primary-008)" }}
+        >
+          <p
+            className="text-2xl font-bold font-heading"
+            style={{ color: "var(--md-primary)" }}
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <span id="busuanzi_page_uv">--</span>
+          </p>
+          <p className="text-xs mt-1" style={{ color: "var(--md-text-muted)" }}>
+            {t("stats.page_uv")}
           </p>
         </div>
       </div>
