@@ -11,9 +11,7 @@ export function BusuanziStats() {
     if (!siteConfig.busuanzi.enabled) return;
     const script = document.createElement("script");
     script.defer = true;
-    script.crossOrigin = "anonymous";
-    script.integrity = "sha384-mu6spjIrGX8WuulyGwMm8UgKagWrKWmjoMMnEvCSfs76HzzJfjGqbWW8REev9BBK";
-    script.src = "//cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js";
+    script.src = "https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js";
     document.body.appendChild(script);
     return () => {
       script.remove();
