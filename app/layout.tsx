@@ -54,11 +54,11 @@ export const metadata: Metadata = {
 
 const CSP = [
   "default-src 'self'",
-  "connect-src 'self' https://api.github.com https://github-contributions-api.deno.dev https://ws.audioscrobbler.com https://wttr.in https://api.wolfx.jp https://api.monkeytype.com https://api.rss2json.com https://wakatime.com https://api.lolicon.app https://bing.biturl.top https://api.injahow.cn https://osu-sig.s23.moe",
+  "connect-src 'self' https://api.github.com https://github-contributions-api.deno.dev https://ws.audioscrobbler.com https://wttr.in https://api.wolfx.jp https://api.monkeytype.com https://api.rss2json.com https://wakatime.com https://api.lolicon.app https://bing.biturl.top https://api.injahow.cn https://osu-sig.s23.moe https://www.clarity.ms https://cloud.umami.is",
   "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
   "img-src 'self' https://ui-avatars.com https://osu-sig.s23.moe https://www.bing.com https://i.pximg.net https://*.music.126.net https://lastfm.freetls.fastly.net data: blob:",
   "media-src 'self' https://*.music.126.net https://*.netease.com",
-  "script-src 'self' https://cdn.busuanzi.cc 'unsafe-inline'",
+  "script-src 'self' https://cdn.busuanzi.cc https://www.clarity.ms https://cloud.umami.is 'unsafe-inline'",
   "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'",
   "object-src 'none'",
   "frame-src 'none'",
@@ -88,6 +88,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var l=localStorage.getItem("md-lang");if(!l){l=(navigator.language||"").startsWith("zh")?"zh-CN":"en-US"}document.documentElement.lang=l;var m=document.querySelector('meta[property="og:locale"]');if(m)m.setAttribute("content",l==="zh-CN"?"zh_CN":"en_US")}catch(e){}})()`,
           }}
+        />
+        <Script
+          async
+          defer
+          data-website-id={siteConfig.analytics.umami.id}
+          data-exclude-hash={siteConfig.analytics.umami.excludeHash ? "true" : undefined}
+          data-auto-track={siteConfig.analytics.umami.autoTrack ? "true" : undefined}
+          src={siteConfig.analytics.umami.scriptUrl}
+          strategy="afterInteractive"
+        />
+        <Script
+          src={`https://www.clarity.ms/tag/${siteConfig.analytics.clarity.id}`}
+          strategy="afterInteractive"
         />
       </head>
       <body>

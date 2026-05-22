@@ -58,6 +58,20 @@ export const siteConfig = {
     customHtml: "",
   },
 
+  analytics: {
+    umami: {
+      enabled: true,
+      id: "0775eaf8-19ed-4d8b-ae56-c62a750e0691",
+      scriptUrl: process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || "https://cloud.umami.is/script.js",
+      excludeHash: true,
+      autoTrack: true,
+    },
+    clarity: {
+      enabled: true,
+      id: "w0s3h16l6o",
+    },
+  },
+
   gallery: {
     enabled: true, title: "Featured Gallery",
     images: [
