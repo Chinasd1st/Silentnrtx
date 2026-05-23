@@ -32,7 +32,7 @@ function bestOf(pbs: PBEntry[] | undefined): PBEntry | undefined {
 }
 
 export function MonkeytypeCard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const cfg = siteConfig.monkeytype;
   const { data, loading, error, execute } = useSafeFetch<ProfileData>({
     fetchFn: (signal) =>
@@ -95,7 +95,10 @@ export function MonkeytypeCard() {
           style={{ backgroundColor: "var(--md-primary-008)" }}
         >
           <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-            {t("monkeytype.stats", { tests: stats.completedTests.toLocaleString(), hours })}
+            {t("monkeytype.stats", {
+              tests: stats.completedTests.toLocaleString(i18n.language),
+              hours,
+            })}
           </span>
         </div>
       )}

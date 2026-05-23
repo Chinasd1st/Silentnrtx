@@ -134,7 +134,7 @@ export function WakatimeCard() {
     [entries]
   );
 
-  const fmtNum = (n: number) => n.toLocaleString();
+  const fmtNum = (n: number) => n.toLocaleString(i18n.language);
 
   if (!cfg.enabled || !cfg.embedId) return null;
   if (loading) return <CardSkeleton />;
@@ -300,7 +300,7 @@ function WakaModal({
             className="font-heading text-base font-semibold"
             style={{ color: "var(--md-text-primary)" }}
           >
-            {t("wakatime.title")} — {t("wakatime.days")}
+            {t("wakatime.title")} — {entries.length} {t("wakatime.days")}
           </h2>
           <button
             type="button"

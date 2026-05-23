@@ -96,7 +96,7 @@
   "settings.persist": "Settings auto-saved",
   "settings.auto_location": "Auto-detected location",
   "monkeytype.title": "Monkeytype",
-  "monkeytype.stats": "{tests} tests · {hours}h typed",
+  "monkeytype.stats": "{{tests}} tests · {{hours}}h typed",
   "monkeytype.tests": "tests",
   "monkeytype.hours": "h",
   "monkeytype.typed": "typed",

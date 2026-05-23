@@ -134,7 +134,7 @@ export function WakaAICard() {
     [entries]
   );
 
-  const fmtNum = (n: number) => n.toLocaleString();
+  const fmtNum = (n: number) => n.toLocaleString(i18n.language);
 
   if (!cfg.enabled || !cfg.embedId) return null;
   if (loading) return <CardSkeleton />;

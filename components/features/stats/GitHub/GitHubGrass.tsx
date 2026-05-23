@@ -73,8 +73,8 @@ export function GitHubGrass() {
         action={
           <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
             {isZh
-              ? `${t("github.last_year")} ${total.toLocaleString()}`
-              : `${total.toLocaleString()} ${t("github.last_year")}`}
+              ? `${t("github.last_year")} ${total.toLocaleString(i18n.language)}`
+              : `${total.toLocaleString(i18n.language)} ${t("github.last_year")}`}
           </span>
         }
       />

@@ -96,7 +96,7 @@
   "settings.persist": "设置自动保存",
   "settings.auto_location": "自动定位",
   "monkeytype.title": "Monkeytype",
-  "monkeytype.stats": "{tests}次测试 · {hours}小时 打字",
+  "monkeytype.stats": "{{tests}}次测试 · {{hours}}小时 打字",
   "monkeytype.tests": "次测试",
   "monkeytype.hours": "小时",
   "monkeytype.typed": "打字",

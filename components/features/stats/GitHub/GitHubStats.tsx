@@ -32,7 +32,7 @@ const CACHE_KEY = "github_stats";
 const CACHE_TTL = 10 * 60 * 1000;
 
 export function GitHubStats() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const username = siteConfig.github.username;
   const { data, loading, error, execute } = useSafeFetch<StatsData, string>({
     fetchFn: async (signal) => {
@@ -79,24 +79,28 @@ export function GitHubStats() {
             label={t("github.repos")}
             value={user.public_repos}
             color="var(--md-accent-blue)"
+            locale={i18n.language}
           />
           <SB
             icon={<FaStar />}
             label={t("github.stars")}
             value={stars}
             color="var(--md-accent-yellow)"
+            locale={i18n.language}
           />
           <SB
             icon={<FaCodeBranch />}
             label={t("github.forks")}
             value={forks}
             color="var(--md-accent-green)"
+            locale={i18n.language}
           />
           <SB
             icon={<FaUsers />}
             label={t("github.followers")}
             value={user.followers}
             color="var(--md-accent-purple)"
+            locale={i18n.language}
           />
         </div>
       </div>
@@ -109,11 +113,13 @@ function SB({
   label,
   value,
   color,
+  locale,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number;
   color: string;
+  locale: string;
 }) {
   return (
     <div
@@ -128,7 +134,7 @@ function SB({
         className="mt-1 text-2xl font-bold font-heading"
         style={{ color: "var(--md-text-primary)" }}
       >
-        {value.toLocaleString()}
+        {value.toLocaleString(locale)}
       </p>
     </div>
   );
