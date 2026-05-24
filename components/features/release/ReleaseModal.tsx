@@ -235,7 +235,7 @@ export function ReleaseModal({
             tabIndex={-1}
           >
             <div
-              className="relative rounded-md3 w-full max-w-lg max-h-[80vh] overflow-hidden"
+              className="relative rounded-md3 w-[95vw] max-w-2xl max-h-[80vh] overflow-hidden"
               style={{
                 backgroundColor: "var(--md-card-bg)",
                 border: "1px solid var(--md-card-border)",
@@ -334,7 +334,7 @@ export function ReleaseModal({
                 ))}
 
                 {releases.length > 0 && (
-                  <div className="mt-4 text-center">
+                  <div className="mt-2 text-center">
                     <a
                       href="https://github.com/Chinasd1st/Silentnrtx/releases"
                       target="_blank"

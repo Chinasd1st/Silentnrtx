@@ -105,7 +105,7 @@ export function Hero() {
           type="button"
           onClick={toggleLang}
           aria-label={t(lang === "zh-CN" ? "lang.zh_aria" : "lang.en_aria")}
-          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium transition-all duration-200 hover:bg-white/6 active:scale-90"
+          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-white/6 active:scale-90"
           style={{ color: "var(--md-text-primary)" }}
         >
           {t(lang === "zh-CN" ? "lang.zh" : "lang.en")}

@@ -44,7 +44,7 @@ export function SettingsCard() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={t("settings.title")}
-        className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 hover:bg-white/6 active:scale-90"
+        className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all duration-200 hover:bg-white/6 active:scale-90"
         style={{ color: "var(--md-text-primary)" }}
       >
         <FiSettings size={15} />
