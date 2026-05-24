@@ -13,9 +13,12 @@ export function useVersion() {
     const cached = getCache<string>(CACHE_KEYS.GH_VERSION, CACHE_TTL.GH_VERSION);
     if (cached) { setVer(cached); return; }
 
-    fetchWithRetry(() => githubApi.get("/repos/Chinasd1st/Silentnrtx/releases/latest"))
+    fetchWithRetry(() =>
+        githubApi.get<{ tag_name: string }[]>("/repos/Chinasd1st/Silentnrtx/releases?per_page=1")
+      )
       .then(({ data }) => {
-        if (data?.tag_name) { setVer(data.tag_name); setCache(CACHE_KEYS.GH_VERSION, data.tag_name); }
+        const latest = Array.isArray(data) ? data[0] : null;
+        if (latest?.tag_name) { setVer(latest.tag_name); setCache(CACHE_KEYS.GH_VERSION, latest.tag_name); }
       })
       .catch((err) => { console.warn(mapApiError(err).message); });
   }, []);

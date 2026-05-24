@@ -38,9 +38,9 @@ export function ReleaseModal({
     setError(false);
     try {
       const { data } = await fetchWithRetry(() =>
-        githubApi.get<ReleaseData>("/repos/Chinasd1st/Silentnrtx/releases/latest")
+        githubApi.get<ReleaseData[]>("/repos/Chinasd1st/Silentnrtx/releases?per_page=1")
       );
-      setRelease(data);
+      setRelease(Array.isArray(data) ? (data[0] ?? null) : null);
     } catch (err) {
       console.warn(mapApiError(err).message);
       setError(true);
