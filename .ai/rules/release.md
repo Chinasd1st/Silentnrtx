@@ -64,21 +64,40 @@ gh release create v<version> --title "v<version>" --notes "<body>"
 
 ### Release Note Template (Chinese)
 
+List items under each h3 section MUST use conventional-commit-type prefixes (`fix`, `feat`, `chore`, `deps`, etc.) followed by a colon + space. These will be rendered as colored badges in the UI (no colon displayed).
+
+Supported types and their badge colors:
+
+| Type | Color | Usage |
+|------|-------|-------|
+| `fix` | red | Bug fixes |
+| `feat` | green | New features |
+| `chore` | gray | Maintenance, tooling |
+| `deps` | yellow | Dependency updates |
+| `refactor` | blue | Code restructuring |
+| `perf` | orange | Performance improvements |
+| `docs` | teal | Documentation |
+| `style` | purple | Code style / formatting |
+| `test` | pink | Testing |
+| `ci` | cyan | CI/CD changes |
+| `build` | indigo | Build system |
+| `revert` | red | Reverting changes |
+
 ```markdown
 ### 新增
-- <Feature 1>
-- <Feature 2>
+- feat: <Description>
 
 ### 修复
-- <Bug fix 1>
-- <Bug fix 2>
+- fix: <Description>
+- deps: <Description>
 
 ### 重构
-- <Refactoring 1>
+- refactor: <Description>
 
 ### 其他
-- Biome 代码质量检查通过（0 errors, 0 warnings）
-- TypeScript 编译通过
+- chore: Build and tooling changes
+- chore: Biome 代码质量检查通过（0 errors, 0 warnings）
+- chore: TypeScript 编译通过
 ```
 
 ### 4. Verify

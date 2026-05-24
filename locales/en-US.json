@@ -134,5 +134,6 @@
   "release.error": "Failed to load release notes",
   "release.view_on_github": "View on GitHub",
   "release.close": "Close",
-  "release.notes": "Release Notes"
+  "release.notes": "Release Notes",
+  "release.view_all": "View all releases"
 }

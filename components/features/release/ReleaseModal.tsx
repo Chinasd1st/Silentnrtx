@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiX } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
@@ -15,9 +15,160 @@ interface ReleaseData {
   body: string;
   html_url: string;
   prerelease: boolean;
+  published_at: string;
 }
 
 const TITLE_ID = "release-modal-title";
+
+const TYPE_COLORS: Record<string, string> = {
+  fix: "#ef4444",
+  feat: "#22c55e",
+  chore: "#6b7280",
+  deps: "#eab308",
+  refactor: "#3b82f6",
+  perf: "#f97316",
+  docs: "#14b8a6",
+  style: "#a855f7",
+  test: "#ec4899",
+  ci: "#06b6d4",
+  build: "#6366f1",
+  revert: "#ef4444",
+};
+
+const CONVENTIONAL_TYPES = Object.keys(TYPE_COLORS);
+
+function preprocessBody(body: string): string {
+  const typesPattern = CONVENTIONAL_TYPES.join("|");
+  return body.replace(new RegExp(`^(\\s*[-*]\\s+)(${typesPattern})(:|：)\\s`, "gm"), "$1`$2` ");
+}
+
+function Badge({ type }: { type: string }) {
+  const color = TYPE_COLORS[type.toLowerCase()];
+  if (!color) return <>{type}</>;
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        backgroundColor: `${color}20`,
+        color,
+        borderRadius: 9999,
+        padding: "0 7px",
+        fontSize: "0.75em",
+        fontWeight: 600,
+        letterSpacing: "0.04em",
+        lineHeight: "1.6",
+      }}
+    >
+      {type}
+    </span>
+  );
+}
+
+function ReleaseBody({ body }: { body: string }) {
+  const processed = useMemo(() => preprocessBody(body), [body]);
+
+  return (
+    <div className="prose prose-sm max-w-none" style={{ color: "var(--md-text-secondary)" }}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--md-primary)" }}
+            >
+              {children}
+            </a>
+          ),
+          code: ({ children, className, ...props }) => {
+            const text = String(children).toLowerCase();
+            const badgeColor = TYPE_COLORS[text];
+            const isInline = !className;
+
+            if (badgeColor && isInline) {
+              return <Badge type={String(children)} />;
+            }
+
+            if (isInline) {
+              return (
+                <code
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.06)",
+                    padding: "1px 4px",
+                    borderRadius: 4,
+                    fontSize: "0.85em",
+                  }}
+                  {...props}
+                >
+                  {children}
+                </code>
+              );
+            }
+
+            return (
+              <pre
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                  borderRadius: 8,
+                  padding: 12,
+                  overflow: "auto",
+                  fontSize: "0.85em",
+                }}
+              >
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              </pre>
+            );
+          },
+          h1: ({ children }) => (
+            <h1
+              className="text-lg font-bold font-heading mt-4 mb-2"
+              style={{ color: "var(--md-text-primary)" }}
+            >
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2
+              className="text-base font-bold font-heading mt-4 mb-2"
+              style={{ color: "var(--md-text-primary)" }}
+            >
+              {children}
+            </h2>
+          ),
+          h3: ({ children }) => (
+            <h3
+              className="text-sm font-bold font-heading mt-3 mb-1"
+              style={{ color: "var(--md-text-primary)" }}
+            >
+              {children}
+            </h3>
+          ),
+          ul: ({ children }) => <ul className="list-disc pl-5 my-2 space-y-1">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-5 my-2 space-y-1">{children}</ol>,
+          p: ({ children }) => <p className="my-2 text-sm">{children}</p>,
+          hr: () => <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.06)" }} />,
+          blockquote: ({ children }) => (
+            <blockquote
+              className="border-l-2 pl-3 my-2 text-sm italic"
+              style={{
+                borderColor: "var(--md-primary)",
+                color: "var(--md-text-muted)",
+              }}
+            >
+              {children}
+            </blockquote>
+          ),
+        }}
+      >
+        {processed}
+      </ReactMarkdown>
+    </div>
+  );
+}
 
 export function ReleaseModal({
   version,
@@ -28,19 +179,19 @@ export function ReleaseModal({
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [release, setRelease] = useState<ReleaseData | null>(null);
+  const [releases, setReleases] = useState<ReleaseData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const viewerRef = useFocusTrap(open);
 
-  const fetchRelease = async () => {
+  const fetchReleases = async () => {
     setLoading(true);
     setError(false);
     try {
       const { data } = await fetchWithRetry(() =>
-        githubApi.get<ReleaseData[]>("/repos/Chinasd1st/Silentnrtx/releases?per_page=1")
+        githubApi.get<ReleaseData[]>("/repos/Chinasd1st/Silentnrtx/releases?per_page=5")
       );
-      setRelease(Array.isArray(data) ? (data[0] ?? null) : null);
+      if (Array.isArray(data)) setReleases(data);
     } catch (err) {
       console.warn(mapApiError(err).message);
       setError(true);
@@ -51,7 +202,7 @@ export function ReleaseModal({
 
   const handleOpen = () => {
     setOpen(true);
-    if (!release) fetchRelease();
+    if (releases.length === 0) fetchReleases();
   };
 
   const handleClose = () => setOpen(false);
@@ -97,28 +248,13 @@ export function ReleaseModal({
                 className="flex items-center justify-between px-5 py-4 border-b"
                 style={{ borderColor: "rgba(255,255,255,0.06)" }}
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <h2
-                    id={TITLE_ID}
-                    className="font-heading text-base font-semibold truncate"
-                    style={{ color: "var(--md-text-primary)" }}
-                  >
-                    {release?.tag_name || t("release.notes")}
-                  </h2>
-                  <span
-                    className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                    style={{
-                      backgroundColor: release?.prerelease
-                        ? "color-mix(in srgb, var(--md-accent-yellow, #eab308) 20%, transparent)"
-                        : "color-mix(in srgb, var(--md-accent-green, #22c55e) 20%, transparent)",
-                      color: release?.prerelease
-                        ? "var(--md-accent-yellow, #eab308)"
-                        : "var(--md-accent-green, #22c55e)",
-                    }}
-                  >
-                    {release?.prerelease ? t("release.prerelease") : t("release.latest")}
-                  </span>
-                </div>
+                <h2
+                  id={TITLE_ID}
+                  className="font-heading text-base font-semibold truncate"
+                  style={{ color: "var(--md-text-primary)" }}
+                >
+                  {t("release.notes")}
+                </h2>
                 <button
                   type="button"
                   onClick={handleClose}
@@ -165,118 +301,52 @@ export function ReleaseModal({
                     {t("release.error")}
                   </p>
                 )}
-                {release && !loading && (
-                  <div
-                    className="prose prose-sm max-w-none"
-                    style={{ color: "var(--md-text-secondary)" }}
-                  >
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        a: ({ href, children }) => (
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "var(--md-primary)" }}
-                          >
-                            {children}
-                          </a>
-                        ),
-                        code: ({ children, className, ...props }) => {
-                          const isInline = !className;
-                          if (isInline) {
-                            return (
-                              <code
-                                style={{
-                                  backgroundColor: "rgba(255,255,255,0.06)",
-                                  padding: "1px 4px",
-                                  borderRadius: 4,
-                                  fontSize: "0.85em",
-                                }}
-                                {...props}
-                              >
-                                {children}
-                              </code>
-                            );
-                          }
-                          return (
-                            <pre
-                              style={{
-                                backgroundColor: "rgba(255,255,255,0.04)",
-                                borderRadius: 8,
-                                padding: 12,
-                                overflow: "auto",
-                                fontSize: "0.85em",
-                              }}
-                            >
-                              <code className={className} {...props}>
-                                {children}
-                              </code>
-                            </pre>
-                          );
-                        },
-                        h1: ({ children }) => (
-                          <h1
-                            className="text-lg font-bold font-heading mt-4 mb-2"
-                            style={{ color: "var(--md-text-primary)" }}
-                          >
-                            {children}
-                          </h1>
-                        ),
-                        h2: ({ children }) => (
-                          <h2
-                            className="text-base font-bold font-heading mt-4 mb-2"
-                            style={{ color: "var(--md-text-primary)" }}
-                          >
-                            {children}
-                          </h2>
-                        ),
-                        h3: ({ children }) => (
-                          <h3
-                            className="text-sm font-bold font-heading mt-3 mb-1"
-                            style={{ color: "var(--md-text-primary)" }}
-                          >
-                            {children}
-                          </h3>
-                        ),
-                        ul: ({ children }) => (
-                          <ul className="list-disc pl-5 my-2 space-y-1">{children}</ul>
-                        ),
-                        ol: ({ children }) => (
-                          <ol className="list-decimal pl-5 my-2 space-y-1">{children}</ol>
-                        ),
-                        p: ({ children }) => <p className="my-2 text-sm">{children}</p>,
-                        hr: () => (
-                          <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
-                        ),
-                        blockquote: ({ children }) => (
-                          <blockquote
-                            className="border-l-2 pl-3 my-2 text-sm italic"
-                            style={{
-                              borderColor: "var(--md-primary)",
-                              color: "var(--md-text-muted)",
-                            }}
-                          >
-                            {children}
-                          </blockquote>
-                        ),
-                      }}
-                    >
-                      {release.body}
-                    </ReactMarkdown>
+
+                {releases.map((release, idx) => (
+                  <div key={release.tag_name}>
+                    {idx > 0 && (
+                      <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
+                    )}
+
+                    <div className="flex items-center gap-2 mb-3">
+                      <a
+                        href={release.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-heading text-sm font-semibold hover:underline"
+                        style={{ color: "var(--md-primary)" }}
+                      >
+                        {release.tag_name}
+                      </a>
+                      <span
+                        className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                        style={{
+                          backgroundColor: release.prerelease
+                            ? "color-mix(in srgb, var(--md-accent-yellow, #eab308) 20%, transparent)"
+                            : "color-mix(in srgb, var(--md-accent-green, #22c55e) 20%, transparent)",
+                          color: release.prerelease
+                            ? "var(--md-accent-yellow, #eab308)"
+                            : "var(--md-accent-green, #22c55e)",
+                        }}
+                      >
+                        {release.prerelease ? t("release.prerelease") : t("release.latest")}
+                      </span>
+                    </div>
+
+                    <ReleaseBody body={release.body} />
                   </div>
-                )}
-                {release && (
+                ))}
+
+                {releases.length > 0 && (
                   <div className="mt-4 text-center">
                     <a
-                      href={release.html_url}
+                      href="https://github.com/Chinasd1st/Silentnrtx/releases"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs inline-flex items-center gap-1 hover:underline"
                       style={{ color: "var(--md-primary)" }}
                     >
-                      {t("release.view_on_github")} &rarr;
+                      {t("release.view_all")} &rarr;
                     </a>
                   </div>
                 )}

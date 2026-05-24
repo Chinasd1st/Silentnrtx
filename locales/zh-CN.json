@@ -134,5 +134,6 @@
   "release.error": "加载发布说明失败",
   "release.view_on_github": "在 GitHub 上查看",
   "release.close": "关闭",
-  "release.notes": "发布说明"
+  "release.notes": "发布说明",
+  "release.view_all": "查看全部更新"
 }
