@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaLightbulb } from "react-icons/fa";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
@@ -10,32 +11,16 @@ import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { fetchWithTimeout } from "@/lib/api/fetchWithTimeout";
 import { fetchJsonp } from "@/lib/api/jsonp";
-import { getCache, setCache } from "@/lib/cache";
+import { getCache, getCacheTime, setCache } from "@/lib/cache";
 import { useTranslation } from "@/lib/i18n";
-
-interface DayEntry {
-  grand_total: {
-    text: string;
-    total_seconds: number;
-    hours: number;
-    minutes: number;
-    decimal: string;
-    ai_additions?: number;
-    ai_deletions?: number;
-    ai_prompt_events?: number;
-    ai_input_tokens?: number;
-    ai_output_tokens?: number;
-    ai_agent_costs?: Record<string, number>;
-    human_additions?: number;
-    human_deletions?: number;
-  };
-  range: { date: string; text: string };
-}
-
-type WakaResponse = DayEntry[] | { data: DayEntry[] };
-
-const CACHE_KEY = "wakatime";
-const CACHE_TTL = 30 * 60 * 1000;
+import {
+  CACHE_KEY,
+  CACHE_TTL,
+  computeAiSum,
+  type DayEntry,
+  extractWakaData,
+  type WakaResponse,
+} from "./wakatime-shared";
 
 export function WakaAICard() {
   const { t, i18n } = useTranslation();
@@ -43,6 +28,8 @@ export function WakaAICard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [_retryCount, setRetryCount] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  void _retryCount;
   const skipCacheRef = useRef(false);
   const cfg = siteConfig.wakatime;
 
@@ -53,19 +40,9 @@ export function WakaAICard() {
     setRetryCount((c) => c + 1);
   }, []);
 
-  const [cacheTime, setCacheTime] = useState<number | null>(null);
+  const _cacheTime = getCacheTime(CACHE_KEY);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (!raw) return;
-      setCacheTime((JSON.parse(raw) as { ts: number }).ts);
-    } catch {
-      /* noop */
-    }
-  }, []);
-
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (!cfg.enabled || !cfg.embedId) {
       setLoading(false);
       return;
@@ -86,7 +63,7 @@ export function WakaAICard() {
           .catch(() => fetchJsonp<WakaResponse>(url))
       )
       .then((raw) => {
-        const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+        const data = extractWakaData(raw);
         if (Array.isArray(data) && data.length > 0) {
           setEntries(data);
           setCache(CACHE_KEY, data);
@@ -96,43 +73,14 @@ export function WakaAICard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const aiSum = useMemo(
-    () =>
-      entries.reduce(
-        (s, e) => {
-          const gt = e.grand_total;
-          const agentCosts = gt?.ai_agent_costs;
-          const dayCost = agentCosts ? Object.values(agentCosts).reduce((sum, v) => sum + v, 0) : 0;
-          const agents = agentCosts ? Object.keys(agentCosts) : [];
-          for (const name of agents) {
-            s.agents[name] = (s.agents[name] || 0) + (agentCosts?.[name] || 0);
-          }
-          return {
-            add: s.add + (gt?.ai_additions || 0),
-            del: s.del + (gt?.ai_deletions || 0),
-            prompts: s.prompts + (gt?.ai_prompt_events || 0),
-            inTokens: s.inTokens + (gt?.ai_input_tokens || 0),
-            outTokens: s.outTokens + (gt?.ai_output_tokens || 0),
-            cost: s.cost + dayCost,
-            humanAdd: s.humanAdd + (gt?.human_additions || 0),
-            humanDel: s.humanDel + (gt?.human_deletions || 0),
-            agents: s.agents,
-          };
-        },
-        {
-          add: 0,
-          del: 0,
-          prompts: 0,
-          inTokens: 0,
-          outTokens: 0,
-          cost: 0,
-          humanAdd: 0,
-          humanDel: 0,
-          agents: {} as Record<string, number>,
-        }
-      ),
-    [entries]
-  );
+  useEffect(() => {
+    fetchData();
+    const onClear = () => fetchData();
+    window.addEventListener("cache-cleared", onClear);
+    return () => window.removeEventListener("cache-cleared", onClear);
+  }, [fetchData]);
+
+  const aiSum = useMemo(() => computeAiSum(entries), [entries]);
 
   const fmtNum = (n: number) => n.toLocaleString(i18n.language);
 
@@ -166,17 +114,7 @@ export function WakaAICard() {
           value={`$${aiSum.cost > 0 ? aiSum.cost.toFixed(2) : "0.00"}`}
         />
       </div>
-      {cacheTime && (
-        <p className="text-[9px] text-right mt-3" style={{ color: "var(--md-text-muted)" }}>
-          {t("wakatime.cached_at")}{" "}
-          {new Date(cacheTime).toLocaleString(i18n.language, {
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </p>
-      )}
+      <CachedAt cacheKey={CACHE_KEY} />
     </Card>
   );
 }

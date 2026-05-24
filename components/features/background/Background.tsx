@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { getCache, setCache } from "@/lib/cache";
-
-const CACHE_KEY = "bg_url";
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+import { CACHE_KEYS, CACHE_TTL } from "@/lib/cache-config";
 
 export function Background() {
   const [bgUrl, setBgUrl] = useState<string>("");
@@ -22,7 +20,7 @@ export function Background() {
     return () => obs.disconnect();
   }, []);
 
-  useEffect(() => {
+  const fetchBg = useCallback(() => {
     if (!cfg.enabled) {
       document.body.style.backgroundColor = cfg.fallbackColor;
       setLoading(false);
@@ -35,7 +33,7 @@ export function Background() {
       return;
     }
 
-    const cached = getCache<string>(CACHE_KEY, CACHE_TTL);
+    const cached = getCache<string>(CACHE_KEYS.BG_URL, CACHE_TTL.BG_URL);
     if (cached) {
       setBgUrl(cached);
       setLoading(false);
@@ -52,7 +50,7 @@ export function Background() {
             const url = pick.url || pick.original || pick.large || pick.image_url;
             if (url) {
               setBgUrl(url);
-              setCache(CACHE_KEY, url);
+              setCache(CACHE_KEYS.BG_URL, url);
             } else document.body.style.backgroundColor = cfg.fallbackColor;
           } else {
             document.body.style.backgroundColor = cfg.fallbackColor;
@@ -77,7 +75,7 @@ export function Background() {
           if (url.startsWith("//")) url = `https:${url}`;
           else if (url.startsWith("/")) url = `https://www.bing.com${url}`;
           setBgUrl(url);
-          setCache(CACHE_KEY, url);
+          setCache(CACHE_KEYS.BG_URL, url);
         })
         .catch(() => {
           document.body.style.backgroundColor = cfg.fallbackColor;
@@ -89,6 +87,13 @@ export function Background() {
     document.body.style.backgroundColor = cfg.fallbackColor;
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchBg();
+    const onClear = () => fetchBg();
+    window.addEventListener("cache-cleared", onClear);
+    return () => window.removeEventListener("cache-cleared", onClear);
+  }, [fetchBg]);
 
   if (loading || !bgUrl) return null;
 

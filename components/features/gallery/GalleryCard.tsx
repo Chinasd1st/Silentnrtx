@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { FaImage } from "react-icons/fa";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { siteConfig } from "@/config";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 
 interface GalleryImage {
@@ -25,11 +26,7 @@ export function GalleryCard() {
   const desc = (img: GalleryImage) =>
     (isZh && img.descriptionCn ? img.descriptionCn : img.description) || "";
   const [viewerIdx, setViewerIdx] = useState<number | null>(null);
-  const viewerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (viewerIdx !== null) viewerRef.current?.focus();
-  }, [viewerIdx]);
+  const viewerRef = useFocusTrap(viewerIdx !== null);
 
   if (!enabled || images.length === 0) return null;
 
@@ -103,6 +100,7 @@ export function GalleryCard() {
             onKeyDown={handleKeyDown}
             role="dialog"
             aria-modal="true"
+            aria-label={labels.close}
             tabIndex={-1}
           >
             <div

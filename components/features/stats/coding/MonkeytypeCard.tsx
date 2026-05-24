@@ -1,6 +1,7 @@
 "use client";
 
 import { SiMonkeytype } from "react-icons/si";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
@@ -102,6 +103,7 @@ export function MonkeytypeCard() {
           </span>
         </div>
       )}
+      <CachedAt cacheKey={CACHE_KEY} />
     </Card>
   );
 }

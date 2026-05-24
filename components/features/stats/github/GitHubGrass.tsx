@@ -1,6 +1,7 @@
 "use client";
 
 import { FaGithub } from "react-icons/fa";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
@@ -89,6 +90,7 @@ export function GitHubGrass() {
           />
         ))}
       </div>
+      <CachedAt cacheKey={CACHE_KEY} />
     </Card>
   );
 }

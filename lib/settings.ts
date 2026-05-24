@@ -3,6 +3,7 @@ export interface Settings {
   manualCity: string;
   customHue: number | null;
   hueEnabled: boolean;
+  timezone: string;
 }
 
 const STORAGE_KEY = "md_settings";
@@ -11,6 +12,7 @@ const DEFAULTS: Settings = {
   manualCity: "",
   customHue: null,
   hueEnabled: false,
+  timezone: "",
 };
 
 export function loadSettings(): Settings {

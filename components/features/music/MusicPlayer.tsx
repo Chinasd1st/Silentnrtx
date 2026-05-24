@@ -35,20 +35,33 @@ export function MusicPlayer() {
     }
     const controller = new AbortController();
     const url = `${cfg.api}?server=${encodeURIComponent(cfg.params.server)}&type=${encodeURIComponent(cfg.params.type)}&id=${encodeURIComponent(cfg.params.id)}`;
-    fetchWithRetry(() => api.get<Song[]>(url, { signal: controller.signal }))
-      .then(({ data }) => data)
-      .then((data: Song[]) => {
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    fetchWithRetry(() => api.get<{ data: unknown[] }>(url, { signal: controller.signal }))
+      .then(({ data }) => {
         if (!Array.isArray(data)) throw new Error("invalid");
-        setSongs(data);
-        if (data.length > 0) setSelectedIdx(0);
+        const validated = data.map((d: Record<string, unknown>) => ({
+          name: String(d.name ?? ""),
+          artist: String(d.artist ?? ""),
+          url: String(d.url ?? ""),
+          pic: String(d.pic ?? ""),
+          lrc: String(d.lrc ?? ""),
+        }));
+        setSongs(validated);
+        if (validated.length > 0) setSelectedIdx(0);
       })
       .catch(() => {
         if (controller.signal.aborted) return;
         setError(true);
       })
-      .finally(() => setLoading(false));
-    return () => controller.abort();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      .finally(() => {
+        clearTimeout(timeoutId);
+        setLoading(false);
+      });
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, []);
 
   const playSong = useCallback(
     (idx: number) => {
@@ -122,6 +135,7 @@ export function MusicPlayer() {
     audio.setOnEnded(() => {
       const n = (selectedIdx ?? 0) + 1;
       if (n < songs.length) playSong(n);
+      else playSong(0);
     });
     return () => audio.setOnEnded(null);
   }, [selectedIdx, songs.length, playSong, audio]);
@@ -180,10 +194,18 @@ export function MusicPlayer() {
             />
           )}
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium" style={{ color: "var(--md-primary)" }}>
+            <p
+              className="truncate text-sm font-medium"
+              title={track?.name}
+              style={{ color: "var(--md-primary)" }}
+            >
               {track?.name}
             </p>
-            <p className="truncate text-xs" style={{ color: "var(--md-text-muted)" }}>
+            <p
+              className="truncate text-xs"
+              title={track?.artist}
+              style={{ color: "var(--md-text-muted)" }}
+            >
               {track?.artist}
             </p>
           </div>
@@ -191,20 +213,21 @@ export function MusicPlayer() {
             <button
               type="button"
               onClick={prev}
-              aria-label="Previous track"
+              aria-label={t("music.previous")}
               className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
               }}
               disabled={idx <= 0}
+              title={idx <= 0 ? t("music.noPrevious") : undefined}
             >
               <FaStepBackward size={12} />
             </button>
             <button
               type="button"
               onClick={() => toggle(idx)}
-              aria-label={audio.playing && selectedIdx === idx ? "Pause" : "Play"}
+              aria-label={audio.playing && selectedIdx === idx ? t("music.pause") : t("music.play")}
               className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}
             >
@@ -217,13 +240,14 @@ export function MusicPlayer() {
             <button
               type="button"
               onClick={next}
-              aria-label="Next track"
+              aria-label={t("music.next")}
               className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
               }}
               disabled={idx >= songs.length - 1}
+              title={idx >= songs.length - 1 ? t("music.noNext") : undefined}
             >
               <FaStepForward size={12} />
             </button>
@@ -234,7 +258,7 @@ export function MusicPlayer() {
           className="relative h-1.5 w-full cursor-pointer rounded-full mt-3"
           style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
           role="slider"
-          aria-label="Seek"
+          aria-label={t("music.seek")}
           aria-valuenow={Math.round(audio.currentTime)}
           aria-valuemin={0}
           aria-valuemax={Math.round(audio.duration) || 0}
@@ -256,7 +280,7 @@ export function MusicPlayer() {
           }}
         >
           <div
-            className="absolute inset-y-0 left-0 rounded-full transition-all duration-200"
+            className="absolute inset-y-0 left-0 rounded-full"
             style={{
               width: `${audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0}%`,
               backgroundColor: "var(--md-primary)",
@@ -264,7 +288,7 @@ export function MusicPlayer() {
           />
         </div>
         <div
-          className="flex justify-between text-[10px] mt-1"
+          className="flex justify-between text-xs mt-1"
           style={{ color: "var(--md-text-muted)" }}
         >
           <span>{fmt(audio.currentTime)}</span>
@@ -327,11 +351,16 @@ const SongItem = React.memo(function SongItem({
       <div className="min-w-0 flex-1">
         <p
           className="truncate text-sm font-medium"
+          title={song.name}
           style={{ color: sel ? "var(--md-primary)" : "var(--md-text-primary)" }}
         >
           {song.name}
         </p>
-        <p className="truncate text-xs" style={{ color: "var(--md-text-muted)" }}>
+        <p
+          className="truncate text-xs"
+          title={song.artist}
+          style={{ color: "var(--md-text-muted)" }}
+        >
           {song.artist}
         </p>
       </div>

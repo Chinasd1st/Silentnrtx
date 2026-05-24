@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaCodeBranch, FaGithub, FaStar } from "react-icons/fa";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { fetchWithRetry, mapApiError } from "@/lib/api";
 import { githubApi } from "@/lib/api/github";
 import { getCache, setCache } from "@/lib/cache";
+import { CACHE_TTL } from "@/lib/cache-config";
 import { useTranslation } from "@/lib/i18n";
 
 interface RepoData {
@@ -23,8 +25,6 @@ interface RepoConfig {
   repo: string;
   desc?: string;
 }
-
-const CACHE_TTL = 30 * 60 * 1000;
 
 function getCacheKey(list: RepoConfig[]): string {
   const hash = list.map((r) => r.repo).join("|");
@@ -42,22 +42,24 @@ export function ReposCard() {
 
   const cacheKey = useMemo(() => getCacheKey(list), [list]);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (list.length === 0) {
       setLoading(false);
       return;
     }
 
-    const cached = getCache<RepoData[]>(cacheKey, CACHE_TTL);
+    const cached = getCache<RepoData[]>(cacheKey, CACHE_TTL.REPOS);
     if (cached) {
       setRepos(cached);
       setLoading(false);
       return;
     }
 
+    let aborted = false;
     Promise.allSettled(
       list.map((r) => fetchWithRetry(() => githubApi.get(`/repos/${r.repo}`)).then((x) => x.data))
     ).then((results) => {
+      if (aborted) return;
       const data: RepoData[] = [];
       let _hasError = false;
       let rateLimited = false;
@@ -76,7 +78,17 @@ export function ReposCard() {
       } else setError(rateLimited ? "rate_limit" : "api_error");
       setLoading(false);
     });
+    return () => {
+      aborted = true;
+    };
   }, [cacheKey, list]);
+
+  useEffect(() => {
+    fetchData();
+    const onClear = () => fetchData();
+    window.addEventListener("cache-cleared", onClear);
+    return () => window.removeEventListener("cache-cleared", onClear);
+  }, [fetchData]);
 
   if (list.length === 0) return null;
   if (loading) return <CardSkeleton />;
@@ -119,12 +131,7 @@ export function ReposCard() {
               rel="noopener noreferrer"
               className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:translate-x-1"
             >
-              <p
-                className="text-sm font-semibold truncate"
-                style={{ color: "var(--md-text-primary)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-primary)")}
-              >
+              <p className="text-sm font-semibold truncate text-[var(--md-text-primary)] hover:text-[var(--md-primary)]">
                 {repo.name}
               </p>
               <p className="text-xs mt-1 line-clamp-2" style={{ color: "var(--md-text-muted)" }}>
@@ -156,6 +163,7 @@ export function ReposCard() {
           );
         })}
       </div>
+      <CachedAt cacheKey={cacheKey} />
     </div>
   );
 }

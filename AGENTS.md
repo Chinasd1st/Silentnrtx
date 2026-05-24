@@ -23,7 +23,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 - `pnpm run dev` — start dev server at localhost:3000
 - `pnpm run build` — static export to `./out/`
 - `pnpm run lint` — run Biome lint + format on all files
-- Before committing, run `pnpm run lint` and ensure Biome reports zero errors.
+- Before committing, run `pnpm run build` and `pnpm run lint` and ensure both report zero errors.
 - TypeScript strict mode is enabled — fix type errors before committing.
 - All components are client components (`"use client"`) unless otherwise noted.
 
@@ -43,21 +43,21 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 ```
 components/
   audio/       — GlobalAudio provider
-  dialogs/     — SettingsCard modal
-  features/
-    blog/      — BlogPosts RSS reader
-    gallery/   — GalleryCard lightbox
-    profile/   — ProfileCard
-    social/    — SocialLinks, ReposCard, OsuSignature
-    stats/
-      Coding/  — WakatimeCard, WakaAICard, MonkeytypeCard
-      GitHub/  — GitHubStats, GitHubGrass
-      MediaStats/ — LastFmStatus, MusicPlayer
-      Widgets/ — ClockCard, WeatherCard, EarthquakeCard, BusuanziStats
+  dialogs/     — SettingsCard, ShortcutsPanel
+  ui/          — Card, CardHeader, ExternalLink, I18nInit, PillButton, Skeleton, ThemeSwitch, etc.
   layout/      — Hero, Footer
-  l10n/        — i18n setup (deprecated, use lib/i18n)
-  ui/          — Card, CardHeader, ExternalLink, PillButton, Skeleton, etc.
-  widgets/     — ThemeSwitch
+  features/
+    blog/          — BlogPosts RSS reader
+    gallery/       — GalleryCard lightbox
+    profile/       — ProfileCard
+    music/         — MusicPlayer
+    background/    — Background (wallpaper)
+    social/        — SocialLinks, ReposCard, OsuSignature
+    stats/
+      coding/      — WakatimeCard, WakaAICard, MonkeytypeCard, wakatime-shared
+      github/      — GitHubStats, GitHubGrass
+      media/       — LastFmStatus
+      widgets/     — ClockCard, WeatherCard, EarthquakeCard, BusuanziStats
 ```
 
 ## Important Conventions
@@ -68,6 +68,7 @@ components/
 - AI stats use 2×2 StatBox grids + full-width CostBox, all `--md-primary` value color.
 - The AI tab in `WakatimeCard` is always rendered in DOM (invisible when inactive) to prevent CSS column reflow.
 - Modals use `createPortal` into `document.body`.
+- GitHub API requests use ETag / If-None-Match via Axios interceptors (`lib/api/github.ts`).
 
 ## Development Rules
 

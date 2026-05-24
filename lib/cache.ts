@@ -1,3 +1,5 @@
+import { CACHE_PREFIXES } from "@/lib/cache-config";
+
 interface CacheEntry<T> {
   data: T;
   ts: number;
@@ -27,7 +29,15 @@ export function setCache<T>(key: string, data: T): void {
   }
 }
 
-const CACHE_PREFIXES = ["blog_", "github_", "monkeytype", "wakatime", "earthquake", "lastfm_"];
+export function getCacheTime(key: string): number | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    return (JSON.parse(raw) as { ts: number }).ts;
+  } catch {
+    return null;
+  }
+}
 
 export function clearAllCache(): void {
   try {
@@ -37,6 +47,7 @@ export function clearAllCache(): void {
         localStorage.removeItem(key);
       }
     }
+    window.dispatchEvent(new CustomEvent("cache-cleared"));
   } catch {
     if (process.env.NODE_ENV === "development") console.warn("[cache] clearAllCache error");
   }

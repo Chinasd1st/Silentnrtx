@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FiSettings, FiTrash2, FiX } from "react-icons/fi";
+import { DropdownSelect } from "@/components/ui/DropdownSelect";
 import { PillButton } from "@/components/ui/PillButton";
 import { siteConfig } from "@/config";
 import { clearAllCache } from "@/lib/cache";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 import { loadSettings, type Settings, saveSettings } from "@/lib/settings";
+import { TIMEZONE_OPTIONS } from "@/lib/timezone";
 
 export function SettingsCard() {
   const { t } = useTranslation();
@@ -15,7 +17,10 @@ export function SettingsCard() {
   const [s, setS] = useState<Settings>(loadSettings);
 
   useEffect(() => {
-    const timer = setTimeout(() => saveSettings(s), 300);
+    const timer = setTimeout(() => {
+      saveSettings(s);
+      window.dispatchEvent(new CustomEvent("settings-changed"));
+    }, 300);
     return () => clearTimeout(timer);
   }, [s]);
 
@@ -121,13 +126,14 @@ export function SettingsCard() {
                   placeholder={siteConfig.weather.city}
                   disabled={s.weatherSource !== "manual"}
                   onChange={(e) => update({ manualCity: e.target.value })}
-                  className="w-full rounded-md3-sm px-3 py-2 text-xs outline-hidden border bg-white/5 disabled:opacity-50 disabled:bg-white/[0.02]"
+                  className="w-full rounded-[16px] px-3 py-2 text-xs outline-hidden border disabled:opacity-50"
                   style={{
                     borderColor: "var(--md-card-border)",
                     color:
                       s.weatherSource === "manual"
                         ? "var(--md-text-primary)"
                         : "var(--md-text-secondary)",
+                    backgroundColor: "var(--md-card-bg)",
                   }}
                 />
               </div>
@@ -164,11 +170,32 @@ export function SettingsCard() {
                   />
                 )}
               </div>
-            </div>
 
-            {/* Clear cache */}
-            <div>
-              <ClearCacheButton />
+              {/* Timezone */}
+              <div>
+                <p
+                  className="text-xs font-medium mb-2.5"
+                  style={{ color: "var(--md-text-secondary)" }}
+                >
+                  {t("settings.timezone")}
+                </p>
+                <DropdownSelect
+                  value={s.timezone}
+                  options={TIMEZONE_OPTIONS}
+                  onChange={(v) => update({ timezone: v })}
+                />
+              </div>
+
+              {/* Clear cache */}
+              <div>
+                <p
+                  className="text-xs font-medium mb-2.5"
+                  style={{ color: "var(--md-text-secondary)" }}
+                >
+                  {t("settings.cache")}
+                </p>
+                <ClearCacheButton />
+              </div>
             </div>
 
             <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }}>
@@ -183,28 +210,35 @@ export function SettingsCard() {
 
 function ClearCacheButton() {
   const { t } = useTranslation();
-  const [cleared, setCleared] = useState(false);
+  const [state, setState] = useState<"idle" | "confirm" | "cleared">("idle");
 
   return (
     <button
       type="button"
       onClick={() => {
-        if (!window.confirm(t("settings.clear_cache_confirm"))) return;
-        clearAllCache();
-        setCleared(true);
-        setTimeout(() => setCleared(false), 2000);
+        if (state === "idle") {
+          setState("confirm");
+        } else if (state === "confirm") {
+          clearAllCache();
+          setState("cleared");
+          setTimeout(() => setState("idle"), 2000);
+        }
+      }}
+      onBlur={() => {
+        if (state === "confirm") setState("idle");
       }}
       className="flex w-full items-center justify-center gap-2 rounded-md3-sm px-3 py-2 text-xs transition-all hover:bg-white/6 active:scale-95"
-      style={{ color: "var(--md-text-muted)" }}
+      style={{
+        color: state === "confirm" ? "var(--md-accent-red, #ef4444)" : "var(--md-text-muted)",
+      }}
     >
-      {cleared ? (
-        t("settings.cache_cleared")
-      ) : (
+      {state === "idle" && (
         <>
-          <FiTrash2 size={12} />
-          {t("settings.clear_cache")}
+          <FiTrash2 size={12} /> {t("settings.clear_cache")}
         </>
       )}
+      {state === "confirm" && t("settings.clear_cache_confirm_short")}
+      {state === "cleared" && t("settings.cache_cleared")}
     </button>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { SiWakatime } from "react-icons/si";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
@@ -12,32 +13,18 @@ import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { fetchWithTimeout } from "@/lib/api/fetchWithTimeout";
 import { fetchJsonp } from "@/lib/api/jsonp";
-import { getCache, setCache } from "@/lib/cache";
+import { getCache, getCacheTime, setCache } from "@/lib/cache";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
+import {
+  CACHE_KEY,
+  CACHE_TTL,
+  computeAiSum,
+  type DayEntry,
+  extractWakaData,
+  type WakaResponse,
+} from "./wakatime-shared";
 
-interface DayEntry {
-  grand_total: {
-    text: string;
-    total_seconds: number;
-    hours: number;
-    minutes: number;
-    decimal: string;
-    ai_additions?: number;
-    ai_deletions?: number;
-    ai_prompt_events?: number;
-    ai_input_tokens?: number;
-    ai_output_tokens?: number;
-    ai_agent_costs?: Record<string, number>;
-    human_additions?: number;
-    human_deletions?: number;
-  };
-  range: { date: string; text: string };
-}
-
-type WakaResponse = DayEntry[] | { data: DayEntry[] };
-
-const CACHE_KEY = "wakatime";
-const CACHE_TTL = 30 * 60 * 1000;
 const SHOW_DAYS_DEFAULT = 7;
 
 export function WakatimeCard() {
@@ -48,17 +35,7 @@ export function WakatimeCard() {
   const [modalOpen, setModalOpen] = useState(false);
   const cfg = siteConfig.wakatime;
 
-  const [cacheTime, setCacheTime] = useState<number | null>(null);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (!raw) return;
-      setCacheTime((JSON.parse(raw) as { ts: number }).ts);
-    } catch {
-      /* noop */
-    }
-  }, []);
+  const _cacheTime = getCacheTime(CACHE_KEY);
 
   const fetchStats = useCallback(async () => {
     if (!cfg.enabled || !cfg.embedId) {
@@ -80,7 +57,7 @@ export function WakatimeCard() {
             .then((r) => r.json())
             .catch(() => fetchJsonp<WakaResponse>(url))
         );
-      const data = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+      const data = extractWakaData(raw);
       if (Array.isArray(data) && data.length > 0) {
         setEntries(data);
         setCache(CACHE_KEY, data);
@@ -94,45 +71,12 @@ export function WakatimeCard() {
 
   useEffect(() => {
     fetchStats();
+    const onClear = () => fetchStats();
+    window.addEventListener("cache-cleared", onClear);
+    return () => window.removeEventListener("cache-cleared", onClear);
   }, [fetchStats]);
 
-  const aiSum = useMemo(
-    () =>
-      entries.reduce(
-        (s, e) => {
-          const gt = e.grand_total;
-          const agentCosts = gt?.ai_agent_costs;
-          const dayCost = agentCosts ? Object.values(agentCosts).reduce((sum, v) => sum + v, 0) : 0;
-          const agents = agentCosts ? Object.keys(agentCosts) : [];
-          for (const name of agents) {
-            s.agents[name] = (s.agents[name] || 0) + (agentCosts?.[name] || 0);
-          }
-          return {
-            add: s.add + (gt?.ai_additions || 0),
-            del: s.del + (gt?.ai_deletions || 0),
-            prompts: s.prompts + (gt?.ai_prompt_events || 0),
-            inTokens: s.inTokens + (gt?.ai_input_tokens || 0),
-            outTokens: s.outTokens + (gt?.ai_output_tokens || 0),
-            cost: s.cost + dayCost,
-            humanAdd: s.humanAdd + (gt?.human_additions || 0),
-            humanDel: s.humanDel + (gt?.human_deletions || 0),
-            agents: s.agents,
-          };
-        },
-        {
-          add: 0,
-          del: 0,
-          prompts: 0,
-          inTokens: 0,
-          outTokens: 0,
-          cost: 0,
-          humanAdd: 0,
-          humanDel: 0,
-          agents: {} as Record<string, number>,
-        }
-      ),
-    [entries]
-  );
+  const aiSum = useMemo(() => computeAiSum(entries), [entries]);
 
   const fmtNum = (n: number) => n.toLocaleString(i18n.language);
 
@@ -169,12 +113,12 @@ export function WakatimeCard() {
           style={{ backgroundColor: "var(--md-primary-008)" }}
           aria-live="polite"
         >
-          {visible.map((day, i) => {
+          {visible.map((day) => {
             const g = day.grand_total;
             if (!g) return null;
             const pct = (g.total_seconds / maxDay) * 100;
             return (
-              <div key={day.range?.date || i} className="flex items-center gap-2 text-xs">
+              <div key={day.range?.date ?? "entry"} className="flex items-center gap-2 text-xs">
                 <span className="w-20 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>
                   {day.range?.date || ""}
                 </span>
@@ -210,17 +154,7 @@ export function WakatimeCard() {
             </button>
           )}
         </div>
-        {cacheTime && (
-          <p className="text-[9px] text-right mt-3" style={{ color: "var(--md-text-muted)" }}>
-            {t("wakatime.cached_at")}{" "}
-            {new Date(cacheTime).toLocaleString(i18n.language, {
-              month: "short",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-        )}
+        <CachedAt cacheKey={CACHE_KEY} />
       </Card>
       <WakaModal
         open={modalOpen}
@@ -233,6 +167,8 @@ export function WakatimeCard() {
     </>
   );
 }
+
+const MODAL_TITLE_ID = "waka-modal-title";
 
 function WakaModal({
   open,
@@ -256,11 +192,7 @@ function WakaModal({
   t: (key: string) => string;
   fmtNum: (n: number) => string;
 }) {
-  const viewerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (open) viewerRef.current?.focus();
-  }, [open]);
+  const viewerRef = useFocusTrap(open);
 
   const maxDay = Math.max(...entries.map((e) => e.grand_total?.total_seconds || 0), 1);
 
@@ -283,6 +215,7 @@ function WakaModal({
       }}
       role="dialog"
       aria-modal="true"
+      aria-labelledby={MODAL_TITLE_ID}
       tabIndex={-1}
     >
       <div
@@ -297,6 +230,7 @@ function WakaModal({
           style={{ borderColor: "rgba(255,255,255,0.06)" }}
         >
           <h2
+            id={MODAL_TITLE_ID}
             className="font-heading text-base font-semibold"
             style={{ color: "var(--md-text-primary)" }}
           >
@@ -313,13 +247,13 @@ function WakaModal({
         </div>
 
         <div className="overflow-y-auto max-h-[calc(80vh-57px)] p-5 space-y-1">
-          {entries.map((day, i) => {
+          {entries.map((day) => {
             const g = day.grand_total;
             if (!g) return null;
             const pct = (g.total_seconds / maxDay) * 100;
             return (
               <div
-                key={day.range?.date || i}
+                key={day.range?.date ?? "entry"}
                 className="flex items-center gap-2 text-xs rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6"
               >
                 <span className="w-20 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>

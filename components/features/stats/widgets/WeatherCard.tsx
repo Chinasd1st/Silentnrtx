@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCloudSun, FaSun, FaTint, FaWind } from "react-icons/fa";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
@@ -62,6 +63,7 @@ export function WeatherCard() {
   const [area, setArea] = useState<AData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [cacheKey, setCacheKey] = useState("");
   const cfg = siteConfig.weather;
   const isZh = i18n.language === "zh-CN";
   const prevCityRef = useRef("");
@@ -82,6 +84,7 @@ export function WeatherCard() {
     }
 
     const ck = `${CACHE_KEY}_${effective}`;
+    setCacheKey(ck);
     const cached = getCache<{ w: WData; a: AData }>(ck, CACHE_TTL);
     if (cached) {
       setWeather(cached.w);
@@ -116,16 +119,20 @@ export function WeatherCard() {
     const onVisible = () => {
       if (document.visibilityState === "visible") fetchWeather();
     };
+    const onRefresh = () => fetchWeather();
     document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("settings-changed", onRefresh);
+    window.addEventListener("cache-cleared", onRefresh);
     return () => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("settings-changed", onRefresh);
+      window.removeEventListener("cache-cleared", onRefresh);
     };
   }, [fetchWeather]);
 
   const desc = isZh ? weather?.lang_zh?.[0]?.value || "" : weather?.weatherDesc?.[0]?.value || "";
   const cityName = area?.areaName?.[0]?.value || cfg.city;
-  const _regionName = area?.region?.[0]?.value || "";
 
   if (!cfg.enabled) return null;
   if (loading) return <CardSkeleton />;
@@ -162,7 +169,7 @@ export function WeatherCard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <Stat icon={<FaTint size={13} />} value={`${w.humidity}%`} label={t("weather.humidity")} />
         <WindStat dir={w.winddir16Point} speed={w.windspeedKmph} />
         <Stat
@@ -172,6 +179,7 @@ export function WeatherCard() {
         />
         <Stat icon={<FaSun size={13} />} value={w.uvIndex || "0"} label={t("weather.uv")} />
       </div>
+      {cacheKey && <CachedAt cacheKey={cacheKey} />}
     </div>
   );
 }

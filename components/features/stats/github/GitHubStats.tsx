@@ -1,6 +1,7 @@
 "use client";
 
 import { FaBook, FaCodeBranch, FaGithub, FaStar, FaUsers } from "react-icons/fa";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
@@ -104,6 +105,7 @@ export function GitHubStats() {
           />
         </div>
       </div>
+      <CachedAt cacheKey={CACHE_KEY} />
     </Card>
   );
 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { SettingsCard } from "@/components/dialogs/SettingsCard";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
-import { ThemeSwitch } from "@/components/widgets/ThemeSwitch";
+import { ThemeSwitch } from "@/components/ui/ThemeSwitch";
 import { siteConfig } from "@/config";
 import { highlight } from "@/lib/highlight";
 import { changeLang, useTranslation } from "@/lib/i18n";

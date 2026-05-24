@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaEarthAsia } from "react-icons/fa6";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
@@ -61,6 +62,9 @@ function useEq<T>(cacheKey: string, url: string, mapFn: (r: unknown) => T) {
 
   useEffect(() => {
     fetchData();
+    const onClear = () => fetchData();
+    window.addEventListener("cache-cleared", onClear);
+    return () => window.removeEventListener("cache-cleared", onClear);
   }, [fetchData]);
   return { data, loading, error, retry: fetchData };
 }
@@ -68,6 +72,7 @@ function useEq<T>(cacheKey: string, url: string, mapFn: (r: unknown) => T) {
 export function EarthquakeCard() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<"jma" | "cma">("jma");
+  const cacheKey = tab === "jma" ? "eq_jma" : "eq_cma";
 
   const jma = useEq<JmaItem>("eq_jma", "https://api.wolfx.jp/jma_eqlist.json", (r) => r as JmaItem);
   const cma = useEq<CmaItem>(
@@ -149,6 +154,7 @@ export function EarthquakeCard() {
           </p>
         </div>
       )}
+      <CachedAt cacheKey={cacheKey} />
     </Card>
   );
 }

@@ -70,7 +70,7 @@ function createManifest(data: unknown): ImageManifest {
   const images: Record<string, ImageManifestEntry> = {};
 
   for (const [key, rawEntry] of Object.entries(data.images)) {
-    const entry = rawEntry as any; // 临时转换，实际结构已由 build script 保证
+    const entry = rawEntry as any; // cast needed — actual shape is guaranteed by build script
 
     images[key] = {
       id: entry.id,
@@ -100,7 +100,7 @@ function createManifest(data: unknown): ImageManifest {
   };
 }
 
-// 初始化 manifest
+// Initialize manifest
 const imageManifest = createManifest(rawManifest);
 
 /**
@@ -127,7 +127,7 @@ export function getVariantForWidth(
   targetWidth: number,
   format: "webp" | "avif" = "webp"
 ): ImageVariant | null {
-  // 优先找 >= targetWidth 的最小变体
+  // Prefer smallest variant >= targetWidth
   const candidates = entry.variants
     .filter((v) => v.format === format && v.width >= targetWidth)
     .sort((a, b) => a.width - b.width);
@@ -136,7 +136,7 @@ export function getVariantForWidth(
     return candidates[0];
   }
 
-  // 降级：返回该格式下最大的变体
+  // Fallback: return the largest variant for this format
   const all = entry.variants.filter((v) => v.format === format).sort((a, b) => b.width - a.width);
 
   return all[0] || null;

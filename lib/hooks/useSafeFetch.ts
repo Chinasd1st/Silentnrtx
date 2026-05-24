@@ -77,9 +77,12 @@ export function useSafeFetch<T, TError = string>({
 
   useEffect(() => {
     if (immediate) execute();
+    const onClear = () => execute();
+    window.addEventListener("cache-cleared", onClear);
     return () => {
       abortRef.current?.abort();
       abortRef.current = null;
+      window.removeEventListener("cache-cleared", onClear);
     };
   }, [execute, immediate]);
 

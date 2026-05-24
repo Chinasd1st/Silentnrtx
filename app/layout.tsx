@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { GlobalAudioProvider } from "@/components/audio/GlobalAudio";
 import { ShortcutsPanel } from "@/components/dialogs/ShortcutsPanel";
-import { I18nInit } from "@/components/i18n/I18nInit";
-import { Background } from "@/components/layout/Background";
+import { Background } from "@/components/features/background/Background";
+import { I18nInit } from "@/components/ui/I18nInit";
 import { siteConfig } from "@/config";
 import { basePath } from "@/lib/base-path";
 import "./globals.css";
@@ -54,7 +54,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html
+      lang="zh-CN"
+      suppressHydrationWarning
+      style={{ "--md-hue": String(siteConfig.theme.hue) } as React.CSSProperties}
+    >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

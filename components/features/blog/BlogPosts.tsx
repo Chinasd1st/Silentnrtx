@@ -1,12 +1,14 @@
 "use client";
 
 import { FaGlobe } from "react-icons/fa";
+import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
+import { CACHE_KEYS, CACHE_TTL } from "@/lib/cache-config";
 import { useSafeFetch } from "@/lib/hooks/useSafeFetch";
 import { useTranslation } from "@/lib/i18n";
 
@@ -36,7 +38,7 @@ function descText(description: string) {
 }
 
 export function BlogPosts() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const rssUrl = siteConfig.blog.rssUrl;
   const {
     data: posts,
@@ -54,14 +56,14 @@ export function BlogPosts() {
         if (data.status === "ok") return data.items.slice(0, siteConfig.blog.postLimit);
         throw new Error("RSS parse failed");
       }),
-    cacheKey: "blog_rss",
-    cacheTTL: 30 * 60 * 1000,
+    cacheKey: CACHE_KEYS.BLOG_RSS,
+    cacheTTL: CACHE_TTL.BLOG_RSS,
     immediate: !!rssUrl,
   });
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString("en-US", {
+      return new Date(dateStr).toLocaleDateString(i18n.language, {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -114,12 +116,7 @@ export function BlogPosts() {
               rel="noopener noreferrer"
               className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:translate-x-1"
             >
-              <h3
-                className="font-medium text-sm leading-snug line-clamp-2"
-                style={{ color: "var(--md-text-primary)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--md-primary)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--md-text-primary)")}
-              >
+              <h3 className="font-medium text-sm leading-snug line-clamp-2 text-[var(--md-text-primary)] hover:text-[var(--md-primary)]">
                 {post.title}
               </h3>
               {post.description && descText(post.description) && (
@@ -158,6 +155,7 @@ export function BlogPosts() {
           ))}
         </div>
       )}
+      <CachedAt cacheKey={CACHE_KEYS.BLOG_RSS} />
     </Card>
   );
 }

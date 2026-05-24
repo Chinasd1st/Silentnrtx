@@ -6,6 +6,7 @@ import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
+import { CACHE_TTL } from "@/lib/cache-config";
 import { useTranslation } from "@/lib/i18n";
 
 interface LastFmTrack {
@@ -73,7 +74,7 @@ export function LastFmStatus() {
     const { apiKey, username } = siteConfig.lastfm;
     if (!apiKey || !username) return;
     const now = Date.now();
-    if (albumsCache.current && now - albumsCache.current.time < 5 * 60 * 1000) {
+    if (albumsCache.current && now - albumsCache.current.time < CACHE_TTL.LASTFM_ALBUMS) {
       setAlbums(albumsCache.current.data);
       return;
     }

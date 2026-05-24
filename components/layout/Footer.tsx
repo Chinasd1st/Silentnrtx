@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ReleaseModal } from "@/components/features/release/ReleaseModal";
 import { siteConfig } from "@/config";
 import { buildTime, commitSha } from "@/lib/buildTime";
 import { useVersion } from "@/lib/hooks/useVersion";
+import { useTranslation } from "@/lib/i18n";
 
 export function Footer() {
+  const { i18n } = useTranslation();
   const cfg = siteConfig.footer;
   const [year, setYear] = useState(new Date().getFullYear());
   const displayText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
@@ -19,7 +22,7 @@ export function Footer() {
   useEffect(() => {
     const built = new Date(buildTime);
     setTimeStr(
-      built.toLocaleString(undefined, {
+      built.toLocaleString(i18n.language, {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -28,10 +31,9 @@ export function Footer() {
         timeZoneName: "short",
       })
     );
-  }, []);
+  }, [i18n.language]);
 
   const sha = commitSha ? `(${commitSha})` : "";
-  const meta = [timeStr || "...", sha, ver || ""].filter(Boolean).join("  ·  ");
 
   return (
     <footer className="pb-8 pt-2 text-center space-y-2">
@@ -47,7 +49,13 @@ export function Footer() {
         </p>
       )}
       <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
-        {meta}
+        {[timeStr || "...", sha].filter(Boolean).join("  ·  ")}
+        {ver && (
+          <>
+            {"  ·  "}
+            <ReleaseModal version={ver} />
+          </>
+        )}
       </p>
     </footer>
   );
