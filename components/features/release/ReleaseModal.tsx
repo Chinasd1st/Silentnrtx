@@ -207,9 +207,6 @@ export function ReleaseModal({
 
   const handleClose = () => setOpen(false);
 
-  const isBeta = /beta/i.test(version);
-  const isRc = /rc/i.test(version);
-
   return (
     <>
       <button
@@ -266,31 +263,6 @@ export function ReleaseModal({
               </div>
 
               <div className="overflow-y-auto max-h-[calc(80vh-57px)] p-5">
-                {isBeta && (
-                  <div
-                    className="rounded-[12px] p-3 mb-4 text-xs"
-                    style={{
-                      backgroundColor:
-                        "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
-                      color: "var(--md-accent-yellow, #eab308)",
-                    }}
-                  >
-                    {t("release.beta_warning")}
-                  </div>
-                )}
-                {isRc && !isBeta && (
-                  <div
-                    className="rounded-[12px] p-3 mb-4 text-xs"
-                    style={{
-                      backgroundColor:
-                        "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
-                      color: "var(--md-accent-yellow, #eab308)",
-                    }}
-                  >
-                    {t("release.rc_warning")}
-                  </div>
-                )}
-
                 {loading && (
                   <p className="text-sm" style={{ color: "var(--md-text-muted)" }}>
                     {t("release.loading")}
@@ -333,6 +305,30 @@ export function ReleaseModal({
                       </span>
                     </div>
 
+                    {/beta/i.test(release.tag_name) && (
+                      <div
+                        className="rounded-[12px] p-3 mb-3 text-xs"
+                        style={{
+                          backgroundColor:
+                            "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
+                          color: "var(--md-accent-yellow, #eab308)",
+                        }}
+                      >
+                        {t("release.beta_warning")}
+                      </div>
+                    )}
+                    {/rc/i.test(release.tag_name) && !/beta/i.test(release.tag_name) && (
+                      <div
+                        className="rounded-[12px] p-3 mb-3 text-xs"
+                        style={{
+                          backgroundColor:
+                            "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
+                          color: "var(--md-accent-yellow, #eab308)",
+                        }}
+                      >
+                        {t("release.rc_warning")}
+                      </div>
+                    )}
                     <ReleaseBody body={release.body} />
                   </div>
                 ))}

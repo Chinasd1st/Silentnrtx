@@ -56,15 +56,20 @@ Tags MUST match `v<X>.<Y>.<Z>` or `v<X>.<Y>.<Z>-<label>.<N>`.
 
 ### 3. Create GitHub Release via gh CLI
 
-Body is written in Chinese. Use the Release Note Template:
+Body is written in Chinese. Write release content to a temp file first, then use it:
 
-```bash
-gh release create v<version> --title "v<version>" --notes "<body>"
+```powershell
+@'
+<release body in markdown>
+'@ | Set-Content -Path "$env:TEMP\release-body.md" -Encoding UTF8
+gh release create v<version> --title "v<version>" --notes-file "$env:TEMP\release-body.md"
 ```
 
 ### Release Note Template (Chinese)
 
 List items under each h3 section MUST use conventional-commit-type prefixes (`fix`, `feat`, `chore`, `deps`, etc.) followed by a colon + space. These will be rendered as colored badges in the UI (no colon displayed).
+
+Code references (component names, file paths, API endpoints, variable names, etc.) MUST be wrapped in backticks `` ` ``.
 
 Supported types and their badge colors:
 
@@ -86,13 +91,15 @@ Supported types and their badge colors:
 ```markdown
 ### 新增
 - feat: <Description>
+- feat: 自定义 `ComponentName` 组件
 
 ### 修复
 - fix: <Description>
+- fix: `useFoo` 钩子返回空值问题
 - deps: <Description>
 
 ### 重构
-- refactor: <Description>
+- refactor: `lib/bar.ts` 提取公共逻辑
 
 ### 其他
 - chore: Build and tooling changes
