@@ -36,10 +36,19 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 const CONVENTIONAL_TYPES = Object.keys(TYPE_COLORS);
+const REPO = "Chinasd1st/Silentnrtx";
 
 function preprocessBody(body: string): string {
   const typesPattern = CONVENTIONAL_TYPES.join("|");
-  return body.replace(new RegExp(`^(\\s*[-*]\\s+)(${typesPattern})(:|：)\\s`, "gm"), "$1`$2` ");
+  let s = body.replace(new RegExp(`^(\\s*[-*]\\s+)(${typesPattern})(:|：)\\s`, "gm"), "$1`$2` ");
+  s = s.replace(
+    /(?<=^|[^0-9a-fA-F\]])([0-9a-fA-F]{7})(?=[^0-9a-fA-F]|$)/g,
+    (m) => `[${m}](https://github.com/${REPO}/commit/${m.toLowerCase()})`
+  );
+  s = s.replace(/(?<!\w|`|\[)#(\d+)\b/g, (_, num) =>
+    num.length <= 4 ? `[#${num}](https://github.com/${REPO}/pull/${num})` : `#${num}`
+  );
+  return s;
 }
 
 function Badge({ type }: { type: string }) {
