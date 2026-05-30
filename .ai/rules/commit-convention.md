@@ -127,8 +127,8 @@ Before every commit, `lint-staged` runs Biome on all staged `.ts`, `.tsx`, `.js`
 
 ```json
 "lint-staged": {
-  "*.{ts,tsx,js,jsx,mjs,cjs}": ["biome check --write --unsafe"],
-  "*.{css,json}": ["biome check --write --unsafe"]
+  "{app,components,lib,scripts}/**/*.{ts,tsx,js,jsx,mjs,cjs}": ["biome check --write --unsafe"],
+  "{locales,public}/**/*.json": ["biome check --write --unsafe"]
 }
 ```
 

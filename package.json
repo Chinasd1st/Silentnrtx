@@ -9,7 +9,12 @@
     "export": "next build",
     "start": "next start",
     "lint": "biome check --write --unsafe",
-    "build:images": "tsx scripts/build-images.ts"
+    "build:images": "tsx scripts/build-images.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "{app,components,lib,scripts}/**/*.{ts,tsx,js,jsx,mjs,cjs}": ["biome check --write --unsafe"],
+    "{locales,public}/**/*.json": ["biome check --write --unsafe"]
   },
   "dependencies": {
     "axios": "^1.16.1",
@@ -26,10 +31,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.1.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.22.3",
