@@ -28,6 +28,7 @@ interface AudioState {
   pause: () => void;
   resume: () => void;
   seek: (t: number) => void;
+  preload: (url: string) => void;
   setVolume: (v: number) => void;
   setOnEnded: (fn: (() => void) | null) => void;
 }
@@ -142,6 +143,17 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const seek = useCallback((t: number) => {
     if (audioRef.current) audioRef.current.currentTime = t;
   }, []);
+  const preload = useCallback((url: string) => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (el.src !== url) {
+      el.src = url;
+      setSrc(url);
+      setDuration(0);
+      el.load();
+    }
+  }, []);
+
   const setVolume = useCallback((v: number) => {
     setVol(v);
     if (audioRef.current) audioRef.current.volume = v;
@@ -161,10 +173,24 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       pause,
       resume,
       seek,
+      preload,
       setVolume,
       setOnEnded,
     }),
-    [src, playing, currentTime, duration, volume, play, pause, resume, seek, setVolume, setOnEnded]
+    [
+      src,
+      playing,
+      currentTime,
+      duration,
+      volume,
+      play,
+      pause,
+      resume,
+      seek,
+      preload,
+      setVolume,
+      setOnEnded,
+    ]
   );
 
   return <AudioCtx.Provider value={value}>{children}</AudioCtx.Provider>;

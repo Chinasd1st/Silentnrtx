@@ -24,6 +24,7 @@ export function MusicPlayer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [dragging, setDragging] = useState(false);
   const [_retryKey, setRetryKey] = useState(0);
 
   const cfg = siteConfig.music;
@@ -36,18 +37,24 @@ export function MusicPlayer() {
     const controller = new AbortController();
     const url = `${cfg.api}?server=${encodeURIComponent(cfg.params.server)}&type=${encodeURIComponent(cfg.params.type)}&id=${encodeURIComponent(cfg.params.id)}`;
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-    fetchWithRetry(() => api.get<{ data: unknown[] }>(url, { signal: controller.signal }))
+      fetchWithRetry(() => api.get<unknown[]>(url, { signal: controller.signal }))
       .then(({ data }) => {
         if (!Array.isArray(data)) throw new Error("invalid");
-        const validated = data.map((d: Record<string, unknown>) => ({
-          name: String(d.name ?? ""),
-          artist: String(d.artist ?? ""),
-          url: String(d.url ?? ""),
-          pic: String(d.pic ?? ""),
-          lrc: String(d.lrc ?? ""),
-        }));
+        const validated = data.map((d) => {
+          const item = d as Record<string, unknown>;
+          return {
+            name: String(item.title ?? ""),
+            artist: String(item.author ?? ""),
+            url: String(item.url ?? ""),
+            pic: String(item.pic ?? ""),
+            lrc: String(item.lrc ?? ""),
+          };
+        });
         setSongs(validated);
-        if (validated.length > 0) setSelectedIdx(0);
+        if (validated.length > 0) {
+          setSelectedIdx(0);
+          audio.preload(validated[0].url);
+        }
       })
       .catch(() => {
         if (controller.signal.aborted) return;
@@ -61,7 +68,7 @@ export function MusicPlayer() {
       clearTimeout(timeoutId);
       controller.abort();
     };
-  }, []);
+  }, [audio.preload]);
 
   const playSong = useCallback(
     (idx: number) => {
@@ -187,6 +194,7 @@ export function MusicPlayer() {
             <img
               src={track.pic}
               alt={track?.name || "cover"}
+              loading="lazy"
               className="h-10 w-10 shrink-0 rounded-[10px] object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
@@ -214,7 +222,7 @@ export function MusicPlayer() {
               type="button"
               onClick={prev}
               aria-label={t("music.previous")}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -228,7 +236,7 @@ export function MusicPlayer() {
               type="button"
               onClick={() => toggle(idx)}
               aria-label={audio.playing && selectedIdx === idx ? t("music.pause") : t("music.play")}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}
             >
               {audio.playing && selectedIdx === idx ? (
@@ -241,7 +249,7 @@ export function MusicPlayer() {
               type="button"
               onClick={next}
               aria-label={t("music.next")}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -267,7 +275,17 @@ export function MusicPlayer() {
             const rect = e.currentTarget.getBoundingClientRect();
             const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
             audio.seek(ratio * audio.duration);
+            e.currentTarget.setPointerCapture(e.pointerId);
+            setDragging(true);
           }}
+          onPointerMove={(e) => {
+            if (!dragging) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            audio.seek(ratio * audio.duration);
+          }}
+          onPointerUp={() => setDragging(false)}
+          onPointerCancel={() => setDragging(false)}
           onKeyDown={(e) => {
             if (e.key === "ArrowLeft") {
               e.preventDefault();
@@ -284,6 +302,8 @@ export function MusicPlayer() {
             style={{
               width: `${audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0}%`,
               backgroundColor: "var(--md-primary)",
+              pointerEvents: "none",
+              transition: dragging ? "none" : "width 0.5s cubic-bezier(0.2, 0, 0, 1)",
             }}
           />
         </div>
@@ -332,27 +352,36 @@ const SongItem = React.memo(function SongItem({
       type="button"
       onClick={handleClick}
       aria-label={song.name}
-      className="flex w-full items-center gap-3 rounded-md3-sm px-3 py-2 text-left transition-all duration-200 hover:bg-white/5"
+      className="group flex w-full items-center gap-3 rounded-[16px] px-3 py-2 text-left cursor-pointer transition-all duration-200 hover:bg-white/6"
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}
     >
-      <span
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-[10px]"
-        style={{
-          backgroundColor: sel ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
-          color: sel ? "var(--md-primary)" : "var(--md-text-muted)",
-        }}
-      >
-        {sel && isPlaying ? (
-          <FaPause size={8} />
-        ) : (
-          <FaPlay size={8} style={{ marginLeft: "1px" }} />
+      <div className="relative h-7 w-7 shrink-0">
+        {song.pic && (
+          <img
+            src={song.pic}
+            alt={song.name}
+            loading="lazy"
+            className="h-7 w-7 rounded-[8px] object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
         )}
-      </span>
+        {sel && (
+          <div
+            className="absolute inset-0 flex items-center justify-center rounded-[8px]"
+            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+          >
+            {isPlaying ? <FaPause size={8} /> : <FaPlay size={8} style={{ marginLeft: "1px" }} />}
+          </div>
+        )}
+      </div>
       <div className="min-w-0 flex-1">
         <p
-          className="truncate text-sm font-medium"
+          className={`truncate text-sm font-medium transition-all duration-200 group-hover:text-[var(--md-primary)] ${
+            sel ? "text-[var(--md-primary)]" : "text-[var(--md-text-primary)]"
+          }`}
           title={song.name}
-          style={{ color: sel ? "var(--md-primary)" : "var(--md-text-primary)" }}
         >
           {song.name}
         </p>

@@ -124,7 +124,7 @@ export function DropdownSelect({ value, options, onChange }: DropdownSelectProps
         aria-controls={listboxId}
         onClick={() => setOpen((v) => !v)}
         onKeyDown={handleKeyDown}
-        className="flex w-full items-center justify-between rounded-[16px] px-3 py-2 text-xs border transition-all duration-200 hover:bg-white/6"
+        className="flex w-full items-center justify-between rounded-[16px] px-3 py-2 text-xs border transition-all duration-200 hover:bg-white/6 cursor-pointer"
         style={{
           borderColor: "var(--md-card-border)",
           color: "var(--md-text-primary)",
@@ -177,7 +177,7 @@ export function DropdownSelect({ value, options, onChange }: DropdownSelectProps
                 aria-selected={opt.value === value}
                 tabIndex={-1}
                 onClick={() => select(idx)}
-                className="flex w-full items-center px-3 py-1.5 text-xs transition-all duration-200 hover:bg-white/6"
+                className="flex w-full items-center px-3 py-1.5 text-xs transition-all duration-200 hover:bg-white/6 cursor-pointer"
                 style={{
                   color: opt.value === value ? "var(--md-primary)" : "var(--md-text-primary)",
                   backgroundColor: idx === focusIdx ? "var(--md-primary-008)" : undefined,

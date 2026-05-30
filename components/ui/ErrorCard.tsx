@@ -29,7 +29,7 @@ export function ErrorCard({
         <button
           type="button"
           onClick={onRetry}
-          className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-all hover:scale-105"
+          className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-all hover:scale-105 hover:bg-white/6 cursor-pointer"
           style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "var(--md-text-secondary)" }}
         >
           <FiRefreshCw size={12} />

@@ -114,9 +114,9 @@ export function BlogPosts() {
               href={post.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:translate-x-1"
+              className="group block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6"
             >
-              <h3 className="font-medium text-sm leading-snug line-clamp-2 text-[var(--md-text-primary)] hover:text-[var(--md-primary)]">
+              <h3 className="font-medium text-sm leading-snug line-clamp-2 text-[var(--md-text-primary)] group-hover:text-[var(--md-primary)] transition-all duration-200">
                 {post.title}
               </h3>
               {post.description && descText(post.description) && (

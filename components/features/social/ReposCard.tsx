@@ -129,9 +129,9 @@ export function ReposCard() {
               href={repo.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:translate-x-1"
+              className="group block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6"
             >
-              <p className="text-sm font-semibold truncate text-[var(--md-text-primary)] hover:text-[var(--md-primary)]">
+              <p className="text-sm font-semibold truncate text-[var(--md-text-primary)] group-hover:text-[var(--md-primary)] transition-all duration-200">
                 {repo.name}
               </p>
               <p className="text-xs mt-1 line-clamp-2" style={{ color: "var(--md-text-muted)" }}>

@@ -147,7 +147,7 @@ export function WakatimeCard() {
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="w-full text-center text-[10px] py-1 mt-0.5 rounded-[16px] transition-all duration-200 hover:bg-white/6"
+              className="w-full text-center text-[10px] py-1 mt-0.5 rounded-[16px] transition-all duration-200 hover:bg-white/6 cursor-pointer"
               style={{ color: "var(--md-text-muted)" }}
             >
               {t("wakatime.show_all")} &gt;
@@ -206,7 +206,7 @@ function WakaModal({
   return createPortal(
     <div
       ref={viewerRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 cursor-pointer"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -240,7 +240,7 @@ function WakaModal({
             type="button"
             onClick={onClose}
             aria-label={t("wakatime.close")}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all cursor-pointer"
           >
             &times;
           </button>

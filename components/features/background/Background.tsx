@@ -98,25 +98,23 @@ export function Background() {
   if (loading || !bgUrl) return null;
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden" style={{ transform: "scale(1.1)" }}>
+    <div className="fixed inset-0 -z-10 overflow-hidden" style={{ transform: "scale(1.15)" }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgUrl})` }}
-      />
-      <div
-        className="absolute inset-0"
         style={{
-          backdropFilter: `blur(${cfg.blurAmount}px)`,
-          WebkitBackdropFilter: `blur(${cfg.blurAmount}px)`,
+          backgroundImage: `url(${bgUrl})`,
+          filter: `blur(${cfg.blurAmount}px)`,
         }}
       />
       <div
         className="absolute inset-0"
         style={{
-          backgroundColor: isLight ? `rgba(255,255,255,${1 - cfg.opacity})` : "rgba(0,0,0,0.4)",
+          backgroundColor: isLight
+            ? `rgba(255,255,255,${(1 - cfg.opacity) * 0.35})`
+            : "rgba(0,0,0,0.4)",
         }}
       />
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-(--md-background)/30 to-(--md-background)" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-(--md-background)/15 to-(--md-background)" />
     </div>
   );
 }
