@@ -37,7 +37,7 @@ export function MusicPlayer() {
     const controller = new AbortController();
     const url = `${cfg.api}?server=${encodeURIComponent(cfg.params.server)}&type=${encodeURIComponent(cfg.params.type)}&id=${encodeURIComponent(cfg.params.id)}`;
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-      fetchWithRetry(() => api.get<unknown[]>(url, { signal: controller.signal }))
+    fetchWithRetry(() => api.get<unknown[]>(url, { signal: controller.signal }))
       .then(({ data }) => {
         if (!Array.isArray(data)) throw new Error("invalid");
         const validated = data.map((d) => {
@@ -195,7 +195,7 @@ export function MusicPlayer() {
               src={track.pic}
               alt={track?.name || "cover"}
               loading="lazy"
-              className="h-10 w-10 shrink-0 rounded-[10px] object-cover"
+              className="h-10 w-10 shrink-0 rounded-[8px] object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
@@ -222,7 +222,7 @@ export function MusicPlayer() {
               type="button"
               onClick={prev}
               aria-label={t("music.previous")}
-              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-white/6"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -236,7 +236,7 @@ export function MusicPlayer() {
               type="button"
               onClick={() => toggle(idx)}
               aria-label={audio.playing && selectedIdx === idx ? t("music.pause") : t("music.play")}
-              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-white/6"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}
             >
               {audio.playing && selectedIdx === idx ? (
@@ -249,7 +249,7 @@ export function MusicPlayer() {
               type="button"
               onClick={next}
               aria-label={t("music.next")}
-              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-white/6"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -263,7 +263,7 @@ export function MusicPlayer() {
         </div>
 
         <div
-          className="relative h-1.5 w-full cursor-pointer rounded-full mt-3"
+          className="relative h-1.5 w-full cursor-pointer rounded-full overflow-hidden mt-3"
           style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
           role="slider"
           aria-label={t("music.seek")}
@@ -298,17 +298,17 @@ export function MusicPlayer() {
           }}
         >
           <div
-            className="absolute inset-y-0 left-0 rounded-full"
+            className="absolute inset-y-0 left-0"
             style={{
               width: `${audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0}%`,
               backgroundColor: "var(--md-primary)",
               pointerEvents: "none",
-              transition: dragging ? "none" : "width 0.5s cubic-bezier(0.2, 0, 0, 1)",
+              transition: dragging ? "none" : "width 0.25s linear",
             }}
           />
         </div>
         <div
-          className="flex justify-between text-xs mt-1"
+          className="flex justify-between text-xs mt-1 tabular-nums"
           style={{ color: "var(--md-text-muted)" }}
         >
           <span>{fmt(audio.currentTime)}</span>
@@ -355,7 +355,7 @@ const SongItem = React.memo(function SongItem({
       className="group flex w-full items-center gap-3 rounded-[16px] px-3 py-2 text-left cursor-pointer transition-all duration-200 hover:bg-white/6"
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}
     >
-      <div className="relative h-7 w-7 shrink-0">
+      <div className="relative h-7 w-7 shrink-0 rounded-[8px] bg-white/6">
         {song.pic && (
           <img
             src={song.pic}

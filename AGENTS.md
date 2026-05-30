@@ -24,6 +24,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 - `pnpm run build` — static export to `./out/`
 - `pnpm run lint` — run Biome lint + format on all files
 - Before committing, run `pnpm build && pnpm lint` and ensure both report zero errors.
+- Before pushing, run `pnpm tsc --noEmit && pnpm lint` to verify types and formatting.
 
 ## Component Conventions
 
