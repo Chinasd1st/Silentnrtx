@@ -35,17 +35,30 @@ v1.0.0-beta      — beta
 
 ## Creating a Release
 
-### 1. Commit and push all changes
+### 1. Ensure latest main
 
 ```bash
-git add -A
-git commit -m "feat: description of all changes"
+git checkout main
+git pull origin main --rebase
+```
+
+This guarantees the tag anchors on the absolute latest commit, avoiding a stale tag that points behind the remote.
+
+### 2. Commit version bump (if applicable)
+
+If `package.json` version needs updating, commit it as a chore:
+
+```bash
+git add package.json
+git commit -m "chore: bump version to v<version>"
 git push
 ```
 
+All feature/fix/refactor commits should already exist as atomic commits from development — do NOT lump them into a single "description of all changes" commit here.
+
 Ensure the Pre-release Checklist passes before tagging.
 
-### 2. Tag and push tag
+### 3. Tag and push tag
 
 ```bash
 git tag v<version>      # e.g. git tag v1.2.0
@@ -54,22 +67,34 @@ git push origin v<version>
 
 Tags MUST match `v<X>.<Y>.<Z>` or `v<X>.<Y>.<Z>-<label>.<N>`.
 
-### 3. Create GitHub Release via gh CLI
+### 4. Create GitHub Release via gh CLI
 
 Body is written in Chinese. Write release content to a temp file first, then use it:
 
 ```powershell
-@'
+$body = @'
 <release body in markdown>
-'@ | Set-Content -Path "$env:TEMP\release-body.md" -Encoding UTF8
+'@
+[System.IO.File]::WriteAllLines("$env:TEMP\release-body.md", $body, [System.Text.Encoding]::UTF8)
 gh release create v<version> --title "v<version>" --notes-file "$env:TEMP\release-body.md"
 ```
+
+> **Encoding note:** Use `[System.IO.File]::WriteAllLines` instead of `Set-Content -Encoding UTF8`. Windows PowerShell 5.1's `-Encoding UTF8` writes a BOM (Byte Order Mark `EF BB BF`) which can corrupt the first line of markdown when parsed. The `WriteAllLines` overload produces clean, BOM-less UTF-8.
 
 ### Release Note Template (Chinese)
 
 List items under each h3 section MUST use conventional-commit-type prefixes (`fix`, `feat`, `chore`, `deps`, etc.) followed by a colon + space. These will be rendered as colored badges in the UI (no colon displayed).
 
 Code references (component names, file paths, API endpoints, variable names, etc.) MUST be wrapped in backticks `` ` ``.
+
+**PR Hashtag & Commit SHA auto-linking:** The ReleaseModal component (`preprocessBody`) automatically converts `#N` (N ≤ 4 digits, e.g. `#30`) and 7-digit hex SHA (e.g. `44ba7fe`) into GitHub links. Write them **without backticks** so the markdown link renders correctly — otherwise the link syntax inside inline code (`` `[44ba7fe](url)` ``) will display as literal text instead of a clickable link.
+
+| Feature | Write as | Renders as |
+|---------|----------|------------|
+| PR link | `(#30)` | `(#30)` → link |
+| Commit link | `(44ba7fe)` | `(44ba7fe)` → link |
+| ❌ Wrong | `` (`#30`) `` | Hidden literal text |
+| ❌ Wrong | `` (`44ba7fe`) `` | Hidden literal text |
 
 Supported types and their badge colors:
 
@@ -107,7 +132,7 @@ Supported types and their badge colors:
 - chore: TypeScript 编译通过
 ```
 
-### 4. Verify
+### 5. Verify
 
 ```bash
 gh release view v<version>
