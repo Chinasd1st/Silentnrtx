@@ -141,3 +141,9 @@ Key points:
 - Only use read-only public keys — all `NEXT_PUBLIC_*` variables are embedded in client bundle.
 - Biome is configured in `biome.json` — do not bypass checks with inline disables unless necessary.
 - All commands use `pnpm` (never `npm`, `npx`, or `yarn`).
+
+## Forbidden Patterns (Do NOT add)
+
+- **Content-Security-Policy (CSP)**: This is a static export (`output: "export"`) deployed to GitHub Pages. CSP `<meta>` tags break inline script execution required by Next.js/Umami analytics. Never add `httpEquiv="Content-Security-Policy"` anywhere.
+- **Next.js API Routes**: The project uses `output: "export"` (fully static). API Routes require a Node.js server and will not work. Proxy API keys through static build-time data fetching instead.
+- **`dompurify` / `isomorphic-dompurify`**: Do NOT install additional DOMPurify packages. The project already uses `isomorphic-dompurify` in `Footer.tsx` for `dangerouslySetInnerHTML` sanitization. If you see `dangerouslySetInnerHTML` in any new code, either avoid it entirely or reuse the existing DOMPurify import pattern.

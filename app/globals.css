@@ -43,7 +43,7 @@
   }
 }
 
-@utility md-card {
+.md-card {
   border-radius: 24px;
   padding: 1.5rem;
   background: color-mix(in srgb, var(--md-card-bg) 75%, transparent);
@@ -56,33 +56,21 @@
     box-shadow 300ms cubic-bezier(0.2, 0, 0, 1),
     border-color 300ms cubic-bezier(0.2, 0, 0, 1),
     background 300ms cubic-bezier(0.2, 0, 0, 1);
-  &:hover {
-    box-shadow:
-      0 8px 30px rgba(0, 0, 0, 0.5),
-      0 0 0 1px var(--md-primary);
-    border-color: transparent;
-  }
-  .light & {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  }
-  .light &:hover {
-    box-shadow:
-      0 8px 24px rgba(0, 0, 0, 0.1),
-      0 0 0 1px var(--md-primary);
-    border-color: transparent;
-  }
 }
-
-@utility light {
-  & .md-card {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  }
-  & .md-card:hover {
-    box-shadow:
-      0 8px 24px rgba(0, 0, 0, 0.1),
-      0 0 0 1px var(--md-primary);
-    border-color: transparent;
-  }
+.md-card:hover {
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--md-primary);
+  border-color: transparent;
+}
+.light .md-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.light .md-card:hover {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 0 0 1px var(--md-primary);
+  border-color: transparent;
 }
 
 @utility md-chip {

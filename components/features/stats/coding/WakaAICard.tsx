@@ -91,7 +91,7 @@ export function WakaAICard() {
   return (
     <Card>
       <CardHeader icon={<FaLightbulb />} title="Vibe Coding" />
-      <div className="space-y-2" aria-live="polite">
+      <div className="space-y-3" aria-live="polite">
         <div className="grid grid-cols-2 gap-3">
           <StatBox label={t("wakatime.ai_additions")} value={fmtNum(aiSum.add)} />
           <StatBox label={t("wakatime.ai_deletions")} value={fmtNum(aiSum.del)} />
@@ -122,7 +122,7 @@ export function WakaAICard() {
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
     <div
-      className="rounded-[16px] p-4 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
+      className="rounded-[16px] p-3 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <p className="text-lg font-bold font-heading" style={{ color: "var(--md-primary)" }}>
@@ -138,7 +138,7 @@ function StatBox({ label, value }: { label: string; value: string }) {
 function CostBox({ label, value }: { label: string; value: string }) {
   return (
     <div
-      className="rounded-[16px] p-4 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
+      className="rounded-[16px] p-3 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <p className="text-xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>

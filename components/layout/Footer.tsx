@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
+import { useEffect, useMemo, useState } from "react";
 import { ReleaseModal } from "@/components/features/release/ReleaseModal";
 import { siteConfig } from "@/config";
 import { buildTime, commitSha } from "@/lib/buildTime";
@@ -11,7 +12,8 @@ export function Footer() {
   const { i18n } = useTranslation();
   const cfg = siteConfig.footer;
   const [year, setYear] = useState(new Date().getFullYear());
-  const displayText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
+  const rawText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
+  const displayText = useMemo(() => DOMPurify.sanitize(rawText), [rawText]);
 
   useEffect(() => {
     setYear(new Date().getFullYear());
