@@ -28,17 +28,17 @@ export function ProfileCard() {
           </div>
         </div>
 
-        <div className="flex-1 text-center sm:text-left">
+        <div className="flex-1 min-w-0 text-center sm:text-left">
           <h2
-            className="font-heading text-2xl font-bold tracking-tight"
+            className="font-heading text-2xl font-bold tracking-tight truncate"
             style={{ color: "var(--md-text-primary)" }}
           >
             {profile.name}
           </h2>
-          <p className="mt-0.5 text-sm" style={{ color: "var(--md-text-secondary)" }}>
+          <p className="mt-0.5 text-sm truncate" style={{ color: "var(--md-text-secondary)" }}>
             {t("profile.location")}
           </p>
-          <p className="mt-1 text-base" style={{ color: "var(--md-primary)" }}>
+          <p className="mt-1 text-base truncate" style={{ color: "var(--md-primary)" }}>
             @{profile.username}
           </p>
         </div>
