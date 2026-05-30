@@ -264,8 +264,12 @@ export function LastFmStatus() {
                   <img
                     src={art}
                     alt=""
+                    loading="lazy"
                     className="w-8 h-8 rounded-[8px] object-cover shrink-0"
                     aria-hidden="true"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-[8px] bg-white/6 shrink-0" />
