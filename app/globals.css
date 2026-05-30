@@ -157,6 +157,12 @@
     --md-text-primary: oklch(0.15 0.01 var(--md-hue));
     --md-text-secondary: oklch(0.4 0.015 var(--md-hue));
     --md-text-muted: oklch(0.45 0.015 var(--md-hue));
+
+    /* Hover — use primary tint instead of white overlay on light bg */
+    & .hover\:bg-white\/6:hover,
+    & .hover\:bg-white\/5:hover {
+      background-color: var(--md-primary-012);
+    }
   }
 }
 

@@ -214,7 +214,7 @@ export function MusicPlayer() {
               type="button"
               onClick={prev}
               aria-label={t("music.previous")}
-              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -228,7 +228,7 @@ export function MusicPlayer() {
               type="button"
               onClick={() => toggle(idx)}
               aria-label={audio.playing && selectedIdx === idx ? t("music.pause") : t("music.play")}
-              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}
             >
               {audio.playing && selectedIdx === idx ? (
@@ -241,7 +241,7 @@ export function MusicPlayer() {
               type="button"
               onClick={next}
               aria-label={t("music.next")}
-              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:bg-white/6"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",

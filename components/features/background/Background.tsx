@@ -98,16 +98,12 @@ export function Background() {
   if (loading || !bgUrl) return null;
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden" style={{ transform: "scale(1.1)" }}>
+    <div className="fixed inset-0 -z-10 overflow-hidden" style={{ transform: "scale(1.15)" }}>
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgUrl})` }}
-      />
-      <div
-        className="absolute inset-0"
         style={{
-          backdropFilter: `blur(${cfg.blurAmount}px)`,
-          WebkitBackdropFilter: `blur(${cfg.blurAmount}px)`,
+          backgroundImage: `url(${bgUrl})`,
+          filter: `blur(${cfg.blurAmount}px)`,
         }}
       />
       <div
