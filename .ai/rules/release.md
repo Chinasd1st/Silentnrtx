@@ -75,15 +75,23 @@ Body is written in Chinese. Write release content to a temp file first, then use
 $body = @'
 <release body in markdown>
 '@
-[System.IO.File]::WriteAllLines("$env:TEMP\release-body.md", $body, [System.Text.Encoding]::UTF8)
+[System.IO.File]::WriteAllLines("$env:TEMP\release-body.md", $body, [System.Text.UTF8Encoding]::new($false))
 gh release create v<version> --title "v<version>" --notes-file "$env:TEMP\release-body.md"
 ```
 
-> **Encoding note:** Use `[System.IO.File]::WriteAllLines` instead of `Set-Content -Encoding UTF8`. Windows PowerShell 5.1's `-Encoding UTF8` writes a BOM (Byte Order Mark `EF BB BF`) which can corrupt the first line of markdown when parsed. The `WriteAllLines` overload produces clean, BOM-less UTF-8.
+> **Encoding note:** Windows PowerShell 5.1's `-Encoding UTF8` writes a BOM (Byte Order Mark `EF BB BF`). Even `[System.IO.File]::WriteAllLines` with `[System.Text.Encoding]::UTF8` writes BOM in .NET Framework. Use `[System.Text.UTF8Encoding]::new($false)` (the `$false` parameter disables BOM) to write clean BOM-less UTF-8:
+>
+> ```powershell
+> $body = @'
+> <release body in markdown>
+> '@
+> [System.IO.File]::WriteAllLines("$env:TEMP\release-body.md", $body, [System.Text.UTF8Encoding]::new($false))
+> gh release create v<version> --title "v<version>" --notes-file "$env:TEMP\release-body.md"
+> ```
 
 ### Release Note Template (Chinese)
 
-List items under each h3 section MUST use conventional-commit-type prefixes (`fix`, `feat`, `chore`, `deps`, etc.) followed by a colon + space. These will be rendered as colored badges in the UI (no colon displayed).
+List items under each h3 section MUST use conventional-commit-type prefixes (`fix`, `feat`, `chore`, `deps`, etc.) followed by a colon + space. These will be rendered as colored badges in the UI (no colon displayed). Scopes are supported and rendered after the badge: `- docs(commit): refine` → **`docs`**`(commit): refine`.
 
 Code references (component names, file paths, API endpoints, variable names, etc.) MUST be wrapped in backticks `` ` ``.
 

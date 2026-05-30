@@ -39,7 +39,10 @@ const CONVENTIONAL_TYPES = Object.keys(TYPE_COLORS);
 
 function preprocessBody(body: string, repo: string): string {
   const typesPattern = CONVENTIONAL_TYPES.join("|");
-  let s = body.replace(new RegExp(`^(\\s*[-*]\\s+)(${typesPattern})(:|：)\\s`, "gm"), "$1`$2` ");
+  let s = body.replace(
+    new RegExp(`^(\\s*[-*]\\s+)(${typesPattern})(\\([^)]*\\))?(:|：)\\s`, "gm"),
+    "$1`$2`$3 "
+  );
   s = s.replace(
     /(?<=^|[^0-9a-fA-F\]])([0-9a-fA-F]{7})(?=[^0-9a-fA-F]|$)/g,
     (m) => `[${m}](https://github.com/${repo}/commit/${m.toLowerCase()})`
