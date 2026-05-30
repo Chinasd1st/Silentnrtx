@@ -150,18 +150,18 @@ export function LastFmStatus() {
         <button
           type="button"
           onClick={() => setTab("nowplaying")}
-          className="rounded-full px-3 py-1 text-xs font-medium transition-all"
+          className="rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer"
           style={{
             backgroundColor: tab === "nowplaying" ? activeBg : inactiveBg,
             color: tab === "nowplaying" ? activeFg : inactiveFg,
           }}
         >
-          {t("lastfm.recent")}
+          {t("lastfm.nowplaying")}
         </button>
         <button
           type="button"
           onClick={() => setTab("top")}
-          className="rounded-full px-3 py-1 text-xs font-medium transition-all"
+          className="rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer"
           style={{
             backgroundColor: tab === "top" ? activeBg : inactiveBg,
             color: tab === "top" ? activeFg : inactiveFg,

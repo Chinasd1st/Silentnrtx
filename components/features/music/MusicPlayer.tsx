@@ -214,7 +214,7 @@ export function MusicPlayer() {
               type="button"
               onClick={prev}
               aria-label={t("music.previous")}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -228,7 +228,7 @@ export function MusicPlayer() {
               type="button"
               onClick={() => toggle(idx)}
               aria-label={audio.playing && selectedIdx === idx ? t("music.pause") : t("music.play")}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110"
               style={{ backgroundColor: "var(--md-primary-020)", color: "var(--md-primary)" }}
             >
               {audio.playing && selectedIdx === idx ? (
@@ -241,7 +241,7 @@ export function MusicPlayer() {
               type="button"
               onClick={next}
               aria-label={t("music.next")}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110"
               style={{
                 backgroundColor: "rgba(255,255,255,0.06)",
                 color: "var(--md-text-secondary)",
@@ -284,6 +284,7 @@ export function MusicPlayer() {
             style={{
               width: `${audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0}%`,
               backgroundColor: "var(--md-primary)",
+              transition: "width 0.5s cubic-bezier(0.2, 0, 0, 1)",
             }}
           />
         </div>
@@ -332,7 +333,7 @@ const SongItem = React.memo(function SongItem({
       type="button"
       onClick={handleClick}
       aria-label={song.name}
-      className="flex w-full items-center gap-3 rounded-md3-sm px-3 py-2 text-left transition-all duration-200 hover:bg-white/5"
+      className="flex w-full items-center gap-3 rounded-md3-sm px-3 py-2 text-left cursor-pointer transition-all duration-200 hover:bg-white/5"
       style={{ backgroundColor: sel ? "var(--md-primary-012)" : "transparent" }}
     >
       <span

@@ -53,7 +53,7 @@ export function SettingsCard() {
       {open && (
         <div
           ref={dialogRef}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-pointer"
           onClick={(e) => {
             if (e.target === e.currentTarget) setOpen(false);
           }}
@@ -84,7 +84,7 @@ export function SettingsCard() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label={t("gallery.close")}
-                className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-white/6"
+                className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:bg-white/6"
                 style={{ color: "var(--md-text-muted)" }}
               >
                 <FiX size={16} />
@@ -227,7 +227,7 @@ function ClearCacheButton() {
       onBlur={() => {
         if (state === "confirm") setState("idle");
       }}
-      className="flex w-full items-center justify-center gap-2 rounded-md3-sm px-3 py-2 text-xs transition-all hover:bg-white/6 active:scale-95"
+      className="flex w-full items-center justify-center gap-2 rounded-md3-sm px-3 py-2 text-xs cursor-pointer transition-all hover:bg-white/6 active:scale-95"
       style={{
         color: state === "confirm" ? "var(--md-accent-red, #ef4444)" : "var(--md-text-muted)",
       }}

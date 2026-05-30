@@ -36,7 +36,7 @@ export function ShortcutsPanel() {
   return (
     <div
       ref={dialogRef}
-      className="fixed inset-0 z-100 flex items-center justify-center p-4"
+      className="fixed inset-0 z-100 flex items-center justify-center p-4 cursor-pointer"
       onClick={(e) => {
         if (e.target === e.currentTarget) setOpen(false);
       }}

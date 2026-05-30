@@ -222,7 +222,7 @@ export function ReleaseModal({
         createPortal(
           <div
             ref={viewerRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 cursor-pointer"
             onClick={(e) => {
               if (e.target === e.currentTarget) handleClose();
             }}
@@ -256,7 +256,7 @@ export function ReleaseModal({
                   type="button"
                   onClick={handleClose}
                   aria-label={t("release.close")}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all shrink-0"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all shrink-0 cursor-pointer"
                 >
                   <FiX size={15} />
                 </button>
