@@ -113,10 +113,12 @@ export function Background() {
       <div
         className="absolute inset-0"
         style={{
-          backgroundColor: isLight ? `rgba(255,255,255,${1 - cfg.opacity})` : "rgba(0,0,0,0.4)",
+          backgroundColor: isLight
+            ? `rgba(255,255,255,${(1 - cfg.opacity) * 0.35})`
+            : "rgba(0,0,0,0.4)",
         }}
       />
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-(--md-background)/30 to-(--md-background)" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-(--md-background)/15 to-(--md-background)" />
     </div>
   );
 }
