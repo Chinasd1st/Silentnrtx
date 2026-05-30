@@ -36,17 +36,16 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 const CONVENTIONAL_TYPES = Object.keys(TYPE_COLORS);
-const REPO = "Chinasd1st/Silentnrtx";
 
-function preprocessBody(body: string): string {
+function preprocessBody(body: string, repo: string): string {
   const typesPattern = CONVENTIONAL_TYPES.join("|");
   let s = body.replace(new RegExp(`^(\\s*[-*]\\s+)(${typesPattern})(:|：)\\s`, "gm"), "$1`$2` ");
   s = s.replace(
     /(?<=^|[^0-9a-fA-F\]])([0-9a-fA-F]{7})(?=[^0-9a-fA-F]|$)/g,
-    (m) => `[${m}](https://github.com/${REPO}/commit/${m.toLowerCase()})`
+    (m) => `[${m}](https://github.com/${repo}/commit/${m.toLowerCase()})`
   );
   s = s.replace(/(?<!\w|`|\[)#(\d+)\b/g, (_, num) =>
-    num.length <= 4 ? `[#${num}](https://github.com/${REPO}/pull/${num})` : `#${num}`
+    num.length <= 4 ? `[#${num}](https://github.com/${repo}/pull/${num})` : `#${num}`
   );
   return s;
 }
@@ -73,8 +72,8 @@ function Badge({ type }: { type: string }) {
   );
 }
 
-function ReleaseBody({ body }: { body: string }) {
-  const processed = useMemo(() => preprocessBody(body), [body]);
+function ReleaseBody({ body, repo }: { body: string; repo: string }) {
+  const processed = useMemo(() => preprocessBody(body, repo), [body, repo]);
 
   return (
     <div className="prose prose-sm max-w-none" style={{ color: "var(--md-text-secondary)" }}>
@@ -209,6 +208,12 @@ export function ReleaseModal({
     }
   };
 
+  const repo = useMemo(() => {
+    if (releases.length === 0) return "";
+    const m = /https:\/\/github\.com\/([^/]+\/[^/]+)\/releases\//.exec(releases[0].html_url);
+    return m ? m[1] : "";
+  }, [releases]);
+
   const handleOpen = () => {
     setOpen(true);
     if (releases.length === 0) fetchReleases();
@@ -338,14 +343,14 @@ export function ReleaseModal({
                         {t("release.rc_warning")}
                       </div>
                     )}
-                    <ReleaseBody body={release.body} />
+                    <ReleaseBody body={release.body} repo={repo} />
                   </div>
                 ))}
 
                 {releases.length > 0 && (
                   <div className="mt-2 text-center">
                     <a
-                      href="https://github.com/Chinasd1st/Silentnrtx/releases"
+                      href={`https://github.com/${repo}/releases`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs inline-flex items-center gap-1 hover:underline"
