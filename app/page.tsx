@@ -1,6 +1,5 @@
 import { BlogPosts } from "@/components/features/blog/BlogPosts";
 import { GalleryCard } from "@/components/features/gallery/GalleryCard";
-import { MusicPlayer } from "@/components/features/music/MusicPlayer";
 import { ProfileCard } from "@/components/features/profile/ProfileCard";
 import { OsuSignature } from "@/components/features/social/OsuSignature";
 import { ReposCard } from "@/components/features/social/ReposCard";
@@ -58,9 +57,7 @@ export default function Home() {
           <div className="break-inside-avoid mb-6">
             <LastFmStatus />
           </div>
-          <div className="break-inside-avoid mb-6">
-            <MusicPlayer />
-          </div>
+
           <div className="break-inside-avoid mb-6">
             <OsuSignature />
           </div>

@@ -173,6 +173,24 @@
 }
 .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
 
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+@keyframes fade-slide-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -184,6 +202,12 @@
   50% { opacity: 1; }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+@keyframes playing-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+.animate-playing-pulse { animation: playing-pulse 1.2s ease-in-out infinite; }
 
 /* Scrollbar — thin rounded thumb, transparent track */
 @supports selector(::-webkit-scrollbar) {
@@ -230,6 +254,27 @@
   border: 2px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--md-outline-variant) 15%, transparent) transparent;
+}
+.thin-scrollbar:hover {
+  scrollbar-color: color-mix(in oklch, var(--md-outline-variant) 40%, transparent) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--md-outline-variant) 15%, transparent);
+  border-radius: 3px;
+}
+.thin-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--md-outline-variant) 40%, transparent);
 }
 
 .external-link {
