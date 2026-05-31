@@ -3,6 +3,7 @@ import Script from "next/script";
 import { GlobalAudioProvider } from "@/components/audio/GlobalAudio";
 import { ShortcutsPanel } from "@/components/dialogs/ShortcutsPanel";
 import { Background } from "@/components/features/background/Background";
+import { MiniPlayer } from "@/components/features/music/MiniPlayer";
 import { I18nInit } from "@/components/ui/I18nInit";
 import { siteConfig } from "@/config";
 import { basePath } from "@/lib/base-path";
@@ -99,6 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GlobalAudioProvider>
           <Background />
           <ShortcutsPanel />
+          <MiniPlayer />
           <main>{children}</main>
         </GlobalAudioProvider>
       </body>
