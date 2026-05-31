@@ -32,6 +32,7 @@
   "osu.profile": "主页",
   "osu.sig_alt": "osu! 签名图",
   "osu.sig_failed": "签名图加载失败",
+  "osu.rate_limit": "数据获取有些频繁，稍后再试吧 (429)",
   "blog.title": "最新文章",
   "blog.view_all": "查看全部",
   "blog.error": "加载失败",

@@ -32,6 +32,7 @@
   "osu.profile": "Profile",
   "osu.sig_alt": "osu! Stats Signature",
   "osu.sig_failed": "Signature failed to load",
+  "osu.rate_limit": "Requesting too frequently, please try again later (429)",
   "blog.title": "Latest Posts",
   "blog.view_all": "View all",
   "blog.error": "Failed to load",
