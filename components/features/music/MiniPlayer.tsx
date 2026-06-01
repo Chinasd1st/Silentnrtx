@@ -287,15 +287,13 @@ export function MiniPlayer() {
       className="fixed bottom-6 right-6 z-40"
       style={{
         width: 300,
-        // 【关键】根节点放弃鼠标事件，防止收起时 300px 的透明区域挡住网页底部的其他元素
         pointerEvents: "none",
       }}
     >
-      {/* 1. 动态背景层：放弃 scale，改用 top/left 定位实现完美形变 */}
+      {/* 1. 动态背景层 */}
       <div
         style={{
           position: "absolute",
-          // 展开时 top/left 为 0 撑满容器；收起时挤压到右下角 48x48 的空间
           top: collapsed ? "calc(100% - 48px)" : 0,
           left: collapsed ? "calc(100% - 48px)" : 0,
           right: 0,
@@ -304,13 +302,12 @@ export function MiniPlayer() {
           backgroundColor: collapsed
             ? "var(--md-primary)"
             : "color-mix(in oklch, var(--md-surface-variant) 85%, transparent)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
           boxShadow: collapsed ? "0 4px 16px rgba(0,0,0,0.25)" : "0 4px 24px rgba(0,0,0,0.2)",
           border: collapsed ? "none" : "1px solid var(--md-outline-variant)",
           transition: `all ${anim}`,
           zIndex: 0,
-          // 恢复背景自身的鼠标事件
           pointerEvents: "auto",
         }}
       />
@@ -336,7 +333,6 @@ export function MiniPlayer() {
           zIndex: 10,
           opacity: collapsed ? 1 : 0,
           pointerEvents: collapsed ? "auto" : "none",
-          // 加入轻微的旋转缩放，抵消闪现感
           transform: collapsed ? "scale(1) rotate(0deg)" : "scale(0.5) rotate(-45deg)",
           transition: `all 0.3s cubic-bezier(0.2, 0, 0, 1)`,
         }}
@@ -352,14 +348,12 @@ export function MiniPlayer() {
           zIndex: 1,
           opacity: collapsed ? 0 : 1,
           pointerEvents: collapsed ? "none" : "auto",
-          // 【防闪现核心】：收起时（0.15s）让内容快速消失；展开时（0.35s）让内容平滑出现
           transition: `opacity ${collapsed ? "0.15s" : "0.35s"} ease-out, transform ${anim}`,
           transform: collapsed ? "translateY(8px) scale(0.95)" : "translateY(0) scale(1)",
           transformOrigin: "bottom right",
           width: "100%",
         }}
       >
-        {/* === 以下部分保留你的原有控制台 UI 代码 === */}
         <button
           type="button"
           onClick={() => {
@@ -373,6 +367,7 @@ export function MiniPlayer() {
           <FaChevronDown size={8} />
         </button>
 
+        {/* 播放列表最外层容器（作为高度和锚定的硬框架） */}
         <div
           ref={dialogRef}
           role="dialog"
@@ -385,80 +380,103 @@ export function MiniPlayer() {
             transition: "height 0.3s cubic-bezier(0.2, 0, 0, 1)",
           }}
         >
+          {/* 核心修正：新增内部遮罩蒙版容器。
+              1. 通过 top: 12px 和 bottom: 12px 与最外层完全空出一段安全距离。
+              2. 搭配 linear-gradient 实现内容在触碰到此边界前的 12px 范围内丝滑淡出。 */}
           <div
-            className="overflow-y-auto thin-scrollbar"
             style={{
               position: "absolute",
-              bottom: 0,
+              top: 12,
+              bottom: 12,
               left: 0,
               right: 0,
-              maxHeight: "360px",
-              padding: "16px 16px 8px",
+              height: "calc(100% - 24px)",
+              overflow: "hidden",
+              // 混合渲染机制，确保全浏览器平台的 Alpha 通道无损淡出
+              maskImage:
+                "linear-gradient(to bottom, transparent 0%, #000 12px, #000 calc(100% - 12px), transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, transparent 0%, #000 12px, #000 calc(100% - 12px), transparent 100%)",
             }}
           >
-            {songs.map((song, i) => {
-              const sel = i === idx;
-              return (
-                <button
-                  key={song.url}
-                  type="button"
-                  onClick={() => toggle(i)}
-                  aria-label={song.name}
-                  className="group flex w-full items-center gap-3 rounded-[12px] px-3 py-2 text-left cursor-pointer hover:bg-white/6"
-                  style={{
-                    backgroundColor: sel ? "var(--md-primary-020)" : "transparent",
-                    borderRadius: "12px",
-                    opacity: showList ? 1 : 0,
-                    transition:
-                      "opacity 0.3s cubic-bezier(0, 0.6, 0.1, 1), background-color 0.3s ease",
-                  }}
-                >
-                  <div
-                    className="relative h-7 w-7 shrink-0 rounded-[8px] overflow-hidden"
-                    style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+            <div
+              className="overflow-y-auto thin-scrollbar"
+              style={{
+                height: "100%",
+                // 清洗原有的绝对定位和 bottom 布局，使其在弹性蒙版中流式滚动
+                padding: "4px 16px",
+              }}
+            >
+              {songs.map((song, i) => {
+                const sel = i === idx;
+                return (
+                  <button
+                    key={song.url}
+                    type="button"
+                    onClick={() => toggle(i)}
+                    aria-label={song.name}
+                    className="group flex w-full items-center gap-3 rounded-[12px] px-3 py-2 text-left cursor-pointer hover:bg-white/6 mb-1 last:mb-0"
+                    style={{
+                      backgroundColor: sel ? "var(--md-primary-020)" : "transparent",
+                      borderRadius: "12px",
+                      opacity: showList ? 1 : 0,
+                      transition:
+                        "opacity 0.3s cubic-bezier(0, 0.6, 0.1, 1), background-color 0.3s ease",
+                    }}
                   >
-                    {song.pic && (
-                      <img
-                        src={coverCache[song.pic] || song.pic}
-                        alt={song.name}
-                        loading="lazy"
-                        className="h-7 w-7 rounded-[8px] object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    )}
-                    {!sel && (
-                      <div
-                        className="absolute inset-0 flex items-center justify-center rounded-[8px] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
+                    <div
+                      className="relative h-7 w-7 shrink-0 rounded-[8px] overflow-hidden"
+                      style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+                    >
+                      {song.pic && (
+                        <img
+                          src={coverCache[song.pic] || song.pic}
+                          alt={song.name}
+                          loading="lazy"
+                          className="h-7 w-7 rounded-[8px] object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      )}
+                      {!sel && (
+                        <div
+                          className="absolute inset-0 flex items-center justify-center rounded-[8px] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
+                        >
+                          <FaPlay size={7} style={{ marginLeft: "1px" }} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={`truncate text-sm font-medium transition-all duration-200 group-hover:text-[var(--md-primary)] ${sel ? "text-[var(--md-primary)]" : "text-[var(--md-text-primary)]"}`}
+                        title={song.name}
                       >
-                        <FaPlay size={7} style={{ marginLeft: "1px" }} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={`truncate text-sm font-medium transition-all duration-200 group-hover:text-[var(--md-primary)] ${sel ? "text-[var(--md-primary)]" : "text-[var(--md-text-primary)]"}`}
-                      title={song.name}
-                    >
-                      {song.name}
-                    </p>
-                    <p
-                      className="truncate text-xs"
-                      title={song.artist}
-                      style={{ color: "var(--md-text-muted)" }}
-                    >
-                      {song.artist}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
+                        {song.name}
+                      </p>
+                      <p
+                        className="truncate text-xs"
+                        title={song.artist}
+                        style={{ color: "var(--md-text-muted)" }}
+                      >
+                        {song.artist}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        <div style={{ borderTop: "1px solid var(--md-outline-variant)" }}>
+        <div
+          style={{
+            borderTop: "1px solid var(--md-outline-variant)",
+            borderTopColor: showList ? "var(--md-outline-variant)" : "transparent",
+            transition: "border-top-color 0.3s cubic-bezier(0.2, 0, 0, 1)",
+          }}
+        >
           <div className="flex items-start gap-3 px-4 pt-3 pb-1">
             <div style={{ position: "relative", width: 54, height: 54 }}>
               <div
