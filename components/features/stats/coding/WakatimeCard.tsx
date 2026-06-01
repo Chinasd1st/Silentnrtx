@@ -219,7 +219,7 @@ function WakaModal({
       tabIndex={-1}
     >
       <div
-        className="relative rounded-md3 w-full max-w-lg max-h-[80vh] overflow-hidden"
+        className="relative rounded-md3 w-full max-w-lg max-h-[80vh] overflow-clip"
         style={{
           backgroundColor: "var(--md-card-bg)",
           border: "1px solid var(--md-card-border)",
@@ -246,7 +246,7 @@ function WakaModal({
           </button>
         </div>
 
-        <div className="overflow-y-auto max-h-[calc(80vh-57px)] p-5 space-y-1">
+        <div className="overflow-y-auto thin-scrollbar max-h-[calc(80vh-57px)] p-5 space-y-1">
           {entries.map((day) => {
             const g = day.grand_total;
             if (!g) return null;

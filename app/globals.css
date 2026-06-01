@@ -270,11 +270,11 @@
   background: transparent;
 }
 .thin-scrollbar::-webkit-scrollbar-thumb {
-  background: color-mix(in oklch, var(--md-outline-variant) 15%, transparent);
+  background: color-mix(in oklch, var(--md-outline-variant) 50%, transparent);
   border-radius: 3px;
 }
 .thin-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: color-mix(in oklch, var(--md-outline-variant) 40%, transparent);
+  background: color-mix(in oklch, var(--md-outline-variant) 70%, transparent);
 }
 
 .external-link {

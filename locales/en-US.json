@@ -53,6 +53,8 @@
   "music.trackList": "Track list",
   "music.noPrevious": "First track",
   "music.noNext": "Last track",
+  "music.noTracks": "No tracks available",
+  "music.volume": "Volume",
   "weather.title": "Weather",
   "weather.feels_like": "Feels",
   "weather.humidity": "Humidity",

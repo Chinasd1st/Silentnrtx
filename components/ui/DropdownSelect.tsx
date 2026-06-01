@@ -153,7 +153,7 @@ export function DropdownSelect({ value, options, onChange }: DropdownSelectProps
             tabIndex={-1}
             aria-label={label}
             onKeyDown={handleKeyDown}
-            className="rounded-[16px] border py-1 shadow-lg overflow-y-auto"
+            className="rounded-[16px] border py-1 shadow-lg overflow-y-auto thin-scrollbar"
             style={{
               maxHeight: 280,
               borderColor: "var(--md-card-border)",

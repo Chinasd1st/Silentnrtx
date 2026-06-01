@@ -127,6 +127,7 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
                   overflow: "auto",
                   fontSize: "0.85em",
                 }}
+                className="thin-scrollbar"
               >
                 <code className={className} {...props}>
                   {children}
@@ -252,7 +253,7 @@ export function ReleaseModal({
             tabIndex={-1}
           >
             <div
-              className="relative rounded-md3 w-[95vw] max-w-2xl max-h-[80vh] overflow-hidden"
+              className="relative rounded-md3 w-[95vw] max-w-2xl max-h-[80vh] overflow-clip"
               style={{
                 backgroundColor: "var(--md-card-bg)",
                 border: "1px solid var(--md-card-border)",
@@ -279,7 +280,7 @@ export function ReleaseModal({
                 </button>
               </div>
 
-              <div className="overflow-y-auto max-h-[calc(80vh-57px)] p-5">
+              <div className="overflow-y-auto thin-scrollbar max-h-[calc(80vh-57px)] p-5">
                 {loading && (
                   <p className="text-sm" style={{ color: "var(--md-text-muted)" }}>
                     {t("release.loading")}

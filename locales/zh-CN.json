@@ -53,6 +53,8 @@
   "music.trackList": "曲目列表",
   "music.noPrevious": "已是第一首",
   "music.noNext": "已是最后一首",
+  "music.noTracks": "暂无可用曲目",
+  "music.volume": "音量",
   "weather.title": "天气",
   "weather.feels_like": "体感",
   "weather.humidity": "湿度",
