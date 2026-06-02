@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { SettingsCard } from "@/components/dialogs/SettingsCard";
+import { MusicButton } from "@/components/header/MusicButton";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { ThemeSwitch } from "@/components/ui/ThemeSwitch";
 import { siteConfig } from "@/config";
@@ -98,7 +99,8 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute right-6 top-6 flex items-center gap-2">
+      <div className="absolute right-6 top-6 z-10 flex items-center gap-2">
+        <MusicButton />
         <ThemeSwitch />
         <SettingsCard />
         <button

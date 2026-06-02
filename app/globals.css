@@ -89,7 +89,7 @@
     --md-hue: 270; /* default fallback; overridden by hue-init script + settings panel */
 
     /* Primary */
-    --md-primary: oklch(0.7 0.12 var(--md-hue));
+    --md-primary: oklch(0.75 0.14 var(--md-hue));
     --md-on-primary: oklch(0.96 0.015 var(--md-hue));
 
     /* Surface — dark */
@@ -124,8 +124,8 @@
   }
 
   .light {
-    /* Primary — darker for contrast on light bg */
-    --md-primary: oklch(0.5 0.14 var(--md-hue));
+    /* Primary */
+    --md-primary: oklch(0.7 0.14 var(--md-hue));
     --md-on-primary: oklch(0.96 0.015 var(--md-hue));
 
     /* Surface — light */

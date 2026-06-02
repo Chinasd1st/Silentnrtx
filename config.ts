@@ -1,7 +1,7 @@
 export const siteConfig = {
   /** Theme hue (0-360). Affects primary color, surfaces, and card tones. */
   theme: {
-    hue: 270,
+    hue: 275,
   },
 
   seo: {

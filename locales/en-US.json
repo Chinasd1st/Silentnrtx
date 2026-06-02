@@ -55,6 +55,8 @@
   "music.noNext": "Last track",
   "music.noTracks": "No tracks available",
   "music.volume": "Volume",
+  "music.mode": "Switch playback mode",
+  "music.playlist": "Playlist",
   "weather.title": "Weather",
   "weather.feels_like": "Feels",
   "weather.humidity": "Humidity",
