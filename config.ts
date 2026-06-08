@@ -49,7 +49,7 @@ export const siteConfig = {
 
   background: {
     enabled: true, imageUrl: "", usePixiv: false, useBing: true,
-    bingApi: "https://bing.biturl.top/", fallbackColor: "#0f0f14",
+    bingApi: "https://bing-wallpaper.vuejs.press/api/wallpaper", fallbackColor: "#0f0f14",
     blurAmount: 8, opacity: 0.4,
   },
 

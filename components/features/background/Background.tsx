@@ -67,15 +67,14 @@ export function Background() {
       fetchWithRetry(() => api.get(cfg.bingApi))
         .then(({ data }) => data)
         .then((data) => {
-          let url = data.url || data.images?.[0]?.url;
-          if (!url) {
+          const list = Array.isArray(data) ? data : [];
+          const pick = list.length > 0 ? list[Math.floor(Math.random() * list.length)] : null;
+          if (!pick?.wallpaper) {
             document.body.style.backgroundColor = cfg.fallbackColor;
             return;
           }
-          if (url.startsWith("//")) url = `https:${url}`;
-          else if (url.startsWith("/")) url = `https://www.bing.com${url}`;
-          setBgUrl(url);
-          setCache(CACHE_KEYS.BG_URL, url);
+          setBgUrl(pick.wallpaper);
+          setCache(CACHE_KEYS.BG_URL, pick.wallpaper);
         })
         .catch(() => {
           document.body.style.backgroundColor = cfg.fallbackColor;
