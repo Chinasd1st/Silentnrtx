@@ -75,6 +75,8 @@
   "earthquake.shindo": "Shindo",
   "earthquake.depth": "Depth",
   "earthquake.no_data": "No earthquake data",
+  "earthquake.info": "Info",
+  "earthquake.tsunami": "⚠ Tsunami Warning",
   "wakatime.title": "WakaTime",
   "wakatime.activity": "Activity",
   "wakatime.ai": "AI",

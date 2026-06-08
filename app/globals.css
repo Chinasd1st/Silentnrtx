@@ -116,11 +116,16 @@
     --md-primary-020: color-mix(in srgb, var(--md-primary) 20%, transparent);
 
     /* Semantic accents (fixed, not hue-dependent) */
-    --md-accent-blue: #58a6ff;
-    --md-accent-yellow: #d29922;
-    --md-accent-green: #3fb950;
-    --md-accent-purple: #bc8cff;
-    --md-accent-pink: #ff66aa;
+    --md-accent-blue: oklch(0.65 0.12 250);
+    --md-accent-yellow: oklch(0.75 0.14 85);
+    --md-accent-green: oklch(0.65 0.15 145);
+    --md-accent-purple: oklch(0.65 0.16 300);
+    --md-accent-pink: oklch(0.65 0.16 350);
+
+    /* Tsunami warning levels */
+    --md-tsunami-advisory: oklch(0.72 0.14 70);
+    --md-tsunami-warning: oklch(0.62 0.18 25);
+    --md-tsunami-critical: oklch(0.55 0.22 15);
   }
 
   .light {

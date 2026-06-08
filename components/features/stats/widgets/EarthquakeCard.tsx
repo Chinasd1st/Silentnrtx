@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaEarthAsia } from "react-icons/fa6";
+import { MdDangerous, MdInfo, MdWarning } from "react-icons/md";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
@@ -21,12 +22,31 @@ interface EqBase {
   longitude: string;
 }
 interface JmaItem extends EqBase {
+  Title: string;
   shindo: string;
   info?: string;
 }
 interface CmaItem extends EqBase {
   intensity: string;
 }
+
+type TsunamiLevel = "advisory" | "warning" | "major" | null;
+
+function getTsunamiLevel(info: string): TsunamiLevel {
+  if (info.includes("大津波警報")) return "major";
+  if (info.includes("津波警報")) return "warning";
+  if (info.includes("津波注意報")) return "advisory";
+  return null;
+}
+
+const LEVEL_CONFIG: Record<
+  NonNullable<TsunamiLevel>,
+  { cssVar: string; Icon: typeof MdWarning }
+> = {
+  major: { cssVar: "var(--md-tsunami-critical)", Icon: MdDangerous },
+  warning: { cssVar: "var(--md-tsunami-warning)", Icon: MdWarning },
+  advisory: { cssVar: "var(--md-tsunami-advisory)", Icon: MdInfo },
+};
 
 const CACHE_TTL = 5 * 60 * 1000;
 
@@ -85,6 +105,11 @@ export function EarthquakeCard() {
 
   const active = tab === "jma" ? jma : cma;
   const eq = active.data;
+  const jmaEq = tab === "jma" ? (eq as JmaItem | null) : null;
+  const cmaEq = tab === "cma" ? (eq as CmaItem | null) : null;
+  const info = jmaEq?.info || "";
+  const level = info ? getTsunamiLevel(info) : null;
+  const lvlCfg = level ? LEVEL_CONFIG[level] : null;
 
   return (
     <Card>
@@ -119,15 +144,15 @@ export function EarthquakeCard() {
       {eq && (
         <div
           className="rounded-[16px] p-3 mb-3"
-          style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}
+          style={{ backgroundColor: "var(--md-primary-008)" }}
         >
           <p
-            className="text-sm font-semibold leading-snug min-h-[1.25em]"
+            className="text-sm font-semibold leading-snug"
             style={{ color: "var(--md-text-primary)" }}
           >
             {(eq as EqBase).location}
           </p>
-          <div className="mt-2 flex items-baseline gap-3 min-h-8">
+          <div className="mt-2 flex items-baseline gap-3">
             <span
               className="text-3xl font-bold font-heading leading-none"
               style={{ color: "var(--md-primary)" }}
@@ -136,22 +161,37 @@ export function EarthquakeCard() {
             </span>
             <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
               {tab === "jma"
-                ? `${t("earthquake.shindo")} ${(eq as JmaItem).shindo} · ${t("earthquake.depth")} ${(eq as JmaItem).depth}`
-                : `${t("earthquake.intensity")} ${(eq as CmaItem).intensity} · ${t("earthquake.depth")} ${(eq as CmaItem).depth}km`}
+                ? `${t("earthquake.shindo")} ${jmaEq!.shindo} · ${t("earthquake.depth")} ${jmaEq!.depth}`
+                : `${t("earthquake.intensity")} ${cmaEq!.intensity} · ${t("earthquake.depth")} ${cmaEq!.depth}km`}
             </span>
           </div>
-          <p
-            className="mt-2 text-xs leading-snug min-h-[1.25em]"
-            style={{ color: "var(--md-text-secondary)" }}
-          >
+          <p className="mt-2 text-xs leading-snug" style={{ color: "var(--md-text-secondary)" }}>
             {(eq as EqBase).time}
           </p>
-          <p
-            className="mt-1 text-[10px] leading-snug min-h-[1.25em]"
-            style={{ color: "var(--md-text-muted)" }}
-          >
+          <p className="mt-1 text-[10px] leading-snug" style={{ color: "var(--md-text-muted)" }}>
             {(eq as EqBase).latitude}, {(eq as EqBase).longitude}
           </p>
+          {jmaEq?.Title && jmaEq.Title !== "震源・震度情報" && (
+            <p
+              className="mt-2 text-[10px] font-semibold"
+              style={{ color: "var(--md-text-secondary)" }}
+            >
+              {jmaEq.Title}
+            </p>
+          )}
+          {info && lvlCfg && (
+            <div
+              className="mt-2 flex items-start gap-1.5 rounded-[12px] p-2"
+              style={{
+                backgroundColor: `color-mix(in oklch, ${lvlCfg.cssVar} 12%, transparent)`,
+              }}
+            >
+              <lvlCfg.Icon className="mt-0.5 shrink-0" size={14} style={{ color: lvlCfg.cssVar }} />
+              <p className="text-[10px] leading-normal" style={{ color: lvlCfg.cssVar }}>
+                {info}
+              </p>
+            </div>
+          )}
         </div>
       )}
       <CachedAt cacheKey={cacheKey} />

@@ -75,6 +75,8 @@
   "earthquake.shindo": "震度",
   "earthquake.depth": "深度",
   "earthquake.no_data": "暂无地震数据",
+  "earthquake.info": "情报",
+  "earthquake.tsunami": "⚠ 海啸预警",
   "wakatime.title": "WakaTime",
   "wakatime.activity": "活动",
   "wakatime.ai": "AI",
