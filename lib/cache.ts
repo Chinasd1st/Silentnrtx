@@ -6,6 +6,7 @@ interface CacheEntry<T> {
 }
 
 export function getCache<T>(key: string, ttlMs: number): T | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(key);
     if (!raw) return null;
@@ -22,6 +23,7 @@ export function getCache<T>(key: string, ttlMs: number): T | null {
 }
 
 export function setCache<T>(key: string, data: T): void {
+  if (typeof window === "undefined") return;
   try {
     localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
   } catch {
@@ -30,6 +32,7 @@ export function setCache<T>(key: string, data: T): void {
 }
 
 export function getCacheTime(key: string): number | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(key);
     if (!raw) return null;
@@ -40,6 +43,7 @@ export function getCacheTime(key: string): number | null {
 }
 
 export function clearAllCache(): void {
+  if (typeof window === "undefined") return;
   try {
     const keys = Object.keys(localStorage);
     for (const key of keys) {

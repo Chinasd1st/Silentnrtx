@@ -32,6 +32,7 @@ export function getDetectedLang(): string {
 
 export function changeLang(lng: string) {
   i18next.changeLanguage(lng);
+  if (typeof window === "undefined") return;
   try {
     localStorage.setItem("md-lang", lng);
   } catch {

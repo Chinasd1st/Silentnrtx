@@ -14,18 +14,24 @@ const DEFAULTS: Settings = {
   hueEnabled: false,
   timezone: "",
 };
-
 export function loadSettings(): Settings {
+  if (typeof window === "undefined") return { ...DEFAULTS };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return { ...DEFAULTS, ...JSON.parse(raw) };
-  } catch {
-    if (process.env.NODE_ENV === "development") console.warn("[settings] loadSettings error");
+  } catch (e) {
+    if (process.env.NODE_ENV === "development") console.warn("[settings] loadSettings error", e);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
   }
   return { ...DEFAULTS };
 }
 
 export function saveSettings(s: Settings) {
+  if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
   } catch {
