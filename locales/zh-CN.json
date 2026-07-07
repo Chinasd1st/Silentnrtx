@@ -135,6 +135,7 @@
   "not_found.title": "页面未找到",
   "not_found.go_home": "返回首页",
   "release.latest": "Latest",
+  "release.stable": "稳定版",
   "release.prerelease": "RC",
   "release.beta_warning": "⚠ 此版本为 Beta 版本，可能包含不稳定因素或未完成的功能。",
   "release.rc_warning": "⚠ 此版本为 RC 版本，可能存在未修复的问题。",

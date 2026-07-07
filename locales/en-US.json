@@ -135,6 +135,7 @@
   "not_found.title": "Page not found",
   "not_found.go_home": "Go home",
   "release.latest": "Latest",
+  "release.stable": "Stable",
   "release.prerelease": "Pre-release",
   "release.beta_warning": "⚠ This is a Beta release. It may contain unstable features or incomplete functionality.",
   "release.rc_warning": "⚠ This is a Release Candidate. Some issues may remain unfixed.",

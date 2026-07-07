@@ -319,7 +319,11 @@ export function ReleaseModal({
                             : "var(--md-accent-green, #22c55e)",
                         }}
                       >
-                        {release.prerelease ? t("release.prerelease") : t("release.latest")}
+                        {release.prerelease
+                          ? t("release.prerelease")
+                          : idx === 0
+                            ? t("release.latest")
+                            : t("release.stable")}
                       </span>
                     </div>
 
