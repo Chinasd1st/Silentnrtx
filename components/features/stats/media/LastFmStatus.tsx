@@ -55,6 +55,8 @@ export function LastFmStatus() {
   );
   const [albums, setAlbums] = useState<Album[]>([]);
   const [tab, setTab] = useState<Tab>("nowplaying");
+  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
+  const [elapsed, setElapsed] = useState("");
 
   const fetchTrack = useCallback(() => {
     const { apiKey, username } = siteConfig.lastfm;
@@ -81,6 +83,7 @@ export function LastFmStatus() {
         setTrack(t);
         setState(t["@attr"]?.nowplaying === "true" ? "playing" : "recent");
         trackCache.current = { data: t, time: Date.now() };
+        setUpdatedAt(Date.now());
       })
       .catch(() => {
         if (!trackCache.current) {
@@ -156,6 +159,22 @@ export function LastFmStatus() {
       document.removeEventListener("visibilitychange", onVisChange);
     };
   }, [tab, fetchTrack]);
+
+  useEffect(() => {
+    if (!updatedAt) {
+      setElapsed("");
+      return;
+    }
+    const tick = () => {
+      const sec = Math.floor((Date.now() - updatedAt) / 1000);
+      if (sec < 60) setElapsed(`${sec}s`);
+      else if (sec < 3600) setElapsed(`${Math.floor(sec / 60)}m`);
+      else setElapsed(`${Math.floor(sec / 3600)}h`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [updatedAt]);
 
   const lastfmCover =
     (
@@ -375,6 +394,12 @@ export function LastFmStatus() {
       {tab === "top" && albums.length === 0 && (
         <p className="text-xs text-center py-4" style={{ color: "var(--md-text-muted)" }}>
           {t("lastfm.none")}
+        </p>
+      )}
+
+      {elapsed && (
+        <p className="text-[10px] mt-3 text-right" style={{ color: "var(--md-text-muted)" }}>
+          {t("lastfm.updated")} {elapsed}
         </p>
       )}
     </div>
