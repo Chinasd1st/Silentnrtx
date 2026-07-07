@@ -17,66 +17,61 @@ import { WeatherCard } from "@/components/features/stats/widgets/WeatherCard";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/layout/Hero";
 
+const CARD_MAP: Record<string, React.ReactNode> = {
+  ProfileCard: <ProfileCard />,
+  SocialLinks: <SocialLinks />,
+  ClockCard: <ClockCard />,
+  GitHubStats: <GitHubStats />,
+  GitHubGrass: <GitHubGrass />,
+  WakatimeCard: <WakatimeCard />,
+  WakaAICard: <WakaAICard />,
+  MonkeytypeCard: <MonkeytypeCard />,
+  ReposCard: <ReposCard />,
+  LastFmStatus: <LastFmStatus />,
+  OsuSignature: <OsuSignature />,
+  WeatherCard: <WeatherCard />,
+  EarthquakeCard: <EarthquakeCard />,
+  BlogPosts: <BlogPosts />,
+  GalleryCard: <GalleryCard />,
+  BusuanziStats: <BusuanziStats />,
+};
+
 export default function Home() {
   return (
     <div>
       <Hero />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div
-          className="columns-1 sm:columns-2 xl:columns-3 animate-fade-in-up"
-          style={{ columnGap: "1.5rem" }}
-        >
-          <div className="break-inside-avoid mb-6">
-            <ProfileCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <SocialLinks />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <ClockCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <GitHubStats />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <GitHubGrass />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <WakatimeCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <WakaAICard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <MonkeytypeCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <ReposCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <LastFmStatus />
-          </div>
-
-          <div className="break-inside-avoid mb-6">
-            <OsuSignature />
-          </div>
-
-          <div className="break-inside-avoid mb-6">
-            <WeatherCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <EarthquakeCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <BlogPosts />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <GalleryCard />
-          </div>
-          <div className="break-inside-avoid mb-6">
-            <BusuanziStats />
-          </div>
+        <div className="columns-1 sm:columns-2 xl:columns-3" style={{ columnGap: "1.5rem" }}>
+          {[
+            "ProfileCard",
+            "SocialLinks",
+            "ClockCard",
+            "GitHubStats",
+            "GitHubGrass",
+            "WakatimeCard",
+            "WakaAICard",
+            "MonkeytypeCard",
+            "ReposCard",
+            "LastFmStatus",
+            "OsuSignature",
+            "WeatherCard",
+            "EarthquakeCard",
+            "BlogPosts",
+            "GalleryCard",
+            "BusuanziStats",
+          ].map((name, i) => (
+            <div
+              key={name}
+              className="break-inside-avoid mb-6"
+              style={{
+                opacity: 0,
+                animation: `fade-in-up 0.5s ease-out ${i * 0.06}s forwards`,
+              }}
+            >
+              {CARD_MAP[name]}
+            </div>
+          ))}
         </div>
 
         <Footer />
