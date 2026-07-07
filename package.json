@@ -1,6 +1,6 @@
 {
   "name": "silentnrtx-homepage",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,14 +13,18 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "{app,components,lib,scripts}/**/*.{ts,tsx,js,jsx,mjs,cjs}": ["biome check --write --unsafe"],
-    "{locales,public}/**/*.json": ["biome check --write --unsafe"]
+    "{app,components,lib,scripts}/**/*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "biome check --write --unsafe"
+    ],
+    "{locales,public}/**/*.json": [
+      "biome check --write --unsafe"
+    ]
   },
   "dependencies": {
     "axios": "^1.16.1",
     "i18next": "^26.2.0",
     "isomorphic-dompurify": "^3.15.0",
-    "next": "^16.2.6",
+    "next": "^16.2.10",
     "react": "^19.1.0",
     "react-dom": "^19.2.6",
     "react-i18next": "^17.0.6",
