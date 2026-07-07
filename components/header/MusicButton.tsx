@@ -2,7 +2,7 @@
 
 /* Music player layout inspired by Firefly: https://github.com/CuteLeaf/Firefly */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   FiBarChart2,
   FiList,
@@ -53,7 +53,27 @@ export function MusicButton() {
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const prevVolRef = useRef(volume);
+  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
+
+  useLayoutEffect(() => {
+    if (!open || !wrapperRef.current) return;
+    const update = () => {
+      const rect = wrapperRef.current!.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const panelWidth = Math.min(320, vw - 48);
+      const rightSpace = vw - rect.right;
+      const shift = rightSpace < panelWidth ? panelWidth - rightSpace : 0;
+      setPanelStyle({
+        right: 0,
+        transform: shift > 0 ? `translateX(${shift}px)` : undefined,
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -104,7 +124,7 @@ export function MusicButton() {
   };
 
   return (
-    <div className="relative">
+    <div ref={wrapperRef} className="relative">
       <button
         ref={buttonRef}
         type="button"
@@ -126,8 +146,9 @@ export function MusicButton() {
           role="dialog"
           aria-modal="false"
           aria-label={t("music.trackList")}
-          className="absolute right-0 top-10 z-50 w-80 rounded-[16px] p-2 pt-[18px] shadow-lg"
+          className="absolute right-0 top-10 z-50 w-80 max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-5rem)] overflow-y-auto overflow-x-hidden rounded-[16px] p-2 pt-[18px] shadow-lg"
           style={{
+            ...panelStyle,
             backgroundColor: "var(--md-surface-variant)",
             border: "1px solid var(--md-outline-variant)",
             color: "var(--md-text-primary)",
