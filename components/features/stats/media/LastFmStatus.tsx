@@ -33,13 +33,28 @@ interface TopAlbumsResponse {
 
 type Tab = "nowplaying" | "top";
 
+interface ItunesResponse {
+  resultCount: number;
+  results: Array<{ artworkUrl100?: string }>;
+}
+
 export function LastFmStatus() {
   const { t, i18n } = useTranslation();
-  const [track, setTrack] = useState<LastFmTrack | null>(null);
-  const [state, setState] = useState<"loading" | "playing" | "recent" | "error">("loading");
+  const trackCache = useRef<{ data: LastFmTrack; time: number } | null>(null);
+  const albumsCache = useRef<{ data: Album[]; time: number } | null>(null);
+  const coverCache = useRef<Map<string, string>>(new Map());
+  const [fallbackCover, setFallbackCover] = useState<string | null>(null);
+
+  const [track, setTrack] = useState<LastFmTrack | null>(() => trackCache.current?.data ?? null);
+  const [state, setState] = useState<"loading" | "playing" | "recent" | "error">(() =>
+    trackCache.current
+      ? trackCache.current.data["@attr"]?.nowplaying === "true"
+        ? "playing"
+        : "recent"
+      : "loading"
+  );
   const [albums, setAlbums] = useState<Album[]>([]);
   const [tab, setTab] = useState<Tab>("nowplaying");
-  const albumsCache = useRef<{ data: Album[]; time: number } | null>(null);
 
   const fetchTrack = useCallback(() => {
     const { apiKey, username } = siteConfig.lastfm;
@@ -56,17 +71,22 @@ export function LastFmStatus() {
       .then((data: LastFmResponse) => {
         const tracks = data.recenttracks?.track;
         if (!tracks?.[0]) {
-          setTrack(null);
-          setState("error");
+          if (!trackCache.current) {
+            setTrack(null);
+            setState("error");
+          }
           return;
         }
         const t = tracks[0];
         setTrack(t);
         setState(t["@attr"]?.nowplaying === "true" ? "playing" : "recent");
+        trackCache.current = { data: t, time: Date.now() };
       })
       .catch(() => {
-        setTrack(null);
-        setState("error");
+        if (!trackCache.current) {
+          setTrack(null);
+          setState("error");
+        }
       });
   }, []);
 
@@ -105,14 +125,71 @@ export function LastFmStatus() {
   }, []);
 
   useEffect(() => {
+    const cached = trackCache.current;
+    if (cached) {
+      setTrack(cached.data);
+      setState(cached.data["@attr"]?.nowplaying === "true" ? "playing" : "recent");
+    }
     fetchTrack();
     fetchAlbums();
   }, [fetchTrack, fetchAlbums]);
 
-  const albumArt =
-    track?.image?.find((i) => i.size === "medium")?.["#text"] ||
-    track?.image?.[2]?.["#text"] ||
-    null;
+  useEffect(() => {
+    if (tab !== "nowplaying") return;
+    const POLL_MS = 2 * 60 * 1000;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    const poll = () => {
+      if (document.visibilityState === "visible") fetchTrack();
+    };
+
+    poll();
+    timer = setInterval(poll, POLL_MS);
+
+    const onVisChange = () => {
+      if (document.visibilityState === "visible") poll();
+    };
+    document.addEventListener("visibilitychange", onVisChange);
+
+    return () => {
+      if (timer) clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisChange);
+    };
+  }, [tab, fetchTrack]);
+
+  const lastfmCover =
+    (
+      track?.image?.find((i) => i.size === "medium")?.["#text"] ||
+      track?.image?.[2]?.["#text"] ||
+      null
+    )?.replace(/^http:\/\//, "https://") ?? null;
+
+  useEffect(() => {
+    if (lastfmCover || !track) {
+      setFallbackCover(null);
+      return;
+    }
+    const key = `${track.artist["#text"]}|${track.name}`;
+    const cached = coverCache.current.get(key);
+    if (cached) {
+      setFallbackCover(cached);
+      return;
+    }
+    const query = encodeURIComponent(`${track.artist["#text"]} ${track.name}`);
+    fetchWithRetry(() =>
+      api.get<ItunesResponse>(`https://itunes.apple.com/search?term=${query}&media=music&limit=1`)
+    )
+      .then(({ data }) => {
+        const url = data?.results?.[0]?.artworkUrl100?.replace(/100x100bb/, "300x300bb");
+        if (url) {
+          coverCache.current.set(key, url);
+          setFallbackCover(url);
+        }
+      })
+      .catch(() => {});
+  }, [lastfmCover, track]);
+
+  const albumArt = lastfmCover || fallbackCover;
 
   if (state === "loading") return <CardSkeleton />;
   if (state === "error") return <ErrorCard title={t("lastfm.none")} onRetry={fetchTrack} />;
@@ -248,10 +325,11 @@ export function LastFmStatus() {
       {tab === "top" && albums.length > 0 && (
         <div className="space-y-2">
           {albums.map((album, i) => {
-            const art =
+            const art = (
               album.image?.find((img) => img.size === "medium")?.["#text"] ||
               album.image?.[2]?.["#text"] ||
-              "";
+              ""
+            ).replace(/^http:\/\//, "https://");
             return (
               <div key={`${album.name}-${album.artist.name}`} className="flex items-center gap-3">
                 <span
