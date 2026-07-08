@@ -178,7 +178,7 @@ export function LastFmStatus() {
 
   const lastfmCover =
     (
-      track?.image?.find((i) => i.size === "medium")?.["#text"] ||
+      track?.image?.find((i) => i.size === "large")?.["#text"] ||
       track?.image?.[2]?.["#text"] ||
       null
     )?.replace(/^http:\/\//, "https://") ?? null;
@@ -345,7 +345,7 @@ export function LastFmStatus() {
         <div className="space-y-2">
           {albums.map((album, i) => {
             const art = (
-              album.image?.find((img) => img.size === "medium")?.["#text"] ||
+              album.image?.find((img) => img.size === "large")?.["#text"] ||
               album.image?.[2]?.["#text"] ||
               ""
             ).replace(/^http:\/\//, "https://");
