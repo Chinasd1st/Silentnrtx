@@ -184,7 +184,7 @@ export function LastFmStatus() {
     )?.replace(/^http:\/\//, "https://") ?? null;
 
   useEffect(() => {
-    if (lastfmCover || !track) {
+    if (!track) {
       setFallbackCover(null);
       return;
     }
@@ -206,9 +206,9 @@ export function LastFmStatus() {
         }
       })
       .catch(() => {});
-  }, [lastfmCover, track]);
+  }, [track]);
 
-  const albumArt = lastfmCover || fallbackCover;
+  const albumArt = fallbackCover || lastfmCover;
 
   if (state === "loading") return <CardSkeleton />;
   if (state === "error") return <ErrorCard title={t("lastfm.none")} onRetry={fetchTrack} />;
