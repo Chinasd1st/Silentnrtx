@@ -208,7 +208,7 @@ export function LastFmStatus() {
       .catch(() => {});
   }, [track]);
 
-  const albumArt = fallbackCover || lastfmCover;
+  const albumArt = lastfmCover || fallbackCover;
 
   if (state === "loading") return <CardSkeleton />;
   if (state === "error") return <ErrorCard title={t("lastfm.none")} onRetry={fetchTrack} />;
