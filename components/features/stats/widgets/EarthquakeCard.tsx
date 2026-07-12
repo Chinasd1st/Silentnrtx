@@ -26,7 +26,7 @@ interface JmaItem extends EqBase {
   shindo: string;
   info?: string;
 }
-interface CmaItem extends EqBase {
+interface CencItem extends EqBase {
   intensity: string;
 }
 
@@ -91,22 +91,22 @@ function useEq<T>(cacheKey: string, url: string, mapFn: (r: unknown) => T) {
 
 export function EarthquakeCard() {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<"jma" | "cma">("jma");
-  const cacheKey = tab === "jma" ? "eq_jma" : "eq_cma";
+  const [tab, setTab] = useState<"jma" | "cenc">("jma");
+  const cacheKey = tab === "jma" ? "eq_jma" : "eq_cenc";
 
   const jma = useEq<JmaItem>("eq_jma", "https://api.wolfx.jp/jma_eqlist.json", (r) => r as JmaItem);
-  const cma = useEq<CmaItem>(
-    "eq_cma",
+  const cenc = useEq<CencItem>(
+    "eq_cenc",
     "https://api.wolfx.jp/cenc_eqlist.json",
-    (r) => r as CmaItem
+    (r) => r as CencItem
   );
 
-  if (jma.loading && cma.loading) return <CardSkeleton />;
+  if (jma.loading && cenc.loading) return <CardSkeleton />;
 
-  const active = tab === "jma" ? jma : cma;
+  const active = tab === "jma" ? jma : cenc;
   const eq = active.data;
   const jmaEq = tab === "jma" ? (eq as JmaItem | null) : null;
-  const cmaEq = tab === "cma" ? (eq as CmaItem | null) : null;
+  const cencEq = tab === "cenc" ? (eq as CencItem | null) : null;
   const info = jmaEq?.info || "";
   const level = info ? getTsunamiLevel(info) : null;
   const lvlCfg = level ? LEVEL_CONFIG[level] : null;
@@ -121,8 +121,8 @@ export function EarthquakeCard() {
             <PillButton active={tab === "jma"} onClick={() => setTab("jma")}>
               JMA
             </PillButton>
-            <PillButton active={tab === "cma"} onClick={() => setTab("cma")}>
-              CMA
+            <PillButton active={tab === "cenc"} onClick={() => setTab("cenc")}>
+              CENC
             </PillButton>
           </div>
         }
@@ -162,7 +162,7 @@ export function EarthquakeCard() {
             <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
               {tab === "jma"
                 ? `${t("earthquake.shindo")} ${jmaEq!.shindo} · ${t("earthquake.depth")} ${jmaEq!.depth}`
-                : `${t("earthquake.intensity")} ${cmaEq!.intensity} · ${t("earthquake.depth")} ${cmaEq!.depth}km`}
+                : `${t("earthquake.intensity")} ${cencEq!.intensity} · ${t("earthquake.depth")} ${cencEq!.depth}km`}
             </span>
           </div>
           <p className="mt-2 text-xs leading-snug" style={{ color: "var(--md-text-secondary)" }}>
