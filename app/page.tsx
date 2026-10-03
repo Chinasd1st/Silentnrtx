@@ -13,6 +13,7 @@ import { BusuanziStats } from "@/components/features/stats/widgets/BusuanziStats
 import { ClockCard } from "@/components/features/stats/widgets/ClockCard";
 import { EarthquakeCard } from "@/components/features/stats/widgets/EarthquakeCard";
 import { WeatherCard } from "@/components/features/stats/widgets/WeatherCard";
+import { DotGrid } from "@/components/layout/DotGrid";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/layout/Hero";
 
@@ -37,6 +38,7 @@ const CARD_MAP: Record<string, React.ReactNode> = {
 export default function Home() {
   return (
     <div>
+      <DotGrid />
       <Hero />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
