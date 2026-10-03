@@ -91,7 +91,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 
 ## MusicPlayer (Netease Playlist)
 
-- API: `https://api.i-meto.com/meting/api?server=netease&type=playlist&id={id}` returns array.
+- API: `https://api.moeyao.cn/meting/?server=netease&type=playlist&id={id}` returns array.
 - Response fields: `title` → `name`, `author` → `artist`, `url` → `url`, `pic` → `pic`, `lrc` → `lrc`.
 - `SongItem` is `React.memo`'d, renders album cover (`song.pic`) with play/pause overlay on selected.
 

@@ -82,7 +82,7 @@ export const siteConfig = {
 
   music: {
     enabled: true, title: "Netease Playlist",
-    api: "https://api.i-meto.com/meting/api",
+    api: "https://api.moeyao.cn/meting/",
     params: { server: "netease", type: "playlist", id: "8374084247" },
   },
 
