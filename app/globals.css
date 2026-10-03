@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-heading: 'Space Grotesk', 'Noto Sans SC', sans-serif;
-  --font-body: 'DM Sans', 'Noto Sans SC', sans-serif;
+  --font-heading: 'Google Sans Flex', 'Noto Sans SC', sans-serif;
+  --font-body: 'Google Sans Flex', 'Noto Sans SC', sans-serif;
 
   --radius-md3: 24px;
   --radius-md3-sm: 12px;
@@ -163,13 +163,13 @@
   * { border-color: var(--md-card-border); }
   html { scroll-behavior: smooth; }
   body {
-    font-family: "DM Sans", "Noto Sans SC", sans-serif;
+    font-family: "Google Sans Flex", "Noto Sans SC", sans-serif;
     color: var(--md-text-primary);
     background-color: var(--md-background);
     text-wrap: pretty;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5, h6 { font-family: "Space Grotesk", "Noto Sans SC", sans-serif; }
+  h1, h2, h3, h4, h5, h6 { font-family: "Google Sans Flex", "Noto Sans SC", sans-serif; }
 }
 
 @keyframes fade-in-up {

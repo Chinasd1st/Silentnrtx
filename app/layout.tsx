@@ -13,7 +13,7 @@ const description =
   "Silentnrtx's personal homepage. GitHub stats, Last.fm scrobbles, music player, weather, blog, and more.";
 const pageUrl = `${siteConfig.seo.url.replace(/\/+$/, "")}${basePath}/`;
 const FONT_URL =
-  "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap";
 
 const jsonLd = {
   "@context": "https://schema.org",
