@@ -189,7 +189,7 @@ export function ReleaseModal({
   version: string;
   children?: React.ReactNode;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [releases, setReleases] = useState<ReleaseData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -324,6 +324,16 @@ export function ReleaseModal({
                           : idx === 0
                             ? t("release.latest")
                             : t("release.stable")}
+                      </span>
+                      <span
+                        className="text-[10px] shrink-0"
+                        style={{ color: "var(--md-text-muted)" }}
+                      >
+                        {new Date(release.published_at).toLocaleDateString(i18n.language, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </span>
                     </div>
 
