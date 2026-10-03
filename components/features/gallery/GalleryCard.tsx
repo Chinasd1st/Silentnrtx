@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaImage } from "react-icons/fa";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
@@ -13,6 +13,9 @@ interface GalleryImage {
   description?: string;
   descriptionCn?: string;
 }
+
+const PRELOAD_COUNT = 4;
+const ROOT_MARGIN = "400px 0px";
 
 export function GalleryCard() {
   const { t, i18n } = useTranslation();
@@ -27,6 +30,39 @@ export function GalleryCard() {
     (isZh && img.descriptionCn ? img.descriptionCn : img.description) || "";
   const [viewerIdx, setViewerIdx] = useState<number | null>(null);
   const viewerRef = useFocusTrap(viewerIdx !== null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [eager, setEager] = useState(false);
+
+  useEffect(() => {
+    if (eager || !containerRef.current) return;
+    const el = containerRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setEager(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: ROOT_MARGIN }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [eager]);
+
+  const preloadImages = useCallback(() => {
+    if (!enabled) return;
+    images.slice(0, PRELOAD_COUNT).forEach((img) => {
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.href = img.url;
+      link.as = "image";
+      document.head.appendChild(link);
+    });
+  }, [enabled, images]);
+
+  useEffect(() => {
+    if (eager) preloadImages();
+  }, [eager, preloadImages]);
 
   if (!enabled || images.length === 0) return null;
 
@@ -55,7 +91,7 @@ export function GalleryCard() {
           </h2>
         </div>
 
-        <div className="columns-2 gap-3" style={{ columnGap: "0.75rem" }}>
+        <div ref={containerRef} className="columns-2 gap-3" style={{ columnGap: "0.75rem" }}>
           {images.map((img, idx) => (
             <button
               type="button"
@@ -71,6 +107,7 @@ export function GalleryCard() {
                   alt={desc(img)}
                   className="w-full h-auto transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 640px) 50vw, 25vw"
+                  loading={eager && idx < PRELOAD_COUNT ? "eager" : "lazy"}
                   placeholder
                 />
               </div>

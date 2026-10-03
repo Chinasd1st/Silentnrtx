@@ -113,7 +113,7 @@ components/
     release/       — ReleaseModal (version check)
     stats/
       coding/      — WakatimeCard, WakaAICard, MonkeytypeCard
-      github/      — GitHubStats, GitHubGrass
+      github/      — GitHubStats
       media/       — LastFmStatus
       widgets/     — ClockCard, WeatherCard, EarthquakeCard, BusuanziStats
 ```

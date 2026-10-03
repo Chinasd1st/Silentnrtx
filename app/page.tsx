@@ -7,7 +7,6 @@ import { SocialLinks } from "@/components/features/social/SocialLinks";
 import { MonkeytypeCard } from "@/components/features/stats/coding/MonkeytypeCard";
 import { WakaAICard } from "@/components/features/stats/coding/WakaAICard";
 import { WakatimeCard } from "@/components/features/stats/coding/WakatimeCard";
-import { GitHubGrass } from "@/components/features/stats/github/GitHubGrass";
 import { GitHubStats } from "@/components/features/stats/github/GitHubStats";
 import { LastFmStatus } from "@/components/features/stats/media/LastFmStatus";
 import { BusuanziStats } from "@/components/features/stats/widgets/BusuanziStats";
@@ -22,7 +21,6 @@ const CARD_MAP: Record<string, React.ReactNode> = {
   SocialLinks: <SocialLinks />,
   ClockCard: <ClockCard />,
   GitHubStats: <GitHubStats />,
-  GitHubGrass: <GitHubGrass />,
   WakatimeCard: <WakatimeCard />,
   WakaAICard: <WakaAICard />,
   MonkeytypeCard: <MonkeytypeCard />,
@@ -48,7 +46,6 @@ export default function Home() {
             "SocialLinks",
             "ClockCard",
             "GitHubStats",
-            "GitHubGrass",
             "WakatimeCard",
             "WakaAICard",
             "MonkeytypeCard",
