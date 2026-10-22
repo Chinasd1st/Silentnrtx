@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
+import { basePath } from "@/lib/base-path";
 import { getCache, setCache } from "@/lib/cache";
 import { CACHE_KEYS, CACHE_TTL } from "@/lib/cache-config";
 
@@ -28,7 +29,7 @@ export function Background() {
     }
 
     if (cfg.imageUrl) {
-      setBgUrl(cfg.imageUrl);
+      setBgUrl(cfg.imageUrl.startsWith("/") ? `${basePath}${cfg.imageUrl}` : cfg.imageUrl);
       setLoading(false);
       return;
     }

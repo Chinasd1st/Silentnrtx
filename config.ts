@@ -15,7 +15,7 @@ export const siteConfig = {
   profile: {
     name: "Silentnrtx",
     username: "silentnrtx",
-    avatar: "SP6C_01.jpg",
+    avatar: "SP7_01.webp",
     location: "Zhejiang, PRC",
     /** Signature shown in hero. Wrap text with !! to highlight in theme color. */
     signature: "Let Our Sounds !!Soar!! Through The Clouds!",
@@ -48,7 +48,7 @@ export const siteConfig = {
   blog: { rssUrl: "https://silentnrtx.top/rss", postLimit: 3 },
 
   background: {
-    enabled: true, imageUrl: "", usePixiv: false, useBing: true,
+    enabled: true, imageUrl: "/wallpaper.webp", usePixiv: false, useBing: false,
     bingApi: "https://bing-wallpaper.vuejs.press/api/wallpaper", fallbackColor: "#0f0f14",
     blurAmount: 8, opacity: 0.4,
   },
