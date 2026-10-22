@@ -11,21 +11,7 @@ import { api, fetchWithRetry } from "@/lib/api";
 import { CACHE_KEYS, CACHE_TTL } from "@/lib/cache-config";
 import { useSafeFetch } from "@/lib/hooks/useSafeFetch";
 import { useTranslation } from "@/lib/i18n";
-
-interface RssItem {
-  title: string;
-  pubDate: string;
-  link: string;
-  description?: string;
-  categories?: string[];
-  thumbnail?: string;
-}
-
-interface RssResponse {
-  status: string;
-  feed: { title: string; url: string };
-  items: RssItem[];
-}
+import { type BlogPost, isJsonFeed, toBlogPosts } from "@/lib/json-feed";
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim();
@@ -39,26 +25,25 @@ function descText(description: string) {
 
 export function BlogPosts() {
   const { t, i18n } = useTranslation();
-  const rssUrl = siteConfig.blog.rssUrl;
+  const feedUrl = siteConfig.blog.feedUrl;
   const {
     data: posts,
     loading,
     error,
     execute,
-  } = useSafeFetch<RssItem[]>({
+  } = useSafeFetch<BlogPost[]>({
     fetchFn: (signal) =>
-      fetchWithRetry(() =>
-        api.get<RssResponse>(
-          `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`,
-          { signal }
-        )
-      ).then(({ data }) => {
-        if (data.status === "ok") return data.items.slice(0, siteConfig.blog.postLimit);
-        throw new Error("RSS parse failed");
-      }),
+      fetchWithRetry(() => api.get<unknown>(feedUrl, { signal, timeout: 15000 })).then(
+        ({ data }) => {
+          if (!isJsonFeed(data)) throw new Error("Feed parse failed");
+          const items = toBlogPosts(data, siteConfig.blog.postLimit);
+          if (items.length === 0) throw new Error("Feed is empty");
+          return items;
+        }
+      ),
     cacheKey: CACHE_KEYS.BLOG_RSS,
     cacheTTL: CACHE_TTL.BLOG_RSS,
-    immediate: !!rssUrl,
+    immediate: !!feedUrl,
   });
 
   const formatDate = (dateStr: string) => {
@@ -89,8 +74,8 @@ export function BlogPosts() {
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="space-y-2">
-              <div className="h-5 w-3/4 rounded-sm bg-white/6 animate-pulse" />
-              <div className="h-3 w-1/3 rounded-sm bg-white/6 animate-pulse" />
+              <div className="h-5 w-3/4 rounded-micro bg-[var(--md-track)] animate-pulse" />
+              <div className="h-3 w-1/3 rounded-micro bg-[var(--md-track)] animate-pulse" />
             </div>
           ))}
         </div>
@@ -114,9 +99,9 @@ export function BlogPosts() {
               href={post.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6"
+              className="group block rounded-panel p-4 transition-colors duration-200 hover:bg-white/6"
             >
-              <h3 className="font-medium text-sm leading-snug line-clamp-2 text-[var(--md-text-primary)] group-hover:text-[var(--md-primary)] transition-all duration-200">
+              <h3 className="text-sm font-semibold leading-snug line-clamp-2 text-[var(--md-text-primary)] group-hover:text-[var(--md-primary)] transition-colors duration-200">
                 {post.title}
               </h3>
               {post.description && descText(post.description) && (
@@ -141,7 +126,7 @@ export function BlogPosts() {
                         key={cat}
                         className="rounded-full px-2 py-0.5 text-[10px] font-medium"
                         style={{
-                          backgroundColor: "rgba(208,188,255,0.1)",
+                          backgroundColor: "var(--md-primary-012)",
                           color: "var(--md-primary)",
                         }}
                       >

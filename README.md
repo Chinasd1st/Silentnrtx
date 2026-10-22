@@ -50,7 +50,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 | WakaTime Embed JSON | Coding activity + AI vibecoding stats | Embeddable JSON |
 | JMA / CEA Earthquake API | Latest seismic info (Japan & China) | Public |
 | Bing Daily Wallpaper | Glassmorphism page background | Public |
-| RSS2JSON | Blog posts feed | Public |
+| JSON Feed | Blog posts feed | Public |
 | Vercount | Page views & visitors counter | `@vercount/react` hook |
 | Steam Web API | Gaming status (optional) | API Key |
 

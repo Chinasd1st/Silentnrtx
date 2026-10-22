@@ -49,7 +49,7 @@ export const siteConfig = {
     signatureUrl: "https://osu-sig.s23.moe/card?user=Silentnrtx&mode=mania&lang=en&animation=true&hue=200&flop=true",
   },
 
-  blog: { rssUrl: "https://silentnrtx.top/rss", postLimit: 3 },
+  blog: { feedUrl: "https://silentnrtx.top/feed.json", postLimit: 3 },
 
   background: {
     enabled: true, imageUrl: "/wallpaper.webp", usePixiv: false, useBing: false,
