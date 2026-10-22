@@ -43,7 +43,7 @@ export function ThemeSwitch() {
     <button
       type="button"
       onClick={() => setMode(next[mode])}
-      className="flex h-8 w-8 items-center justify-center rounded-full text-xs cursor-pointer transition-all duration-200 hover:bg-white/6 active:scale-90"
+      className="flex h-8 w-8 items-center justify-center rounded-full text-xs cursor-pointer transition-[color,background-color,transform] duration-200 hover:bg-[var(--md-primary-008)] active:scale-[0.97]"
       style={{ color: "var(--md-text-primary)" }}
       aria-label={`Theme: ${mode}`}
     >

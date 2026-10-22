@@ -122,10 +122,10 @@ export function WakaAICard() {
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
     <div
-      className="rounded-[16px] p-3 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
+      className="rounded-panel p-3 text-center transition-colors duration-200 hover:bg-white/6"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
-      <p className="text-lg font-bold font-heading" style={{ color: "var(--md-primary)" }}>
+      <p className="text-xl font-bold font-heading stat-num" style={{ color: "var(--md-primary)" }}>
         {value}
       </p>
       <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>
@@ -138,10 +138,10 @@ function StatBox({ label, value }: { label: string; value: string }) {
 function CostBox({ label, value }: { label: string; value: string }) {
   return (
     <div
-      className="rounded-[16px] p-3 text-center transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
+      className="rounded-panel p-3 text-center transition-colors duration-200 hover:bg-white/6"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
-      <p className="text-xl font-bold font-heading" style={{ color: "var(--md-primary)" }}>
+      <p className="text-xl font-bold font-heading stat-num" style={{ color: "var(--md-primary)" }}>
         {value}
       </p>
       <p className="text-[10px] mt-0.5" style={{ color: "var(--md-text-muted)" }}>

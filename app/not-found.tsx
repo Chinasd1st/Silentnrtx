@@ -15,7 +15,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="rounded-md3-pill px-6 py-2 text-sm font-medium transition-all duration-200 hover:opacity-90"
+        className="rounded-full px-6 py-2 text-sm font-medium transition-opacity duration-200 hover:opacity-90"
         style={{ backgroundColor: "var(--md-primary)", color: "var(--md-on-primary)" }}
       >
         {t("not_found.go_home")}

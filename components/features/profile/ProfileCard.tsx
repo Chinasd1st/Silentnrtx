@@ -13,7 +13,7 @@ export function ProfileCard() {
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <div
-            className="h-20 w-20 overflow-hidden rounded-md3"
+            className="h-20 w-20 overflow-hidden rounded-card"
             style={{ boxShadow: "0 0 0 2px var(--md-primary)" }}
           >
             <OptimizedImage

@@ -92,7 +92,7 @@ export function MonkeytypeCard() {
 
       {stats && (
         <div
-          className="rounded-[16px] p-2 text-center"
+          className="rounded-panel p-2 text-center"
           style={{ backgroundColor: "var(--md-primary-008)" }}
         >
           <span className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
@@ -123,16 +123,16 @@ function Mini({
 }) {
   return (
     <div
-      className="rounded-[16px] p-3 text-center"
+      className="rounded-panel p-3 text-center"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>
         {label}
       </p>
-      <p className="text-xl font-bold font-heading mt-1" style={{ color }}>
+      <p className="text-xl font-bold font-heading stat-num mt-1" style={{ color }}>
         {num ?? "--"}
       </p>
-      <p className="text-[10px]" style={{ color: "var(--md-text-muted)" }}>
+      <p className="text-[10px] stat-num" style={{ color: "var(--md-text-muted)" }}>
         {acc ? `${acc}%` : unit}
       </p>
     </div>

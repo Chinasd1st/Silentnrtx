@@ -9,9 +9,9 @@ export function PillButton({ active, children, className = "", ...props }: PillB
   return (
     <button
       type="button"
-      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-all hover:bg-[var(--md-primary-008)]${className ? ` ${className}` : ""}`}
+      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition-colors duration-200 hover:bg-[var(--md-primary-008)]${className ? ` ${className}` : ""}`}
       style={{
-        backgroundColor: active ? "var(--md-primary-020)" : "rgba(255,255,255,0.05)",
+        backgroundColor: active ? "var(--md-primary-020)" : "var(--md-primary-008)",
         color: active ? "var(--md-primary)" : "var(--md-text-muted)",
       }}
       {...props}

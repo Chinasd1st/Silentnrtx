@@ -64,8 +64,8 @@ The subagent must read only diffed files, run both skill reviews, and return one
 - Functional components with hooks only (no class components).
 - All dynamic components are `"use client"`.
 - Import order: React → third-party → `@/components/` → `@/lib/` → `@/config`.
-- Card rounding: `rounded-[16px]` (not `rounded-md3-sm`).
-- Hover pattern: `hover:bg-white/6 transition-all duration-200`.
+- Radius scale: `rounded-card` (24px outer), `rounded-panel` (16px inner), `rounded-chip` (12px), `rounded-micro` (6px), `rounded-full` (pills/circles). No one-off arbitrary radii.
+- Hover pattern: `hover:bg-white/6 transition-colors duration-200`; 300ms only for surfaces/overlays. One press scale: `active:scale-[0.97]`.
 - Modals use `createPortal` into `document.body`.
 
 ## CSS / Design Tokens

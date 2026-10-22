@@ -141,12 +141,12 @@ export function WeatherCard() {
   const w = weather;
 
   return (
-    <div className="md-card">
+    <div className="md-card md-card--static">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 min-w-0">
           <FaCloudSun className="shrink-0" style={{ color: "var(--md-primary)" }} />
           <span
-            className="text-sm font-semibold truncate max-w-[140px] sm:max-w-[220px]"
+            className="font-heading text-lg font-semibold truncate max-w-[140px] sm:max-w-[220px]"
             style={{ color: "var(--md-text-primary)" }}
           >
             {cityName}
@@ -159,12 +159,12 @@ export function WeatherCard() {
 
       <div className="text-center mb-5">
         <div
-          className="text-5xl font-bold font-heading leading-none"
+          className="text-5xl font-bold font-heading stat-num leading-none"
           style={{ color: "var(--md-primary)" }}
         >
           {w.temp_C}°C
         </div>
-        <p className="text-xs mt-2" style={{ color: "var(--md-text-secondary)" }}>
+        <p className="text-xs mt-2 stat-num" style={{ color: "var(--md-text-secondary)" }}>
           {t("weather.feels_like")} {w.FeelsLikeC}°C{desc ? ` · ${desc}` : ""}
         </p>
       </div>
@@ -188,19 +188,19 @@ function WindStat({ dir, speed }: { dir: string; speed: string }) {
   const { value, label } = windDisplay(dir, speed);
   return (
     <div
-      className="rounded-md3-sm p-2.5 text-center"
+      className="rounded-chip p-2.5 text-center"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <div className="flex justify-center mb-1" style={{ color: "var(--md-text-muted)" }}>
         <FaWind size={13} />
       </div>
       <p
-        className="text-sm font-semibold leading-snug truncate"
+        className="text-sm font-semibold leading-snug truncate stat-num"
         style={{ color: "var(--md-text-primary)" }}
       >
         {value}
       </p>
-      <p className="text-[9px] leading-tight mt-0.5" style={{ color: "var(--md-text-muted)" }}>
+      <p className="text-[10px] leading-tight mt-0.5" style={{ color: "var(--md-text-muted)" }}>
         {label}
       </p>
     </div>
@@ -210,16 +210,19 @@ function WindStat({ dir, speed }: { dir: string; speed: string }) {
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
     <div
-      className="rounded-md3-sm p-2.5 text-center"
+      className="rounded-chip p-2.5 text-center"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <div className="flex justify-center mb-1" style={{ color: "var(--md-text-muted)" }}>
         {icon}
       </div>
-      <p className="text-sm font-semibold leading-snug" style={{ color: "var(--md-text-primary)" }}>
+      <p
+        className="text-sm font-semibold leading-snug stat-num"
+        style={{ color: "var(--md-text-primary)" }}
+      >
         {value}
       </p>
-      <p className="text-[9px] leading-tight mt-0.5" style={{ color: "var(--md-text-muted)" }}>
+      <p className="text-[10px] leading-tight mt-0.5" style={{ color: "var(--md-text-muted)" }}>
         {label}
       </p>
     </div>

@@ -98,14 +98,14 @@ export function GalleryCard() {
               key={img.url}
               onClick={() => openViewer(idx)}
               aria-label={desc(img) || `Image ${idx + 1}`}
-              className="break-inside-avoid mb-3 group block w-full text-left rounded-[16px] overflow-hidden border border-transparent transition-all duration-300 hover:border-(--md-primary)/30 hover:scale-[1.02] cursor-pointer"
+              className="break-inside-avoid mb-3 block w-full text-left rounded-panel overflow-hidden border border-transparent transition-colors duration-300 hover:border-(--md-primary)/30 cursor-pointer"
               style={{ backgroundColor: "var(--md-primary-008)" }}
             >
               <div className="overflow-hidden">
                 <OptimizedImage
                   src={img.url}
                   alt={desc(img)}
-                  className="w-full h-auto transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-auto"
                   sizes="(max-width: 640px) 50vw, 25vw"
                   loading={eager && idx < PRELOAD_COUNT ? "eager" : "lazy"}
                   placeholder
@@ -130,7 +130,7 @@ export function GalleryCard() {
         createPortal(
           <div
             ref={viewerRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 cursor-pointer"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 cursor-pointer"
             onClick={(e) => {
               if (e.target === e.currentTarget) closeViewer();
             }}
@@ -141,7 +141,7 @@ export function GalleryCard() {
             tabIndex={-1}
           >
             <div
-              className="relative max-h-[90vh] max-w-[90vw] rounded-md3 overflow-hidden"
+              className="relative max-h-[90vh] max-w-[90vw] rounded-card overflow-hidden"
               style={{
                 backgroundColor: "var(--md-card-bg)",
                 border: "1px solid var(--md-card-border)",
@@ -151,7 +151,7 @@ export function GalleryCard() {
                 type="button"
                 onClick={closeViewer}
                 aria-label={labels.close}
-                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all cursor-pointer"
+                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 &times;
               </button>
@@ -183,7 +183,7 @@ export function GalleryCard() {
                   setViewerIdx(viewerIdx - 1);
                 }}
                 aria-label={labels.prev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl cursor-pointer"
+                className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 text-xl cursor-pointer"
               >
                 &#8249;
               </button>
@@ -196,7 +196,7 @@ export function GalleryCard() {
                   setViewerIdx(viewerIdx + 1);
                 }}
                 aria-label={labels.next}
-                className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all text-xl cursor-pointer"
+                className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 text-xl cursor-pointer"
               >
                 &#8250;
               </button>

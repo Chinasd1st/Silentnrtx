@@ -44,7 +44,7 @@ export function SettingsCard() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={t("settings.title")}
-        className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all duration-200 hover:bg-white/6 active:scale-90"
+        className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-[color,background-color,transform] duration-200 hover:bg-[var(--md-primary-008)] active:scale-[0.97]"
         style={{ color: "var(--md-text-primary)" }}
       >
         <FiSettings size={15} />
@@ -64,9 +64,9 @@ export function SettingsCard() {
             if (e.key === "Escape") setOpen(false);
           }}
         >
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
           <div
-            className="relative rounded-md3 p-5 w-full max-w-sm"
+            className="relative rounded-card p-5 w-full max-w-sm"
             style={{
               backgroundColor: "var(--md-card-bg)",
               border: "1px solid var(--md-card-border)",
@@ -84,7 +84,7 @@ export function SettingsCard() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label={t("gallery.close")}
-                className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-all hover:bg-white/6"
+                className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-colors duration-200 hover:bg-[var(--md-primary-008)]"
                 style={{ color: "var(--md-text-muted)" }}
               >
                 <FiX size={16} />
@@ -126,7 +126,7 @@ export function SettingsCard() {
                   placeholder={siteConfig.weather.city}
                   disabled={s.weatherSource !== "manual"}
                   onChange={(e) => update({ manualCity: e.target.value })}
-                  className="w-full rounded-[16px] px-3 py-2 text-xs outline-hidden border disabled:opacity-50"
+                  className="w-full rounded-panel px-3 py-2 text-xs border disabled:opacity-50"
                   style={{
                     borderColor: "var(--md-card-border)",
                     color:
@@ -227,7 +227,7 @@ function ClearCacheButton() {
       onBlur={() => {
         if (state === "confirm") setState("idle");
       }}
-      className="flex w-full items-center justify-center gap-2 rounded-md3-sm px-3 py-2 text-xs cursor-pointer transition-all hover:bg-white/6 active:scale-95"
+      className="flex w-full items-center justify-center gap-2 rounded-chip px-3 py-2 text-xs cursor-pointer transition-[color,background-color,transform] duration-200 hover:bg-[var(--md-primary-008)] active:scale-[0.97]"
       style={{
         color: state === "confirm" ? "var(--md-accent-red, #ef4444)" : "var(--md-text-muted)",
       }}

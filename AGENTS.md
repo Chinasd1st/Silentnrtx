@@ -31,8 +31,9 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 - All dynamic components are `"use client"`.
 - Functional components with hooks only (no class components).
 - Import order: React → third-party → `@/components/**` → `@/lib/**` → `@/config`.
-- Card rounding: `rounded-[16px]` (not `rounded-md3-sm`).
-- Hover pattern on containers: `hover:bg-white/6 transition-all duration-200`.
+- Radius scale: outer card/modal `rounded-card` (24px), inner tile/popover `rounded-panel` (16px), chip/input `rounded-chip` (12px), micro `rounded-micro` (6px), pills/circles `rounded-full`. Do not invent one-off arbitrary radii.
+- Motion scale: 200ms for color/opacity hovers, 300ms for surfaces/overlays; one press gesture `active:scale-[0.97]`; no decorative `hover:scale-*` on cards. Use `transition-colors` unless transform/shadow actually changes.
+- Hover pattern on containers: `hover:bg-white/6 transition-colors duration-200` (light mode maps white hover to a primary tint automatically).
 - Subcard hover (title highlight on card hover): `group` on container + `group-hover:text-[var(--md-primary)] transition-all duration-200` on title element. Use className (not inline style) for title color so `group-hover` overrides correctly.
 - Modals use `createPortal` into `document.body`.
 - All `<button>` elements should have `type="button"`.
@@ -115,14 +116,14 @@ components/
       coding/      — WakatimeCard, WakaAICard, MonkeytypeCard
       github/      — GitHubStats
       media/       — LastFmStatus
-      widgets/     — ClockCard, WeatherCard, EarthquakeCard, BusuanziStats
+      widgets/     — ClockCard, WeatherCard, EarthquakeCard, VercountStats
 ```
 
 ## Important Conventions
 
 - `WakatimeCard` and `WakaAICard` share `CACHE_KEY = "wakatime"` in localStorage.
 - Both cards independently read the same cache; `WakaAICard` does not re-fetch.
-- Activity bars use a single `rounded-[16px] p-3 space-y-1` container with `--md-primary-008`.
+- Activity bars use a single `rounded-panel p-3 space-y-1` container with `--md-primary-008`.
 - AI stats use 2×2 StatBox grids + full-width CostBox, all `--md-primary` value color.
 - The AI tab in `WakatimeCard` is always rendered in DOM (invisible when inactive) to prevent CSS column reflow.
 - Progress bar fill: `pointer-events: none` so track receives pointer events.

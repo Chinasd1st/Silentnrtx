@@ -106,7 +106,7 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
               return (
                 <code
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.06)",
+                    backgroundColor: "var(--md-divider)",
                     padding: "1px 4px",
                     borderRadius: 4,
                     fontSize: "0.85em",
@@ -121,8 +121,8 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
             return (
               <pre
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.04)",
-                  borderRadius: 8,
+                  backgroundColor: "var(--md-primary-008)",
+                  borderRadius: 6,
                   padding: 12,
                   overflow: "auto",
                   fontSize: "0.85em",
@@ -137,7 +137,7 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
           },
           h1: ({ children }) => (
             <h1
-              className="text-lg font-bold font-heading mt-4 mb-2"
+              className="text-lg font-semibold font-heading mt-4 mb-2"
               style={{ color: "var(--md-text-primary)" }}
             >
               {children}
@@ -145,7 +145,7 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
           ),
           h2: ({ children }) => (
             <h2
-              className="text-base font-bold font-heading mt-4 mb-2"
+              className="text-base font-semibold font-heading mt-4 mb-2"
               style={{ color: "var(--md-text-primary)" }}
             >
               {children}
@@ -153,7 +153,7 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
           ),
           h3: ({ children }) => (
             <h3
-              className="text-sm font-bold font-heading mt-3 mb-1"
+              className="text-sm font-semibold font-heading mt-3 mb-1"
               style={{ color: "var(--md-text-primary)" }}
             >
               {children}
@@ -162,7 +162,7 @@ function ReleaseBody({ body, repo }: { body: string; repo: string }) {
           ul: ({ children }) => <ul className="list-disc pl-5 my-2 space-y-1">{children}</ul>,
           ol: ({ children }) => <ol className="list-decimal pl-5 my-2 space-y-1">{children}</ol>,
           p: ({ children }) => <p className="my-2 text-sm">{children}</p>,
-          hr: () => <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.06)" }} />,
+          hr: () => <hr className="my-4" style={{ borderColor: "var(--md-divider)" }} />,
           blockquote: ({ children }) => (
             <blockquote
               className="border-l-2 pl-3 my-2 text-sm italic"
@@ -240,7 +240,7 @@ export function ReleaseModal({
         createPortal(
           <div
             ref={viewerRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 cursor-pointer"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 cursor-pointer"
             onClick={(e) => {
               if (e.target === e.currentTarget) handleClose();
             }}
@@ -253,7 +253,7 @@ export function ReleaseModal({
             tabIndex={-1}
           >
             <div
-              className="relative rounded-md3 w-[95vw] max-w-2xl max-h-[80vh] overflow-clip"
+              className="relative rounded-card w-[95vw] max-w-2xl max-h-[80vh] overflow-clip"
               style={{
                 backgroundColor: "var(--md-card-bg)",
                 border: "1px solid var(--md-card-border)",
@@ -261,7 +261,7 @@ export function ReleaseModal({
             >
               <div
                 className="flex items-center justify-between px-5 py-4 border-b"
-                style={{ borderColor: "rgba(255,255,255,0.06)" }}
+                style={{ borderColor: "var(--md-divider)" }}
               >
                 <h2
                   id={TITLE_ID}
@@ -274,7 +274,7 @@ export function ReleaseModal({
                   type="button"
                   onClick={handleClose}
                   aria-label={t("release.close")}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all shrink-0 cursor-pointer"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 shrink-0 cursor-pointer"
                 >
                   <FiX size={15} />
                 </button>
@@ -295,7 +295,7 @@ export function ReleaseModal({
                 {releases.map((release, idx) => (
                   <div key={release.tag_name}>
                     {idx > 0 && (
-                      <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
+                      <hr className="my-4" style={{ borderColor: "var(--md-divider)" }} />
                     )}
 
                     <div className="flex items-center gap-2 mb-3">
@@ -339,7 +339,7 @@ export function ReleaseModal({
 
                     {/beta/i.test(release.tag_name) && (
                       <div
-                        className="rounded-[12px] p-3 mb-3 text-xs"
+                        className="rounded-chip p-3 mb-3 text-xs"
                         style={{
                           backgroundColor:
                             "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
@@ -351,7 +351,7 @@ export function ReleaseModal({
                     )}
                     {/rc/i.test(release.tag_name) && !/beta/i.test(release.tag_name) && (
                       <div
-                        className="rounded-[12px] p-3 mb-3 text-xs"
+                        className="rounded-chip p-3 mb-3 text-xs"
                         style={{
                           backgroundColor:
                             "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",

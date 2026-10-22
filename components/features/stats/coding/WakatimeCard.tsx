@@ -98,7 +98,7 @@ export function WakatimeCard() {
           title={t("wakatime.title")}
           action={
             <div className="flex items-center gap-3">
-              <span className="text-xs" style={{ color: "var(--md-text-muted)" }}>
+              <span className="text-xs stat-num" style={{ color: "var(--md-text-muted)" }}>
                 {totalH}h {totalM}m
               </span>
               <ExternalLink href={`https://wakatime.com/@${cfg.username}`}>
@@ -109,7 +109,7 @@ export function WakatimeCard() {
         />
 
         <div
-          className="rounded-[16px] p-3 space-y-1"
+          className="rounded-panel p-3 space-y-1"
           style={{ backgroundColor: "var(--md-primary-008)" }}
           aria-live="polite"
         >
@@ -124,7 +124,7 @@ export function WakatimeCard() {
                 </span>
                 <div
                   className="flex-1 h-2 rounded-full"
-                  style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+                  style={{ backgroundColor: "var(--md-track)" }}
                 >
                   <div
                     className="h-full rounded-full"
@@ -135,7 +135,7 @@ export function WakatimeCard() {
                   />
                 </div>
                 <span
-                  className="w-14 text-right shrink-0"
+                  className="w-14 text-right shrink-0 stat-num"
                   style={{ color: "var(--md-text-secondary)" }}
                 >
                   {g.text?.replace("hrs", "h").replace("hr", "h").replace("mins", "m") || ""}
@@ -147,7 +147,7 @@ export function WakatimeCard() {
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="w-full text-center text-[10px] py-1 mt-0.5 rounded-[16px] transition-all duration-200 hover:bg-white/6 cursor-pointer"
+              className="w-full text-center text-[10px] py-1 mt-0.5 rounded-panel transition-colors duration-200 hover:bg-white/6 cursor-pointer"
               style={{ color: "var(--md-text-muted)" }}
             >
               {t("wakatime.show_all")} &gt;
@@ -219,7 +219,7 @@ function WakaModal({
       tabIndex={-1}
     >
       <div
-        className="relative rounded-md3 w-full max-w-lg max-h-[80vh] overflow-clip"
+        className="relative rounded-card w-full max-w-lg max-h-[80vh] overflow-clip"
         style={{
           backgroundColor: "var(--md-card-bg)",
           border: "1px solid var(--md-card-border)",
@@ -227,7 +227,7 @@ function WakaModal({
       >
         <div
           className="flex items-center justify-between px-5 py-4 border-b"
-          style={{ borderColor: "rgba(255,255,255,0.06)" }}
+          style={{ borderColor: "var(--md-divider)" }}
         >
           <h2
             id={MODAL_TITLE_ID}
@@ -240,7 +240,7 @@ function WakaModal({
             type="button"
             onClick={onClose}
             aria-label={t("wakatime.close")}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 cursor-pointer"
           >
             &times;
           </button>
@@ -254,14 +254,14 @@ function WakaModal({
             return (
               <div
                 key={day.range?.date ?? "entry"}
-                className="flex items-center gap-2 text-xs rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6"
+                className="flex items-center gap-2 text-xs rounded-panel p-4 transition-colors duration-200 hover:bg-white/6"
               >
                 <span className="w-20 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>
                   {day.range?.date || ""}
                 </span>
                 <div
                   className="flex-1 h-2 rounded-full"
-                  style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+                  style={{ backgroundColor: "var(--md-track)" }}
                 >
                   <div
                     className="h-full rounded-full"
@@ -269,7 +269,7 @@ function WakaModal({
                   />
                 </div>
                 <span
-                  className="w-14 text-right shrink-0"
+                  className="w-14 text-right shrink-0 stat-num"
                   style={{ color: "var(--md-text-secondary)" }}
                 >
                   {g.text?.replace("hrs", "h").replace("hr", "h").replace("mins", "m") || ""}
@@ -279,7 +279,7 @@ function WakaModal({
           })}
         </div>
 
-        <div className="border-t px-5 py-4" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="border-t px-5 py-4" style={{ borderColor: "var(--md-divider)" }}>
           <p
             className="text-xs font-medium mb-3 text-center"
             style={{ color: "var(--md-text-muted)" }}

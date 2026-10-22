@@ -132,7 +132,7 @@ export function EarthquakeCard() {
 
       {!active.error && !eq && (
         <div
-          className="rounded-[16px] p-3 mb-3 flex items-center justify-center"
+          className="rounded-panel p-3 mb-3 flex items-center justify-center"
           style={{ backgroundColor: "var(--md-primary-008)", minHeight: "115px" }}
         >
           <p className="text-xs" style={{ color: "var(--md-text-muted)" }}>
@@ -143,7 +143,7 @@ export function EarthquakeCard() {
 
       {eq && (
         <div
-          className="rounded-[16px] p-3 mb-3"
+          className="rounded-panel p-3 mb-3"
           style={{ backgroundColor: "var(--md-primary-008)" }}
         >
           <p
@@ -154,21 +154,30 @@ export function EarthquakeCard() {
           </p>
           <div className="mt-2 flex items-baseline gap-3">
             <span
-              className="text-3xl font-bold font-heading leading-none"
+              className="text-3xl font-bold font-heading stat-num leading-none"
               style={{ color: "var(--md-primary)" }}
             >
               M{(eq as EqBase).magnitude}
             </span>
-            <span className="text-xs leading-none" style={{ color: "var(--md-text-muted)" }}>
+            <span
+              className="text-xs leading-none stat-num"
+              style={{ color: "var(--md-text-muted)" }}
+            >
               {tab === "jma"
                 ? `${t("earthquake.shindo")} ${jmaEq!.shindo} · ${t("earthquake.depth")} ${jmaEq!.depth}`
                 : `${t("earthquake.intensity")} ${cencEq!.intensity} · ${t("earthquake.depth")} ${cencEq!.depth}km`}
             </span>
           </div>
-          <p className="mt-2 text-xs leading-snug" style={{ color: "var(--md-text-secondary)" }}>
+          <p
+            className="mt-2 text-xs leading-snug stat-num"
+            style={{ color: "var(--md-text-secondary)" }}
+          >
             {(eq as EqBase).time}
           </p>
-          <p className="mt-1 text-[10px] leading-snug" style={{ color: "var(--md-text-muted)" }}>
+          <p
+            className="mt-1 text-[10px] leading-snug stat-num"
+            style={{ color: "var(--md-text-muted)" }}
+          >
             {(eq as EqBase).latitude}, {(eq as EqBase).longitude}
           </p>
           {jmaEq?.Title && jmaEq.Title !== "震源・震度情報" && (
@@ -181,7 +190,7 @@ export function EarthquakeCard() {
           )}
           {info && lvlCfg && (
             <div
-              className="mt-2 flex items-start gap-1.5 rounded-[12px] p-2"
+              className="mt-2 flex items-start gap-1.5 rounded-chip p-2"
               style={{
                 backgroundColor: `color-mix(in oklch, ${lvlCfg.cssVar} 12%, transparent)`,
               }}

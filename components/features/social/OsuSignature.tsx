@@ -71,7 +71,7 @@ export function OsuSignature() {
         href="https://osu.ppy.sh/community/forums/topics/1502604?n=1"
         target="_blank"
         rel="noopener noreferrer"
-        className="overflow-hidden rounded-[16px] bg-black/40 transition-all duration-300 hover:scale-[1.02] block"
+        className="overflow-hidden rounded-panel bg-black/40 border border-transparent transition-colors duration-300 hover:border-(--md-primary)/30 block"
       >
         <img
           src={siteConfig.osu.signatureUrl}

@@ -47,9 +47,9 @@ export function ShortcutsPanel() {
         if (e.key === "Escape") setOpen(false);
       }}
     >
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
       <div
-        className="relative rounded-md3 p-6 w-full max-w-sm"
+        className="relative rounded-card p-6 w-full max-w-sm"
         style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
       >
         <div className="flex items-center gap-3 mb-5">
@@ -68,7 +68,7 @@ export function ShortcutsPanel() {
                 {t(s.descKey)}
               </span>
               <kbd
-                className="rounded-[8px] px-2.5 py-1 text-xs font-mono"
+                className="rounded-micro px-2.5 py-1 text-xs font-mono"
                 style={{
                   backgroundColor: "var(--md-surface-variant)",
                   color: "var(--md-on-surface-variant)",

@@ -24,7 +24,7 @@ export function CachedAt({ cacheKey }: { cacheKey: string }) {
   if (!cacheTime) return null;
 
   return (
-    <p className="text-[9px] text-right mt-3" style={{ color: "var(--md-text-muted)" }}>
+    <p className="text-[9px] text-right mt-3 stat-num" style={{ color: "var(--md-text-muted)" }}>
       {t("common.cached_at")}{" "}
       {new Date(cacheTime).toLocaleString(i18n.language, {
         timeZone: tz,

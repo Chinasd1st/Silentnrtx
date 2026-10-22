@@ -125,7 +125,7 @@ function SB({
 }) {
   return (
     <div
-      className="rounded-[16px] p-4 transition-all duration-200 hover:bg-white/6 hover:scale-[1.02]"
+      className="rounded-panel p-4 transition-colors duration-200 hover:bg-white/6"
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <div className="flex items-center gap-2 text-xs" style={{ color: "var(--md-text-muted)" }}>
@@ -133,7 +133,7 @@ function SB({
         {label}
       </div>
       <p
-        className="mt-1 text-2xl font-bold font-heading"
+        className="mt-1 text-xl font-bold font-heading stat-num"
         style={{ color: "var(--md-text-primary)" }}
       >
         {value.toLocaleString(locale)}

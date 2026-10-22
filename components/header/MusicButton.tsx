@@ -129,7 +129,7 @@ export function MusicButton() {
         ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-8 w-8 items-center justify-center rounded-full text-xs cursor-pointer transition-all duration-200 hover:bg-white/6 active:scale-90"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-xs cursor-pointer transition-[color,background-color,transform] duration-200 hover:bg-[var(--md-primary-008)] active:scale-[0.97]"
         style={{ color: "var(--md-text-primary)" }}
         aria-label={t("music.title")}
       >
@@ -146,13 +146,13 @@ export function MusicButton() {
           role="dialog"
           aria-modal="false"
           aria-label={t("music.trackList")}
-          className="absolute right-0 top-10 z-50 w-80 max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-5rem)] overflow-y-auto overflow-x-hidden rounded-[16px] p-2 pt-[18px] shadow-lg"
+          className="absolute right-0 top-10 z-50 w-80 max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-5rem)] overflow-y-auto overflow-x-hidden rounded-panel p-2 pt-[18px] shadow-lg"
           style={{
             ...panelStyle,
             backgroundColor: "var(--md-surface-variant)",
             border: "1px solid var(--md-outline-variant)",
             color: "var(--md-text-primary)",
-            animation: "popover-enter 0.25s cubic-bezier(0.2, 0, 0, 1) forwards",
+            animation: "popover-enter 0.25s var(--ease-md3) forwards",
           }}
         >
           <style>{`
@@ -204,7 +204,7 @@ export function MusicButton() {
               <div className="flex items-center justify-between gap-2 overflow-hidden">
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <h3
-                    className="font-bold text-sm truncate leading-tight"
+                    className="font-semibold text-sm truncate leading-tight"
                     title={currentTrack.name}
                     style={{ color: "var(--md-text-primary)" }}
                   >
@@ -235,7 +235,7 @@ export function MusicButton() {
                   <button
                     type="button"
                     onClick={handleMute}
-                    className="p-0.5 rounded-md transition-colors cursor-pointer hover:opacity-80"
+                    className="p-0.5 rounded-micro transition-colors cursor-pointer hover:opacity-80"
                     style={{ color: "var(--md-text-muted)" }}
                     aria-label={t("music.volume")}
                     title={t("music.volume")}
@@ -332,7 +332,7 @@ export function MusicButton() {
             <button
               type="button"
               onClick={cyclePlayMode}
-              className="p-2 rounded-full transition-all duration-200 cursor-pointer hover:bg-white/6"
+              className="p-2 rounded-full transition-colors duration-200 cursor-pointer hover:bg-[var(--md-primary-008)]"
               style={{
                 color: playMode === 0 ? "var(--md-text-muted)" : "var(--md-primary)",
               }}
@@ -352,7 +352,7 @@ export function MusicButton() {
             <button
               type="button"
               onClick={() => prev()}
-              className="p-2 rounded-full transition-all duration-200 cursor-pointer hover:bg-white/6"
+              className="p-2 rounded-full transition-colors duration-200 cursor-pointer hover:bg-[var(--md-primary-008)]"
               style={{ color: "var(--md-text-secondary)" }}
               aria-label={t("music.previous")}
               title={t("music.previous")}
@@ -364,7 +364,7 @@ export function MusicButton() {
             <button
               type="button"
               onClick={() => selectedIdx !== null && toggle(selectedIdx)}
-              className="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-200 hover:brightness-110 shadow-lg cursor-pointer"
+              className="flex h-12 w-12 items-center justify-center rounded-full transition-[background-color,opacity] duration-200 hover:opacity-90 shadow-lg cursor-pointer"
               style={{
                 backgroundColor: "var(--md-primary)",
                 color: "var(--md-on-primary)",
@@ -379,7 +379,7 @@ export function MusicButton() {
             <button
               type="button"
               onClick={() => next()}
-              className="p-2 rounded-full transition-all duration-200 cursor-pointer hover:bg-white/6"
+              className="p-2 rounded-full transition-colors duration-200 cursor-pointer hover:bg-[var(--md-primary-008)]"
               style={{ color: "var(--md-text-secondary)" }}
               aria-label={t("music.next")}
               title={t("music.next")}
@@ -391,7 +391,7 @@ export function MusicButton() {
             <button
               type="button"
               onClick={() => setPlaylistOpen((v) => !v)}
-              className="p-2 rounded-full transition-all duration-200 cursor-pointer hover:bg-white/6"
+              className="p-2 rounded-full transition-colors duration-200 cursor-pointer hover:bg-[var(--md-primary-008)]"
               style={{
                 color: playlistOpen ? "var(--md-primary)" : "var(--md-text-muted)",
               }}
@@ -404,7 +404,7 @@ export function MusicButton() {
 
           {/* Playlist Drawer (Accordion) */}
           <div
-            className="grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+            className="grid transition-[grid-template-rows,opacity] duration-300 ease-[var(--ease-md3)]"
             style={{
               gridTemplateRows: playlistOpen ? "1fr" : "0fr",
               opacity: playlistOpen ? 1 : 0,
@@ -426,7 +426,7 @@ export function MusicButton() {
                       type="button"
                       data-idx={i}
                       onClick={() => toggle(i)}
-                      className="flex w-full items-center gap-3 rounded-lg p-2 text-left cursor-pointer transition-all duration-200"
+                      className="flex w-full items-center gap-3 rounded-micro p-2 text-left cursor-pointer transition-colors duration-200"
                       style={{
                         backgroundColor:
                           i === selectedIdx
@@ -436,8 +436,8 @@ export function MusicButton() {
                       title={`${song.name} - ${song.artist}`}
                     >
                       <div
-                        className="w-8 h-8 rounded-md overflow-hidden shrink-0 relative"
-                        style={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+                        className="w-8 h-8 rounded-micro overflow-hidden shrink-0 relative"
+                        style={{ backgroundColor: "var(--md-track)" }}
                       >
                         {song.pic ? (
                           <img
@@ -469,7 +469,7 @@ export function MusicButton() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div
-                          className="text-xs font-bold truncate transition-colors duration-200"
+                          className="text-xs font-semibold truncate transition-colors duration-200"
                           style={{
                             color:
                               i === selectedIdx ? "var(--md-primary)" : "var(--md-text-primary)",
