@@ -90,7 +90,7 @@ export const siteConfig = {
     params: { server: "netease", type: "playlist", id: "8374084247" },
   },
 
-  busuanzi: { enabled: true },
+  vercount: { enabled: true },
 
   weather: { enabled: true, city: "Tongxiang" },
 
