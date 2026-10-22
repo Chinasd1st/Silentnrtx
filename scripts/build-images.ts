@@ -9,7 +9,7 @@
 import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import sharp from "sharp";
+import sharp, { type Metadata } from "sharp";
 
 const PROJECT_ROOT = path.resolve(__dirname, "..");
 const IMAGES_DIR = path.join(PROJECT_ROOT, "public", "images");
@@ -114,7 +114,7 @@ async function processImage(
   const currentMtime = getFileMtime(imagePath);
   const cached = cache[filename];
 
-  let metadata: sharp.Metadata;
+  let metadata: Metadata;
   try {
     metadata = await sharp(imagePath).metadata();
   } catch {
