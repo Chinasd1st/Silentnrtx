@@ -1,3 +1,7 @@
+import { basePath } from "./lib/base-path";
+
+const SITE_ORIGIN = "https://silentnrtx.top";
+
 export const siteConfig = {
   /** Theme hue (0-360). Affects primary color, surfaces, and card tones. */
   theme: {
@@ -7,8 +11,8 @@ export const siteConfig = {
   seo: {
     title: "Silentnrtx",
     description: "Silentnrtx's personal homepage.",
-    url: "https://silentnrtx.top",
-    image: "https://silentnrtx.top/assets/avatar/SP6C_01.jpg",
+    url: SITE_ORIGIN,
+    image: `${SITE_ORIGIN}${basePath}/images/SP7_01.webp`,
     twitter: "@Silentnrtx",
   },
 
