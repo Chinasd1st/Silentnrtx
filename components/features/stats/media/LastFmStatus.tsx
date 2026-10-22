@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaLastfm } from "react-icons/fa";
+import { FiMusic } from "react-icons/fi";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
@@ -36,6 +37,54 @@ type Tab = "nowplaying" | "top";
 interface ItunesResponse {
   resultCount: number;
   results: Array<{ artworkUrl100?: string }>;
+}
+
+function CoverArt({
+  src,
+  alt,
+  size,
+  radius,
+}: {
+  src?: string;
+  alt: string;
+  size: number;
+  radius: number;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <div
+      className="relative shrink-0 overflow-hidden"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: radius,
+        backgroundColor: "var(--md-primary-008)",
+        boxShadow: "inset 0 0 0 1px var(--md-card-border)",
+      }}
+      aria-hidden={alt ? undefined : true}
+    >
+      <span
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ color: "var(--md-text-muted)" }}
+        aria-hidden="true"
+      >
+        <FiMusic size={Math.round(size * 0.38)} strokeWidth={1.5} />
+      </span>
+      {src && !failed && (
+        <img
+          src={src}
+          alt={alt}
+          width={size}
+          height={size}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          onError={() => setFailed(true)}
+        />
+      )}
+    </div>
+  );
 }
 
 export function LastFmStatus() {
@@ -215,7 +264,7 @@ export function LastFmStatus() {
 
   const c = "var(--md-primary)";
   const activeBg = "var(--md-primary-020)";
-  const inactiveBg = "rgba(255,255,255,0.05)";
+  const inactiveBg = "var(--md-primary-008)";
   const activeFg = c;
   const inactiveFg = "var(--md-text-muted)";
 
@@ -246,7 +295,7 @@ export function LastFmStatus() {
         <button
           type="button"
           onClick={() => setTab("nowplaying")}
-          className="rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer hover:bg-[var(--md-primary-008)]"
+          className="rounded-full px-3 py-1 text-xs font-medium transition-colors duration-200 cursor-pointer hover:bg-[var(--md-primary-008)]"
           style={{
             backgroundColor: tab === "nowplaying" ? activeBg : inactiveBg,
             color: tab === "nowplaying" ? activeFg : inactiveFg,
@@ -257,7 +306,7 @@ export function LastFmStatus() {
         <button
           type="button"
           onClick={() => setTab("top")}
-          className="rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer hover:bg-[var(--md-primary-008)]"
+          className="rounded-full px-3 py-1 text-xs font-medium transition-colors duration-200 cursor-pointer hover:bg-[var(--md-primary-008)]"
           style={{
             backgroundColor: tab === "top" ? activeBg : inactiveBg,
             color: tab === "top" ? activeFg : inactiveFg,
@@ -269,21 +318,14 @@ export function LastFmStatus() {
 
       {tab === "nowplaying" && track && (
         <div className="flex items-center gap-4" aria-live="polite">
-          <div className="relative w-16 h-16 shrink-0">
-            <div className="absolute inset-0 flex items-center justify-center rounded-[16px] bg-white/6 text-2xl opacity-40">
-              &#9835;
-            </div>
-            {albumArt && (
-              <img
-                src={albumArt}
-                alt={track.album["#text"]}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full rounded-[16px] object-cover shadow-md"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                }}
-              />
-            )}
+          <div className="relative h-16 w-16 shrink-0">
+            <CoverArt
+              key={albumArt ?? "empty"}
+              src={albumArt ?? undefined}
+              alt={track.album["#text"] || track.name}
+              size={64}
+              radius={16}
+            />
             {state === "playing" && (
               <span
                 className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-500"
@@ -307,7 +349,7 @@ export function LastFmStatus() {
               {state === "playing" ? t("lastfm.now_playing") : t("lastfm.last_played")}
             </span>
             <p
-              className="mt-1.5 text-base font-bold leading-snug truncate"
+              className="mt-1.5 text-base font-semibold leading-snug truncate"
               style={{ color: "var(--md-text-primary)" }}
             >
               {track.name}
@@ -327,7 +369,7 @@ export function LastFmStatus() {
               </p>
             )}
             {track.date?.uts && (
-              <p className="text-[10px] mt-1" style={{ color: "var(--md-text-muted)" }}>
+              <p className="text-[10px] mt-1 stat-num" style={{ color: "var(--md-text-muted)" }}>
                 {new Date(Number(track.date.uts) * 1000).toLocaleString(i18n.language, {
                   year: "numeric",
                   month: "short",
@@ -352,25 +394,12 @@ export function LastFmStatus() {
             return (
               <div key={`${album.name}-${album.artist.name}`} className="flex items-center gap-3">
                 <span
-                  className="text-[10px] w-4 shrink-0 text-center"
+                  className="text-[10px] w-4 shrink-0 text-center stat-num"
                   style={{ color: "var(--md-text-muted)" }}
                 >
                   {i + 1}
                 </span>
-                {art ? (
-                  <img
-                    src={art}
-                    alt=""
-                    loading="lazy"
-                    className="w-8 h-8 rounded-[8px] object-cover shrink-0"
-                    aria-hidden="true"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-[8px] bg-white/6 shrink-0" />
-                )}
+                <CoverArt key={art || "empty"} src={art || undefined} alt="" size={32} radius={8} />
                 <div className="min-w-0 flex-1">
                   <p
                     className="text-xs font-medium truncate"
@@ -382,7 +411,10 @@ export function LastFmStatus() {
                     {album.artist.name}
                   </p>
                 </div>
-                <span className="text-[10px] shrink-0" style={{ color: "var(--md-text-muted)" }}>
+                <span
+                  className="text-[10px] shrink-0 stat-num"
+                  style={{ color: "var(--md-text-muted)" }}
+                >
                   {album.playcount}
                 </span>
               </div>
@@ -398,7 +430,10 @@ export function LastFmStatus() {
       )}
 
       {elapsed && (
-        <p className="text-[10px] mt-3 text-right" style={{ color: "var(--md-text-muted)" }}>
+        <p
+          className="text-[10px] mt-3 text-right stat-num"
+          style={{ color: "var(--md-text-muted)" }}
+        >
           {t("lastfm.updated")} {elapsed}
         </p>
       )}
