@@ -49,21 +49,17 @@ export function Hero() {
     >
       <div ref={bgRef} className="absolute inset-0 -z-10" />
       <div className="absolute inset-0 -z-20">
-        <div
-          className="h-full w-full bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at 50% 0%, rgba(208,188,255,0.12) 0%, transparent 70%)",
-          }}
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-(--md-background)/60 via-transparent to-(--md-background)" />
+        <div className="hero-ambient absolute inset-0" />
+        <div className="hero-scrim absolute inset-0" />
       </div>
 
       <div ref={contentRef} className="flex flex-col items-center gap-4 px-4 text-center">
         <div className="relative">
           <div
-            className="h-28 w-28 overflow-hidden rounded-[32px] shadow-xl"
-            style={{ boxShadow: "0 0 0 2px rgba(208,188,255,0.3)" }}
+            className="h-28 w-28 overflow-hidden rounded-card"
+            style={{
+              boxShadow: "0 0 0 2px color-mix(in srgb, var(--md-primary) 30%, transparent)",
+            }}
           >
             <OptimizedImage
               src={siteConfig.profile.avatar}
@@ -85,21 +81,21 @@ export function Hero() {
             {siteConfig.profile.name}
           </h1>
           <p
-            className="mt-3 text-sm leading-[1.4]"
+            className="hero-subtitle mt-3 text-sm font-medium leading-[1.4]"
             style={{ color: "var(--md-text-secondary)", letterSpacing: "0.08em" }}
           >
             {t("profile.location")}
           </p>
           <p
-            className="mt-4 text-sm leading-[1.4] min-h-[1.4em]"
-            style={{ color: "var(--md-text-secondary)", opacity: 0.65, letterSpacing: "0.04em" }}
+            className="hero-subtitle mt-4 text-sm font-medium leading-[1.4] min-h-[1.4em]"
+            style={{ color: "var(--md-text-secondary)", letterSpacing: "0.04em" }}
           >
             {highlight(siteConfig.profile.signature)}
           </p>
         </div>
       </div>
 
-      <div className="absolute right-6 top-6 z-10 flex items-center gap-2">
+      <div className="hero-toolbar absolute right-4 top-4 z-10 flex items-center gap-0.5 rounded-full p-1 sm:right-6 sm:top-6">
         <MusicButton />
         <ThemeSwitch />
         <SettingsCard />
@@ -107,32 +103,34 @@ export function Hero() {
           type="button"
           onClick={toggleLang}
           aria-label={t(lang === "zh-CN" ? "lang.zh_aria" : "lang.en_aria")}
-          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium cursor-pointer transition-all duration-200 hover:bg-white/6 active:scale-90"
+          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium cursor-pointer transition-colors duration-200 hover:bg-white/6 active:scale-[0.97]"
           style={{ color: "var(--md-text-primary)" }}
         >
           {t(lang === "zh-CN" ? "lang.zh" : "lang.en")}
         </button>
       </div>
 
-      <div className="absolute bottom-10 flex w-full justify-center animate-bounce">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          style={{ color: "var(--md-text-muted)" }}
-          role="img"
-          aria-label="Scroll down"
-        >
-          <title>Scroll down</title>
-          <path
-            d="M12 5v14M5 12l7 7 7-7"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+      <div className="absolute bottom-10 flex w-full justify-center">
+        <div className="hero-toolbar flex h-9 w-9 animate-bounce items-center justify-center rounded-full">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{ color: "var(--md-text-secondary)" }}
+            role="img"
+            aria-label="Scroll down"
+          >
+            <title>Scroll down</title>
+            <path
+              d="M12 5v14M5 12l7 7 7-7"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
       </div>
     </section>
   );

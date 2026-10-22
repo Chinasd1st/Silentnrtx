@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { basePath } from "@/lib/base-path";
@@ -10,16 +11,7 @@ import { CACHE_KEYS, CACHE_TTL } from "@/lib/cache-config";
 export function Background() {
   const [bgUrl, setBgUrl] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const [isLight, setIsLight] = useState(false);
   const cfg = siteConfig.background;
-
-  useEffect(() => {
-    const check = () => setIsLight(document.documentElement.classList.contains("light"));
-    check();
-    const obs = new MutationObserver(check);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => obs.disconnect();
-  }, []);
 
   const fetchBg = useCallback(() => {
     if (!cfg.enabled) {
@@ -103,18 +95,10 @@ export function Background() {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${bgUrl})`,
-          filter: `blur(${cfg.blurAmount}px)`,
+          filter: `blur(${cfg.blurAmount}px) saturate(1.05)`,
         }}
       />
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundColor: isLight
-            ? `rgba(255,255,255,${(1 - cfg.opacity) * 0.35})`
-            : "rgba(0,0,0,0.4)",
-        }}
-      />
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-(--md-background)/15 to-(--md-background)" />
+      <div className="bg-scrim absolute inset-0" />
     </div>
   );
 }
