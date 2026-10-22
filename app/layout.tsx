@@ -3,6 +3,7 @@ import Script from "next/script";
 import { GlobalAudioProvider } from "@/components/audio/GlobalAudio";
 import { ShortcutsPanel } from "@/components/dialogs/ShortcutsPanel";
 import { Background } from "@/components/features/background/Background";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import { I18nInit } from "@/components/ui/I18nInit";
 import { siteConfig } from "@/config";
 import { basePath } from "@/lib/base-path";
@@ -101,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ShortcutsPanel />
           <main>{children}</main>
         </GlobalAudioProvider>
+        <CustomCursor />
       </body>
     </html>
   );
