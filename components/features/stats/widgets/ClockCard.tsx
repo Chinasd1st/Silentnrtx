@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/i18n";
@@ -24,6 +24,67 @@ function now(tz: string) {
     month: get("month"),
     day: get("day"),
   };
+}
+
+const DIGIT_ROWS = Array.from({ length: 31 }, (_, i) => ({ id: i, digit: i % 10 }));
+
+/**
+ * Odometer-style digit. The visible glyph is `offset % 10`; after each roll
+ * the offset is rebased to the same glyph so the strip never grows.
+ */
+function RollingDigit({ value }: { value: number }) {
+  const [offset, setOffset] = useState(value);
+  const [instant, setInstant] = useState(false);
+  const prev = useRef(value);
+  const rebaseTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (value === prev.current) return;
+    const delta = (value - prev.current + 10) % 10;
+    prev.current = value;
+    setOffset((current) => (current + delta > 30 ? current + delta - 10 : current + delta));
+
+    if (rebaseTimer.current) clearTimeout(rebaseTimer.current);
+    rebaseTimer.current = window.setTimeout(() => {
+      setInstant(true);
+      setOffset(value);
+      requestAnimationFrame(() => requestAnimationFrame(() => setInstant(false)));
+      rebaseTimer.current = null;
+    }, 700);
+  }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (rebaseTimer.current) clearTimeout(rebaseTimer.current);
+    };
+  }, []);
+
+  return (
+    <span
+      className="relative inline-block overflow-hidden tabular-nums"
+      style={{ height: "1em", lineHeight: 1, letterSpacing: "normal" }}
+      aria-hidden="true"
+    >
+      <span
+        className="flex flex-col"
+        style={{
+          transform: `translateY(-${offset}em)`,
+          transition: instant ? "none" : "transform 620ms cubic-bezier(0.22, 1, 0.36, 1)",
+          willChange: "transform",
+        }}
+      >
+        {DIGIT_ROWS.map((row) => (
+          <span
+            key={row.id}
+            className="flex items-center justify-center"
+            style={{ height: "1em", lineHeight: 1 }}
+          >
+            {row.digit}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
 }
 
 export function ClockCard() {
@@ -58,12 +119,12 @@ export function ClockCard() {
 
   if (!t) {
     return (
-      <div className="md-card">
+      <div className="md-card md-card--static">
         <div className="flex items-center gap-6">
-          <div className="w-[72px] h-[72px] shrink-0" />
+          <div className="w-14 h-14 shrink-0" />
           <div className="min-w-0">
             <div
-              className="font-heading text-3xl sm:text-4xl xl:text-5xl font-light tracking-[-1px] sm:tracking-[-2px] leading-none"
+              className="font-heading text-3xl sm:text-4xl font-light tracking-[-1px] sm:tracking-[-2px] leading-none"
               style={{ color: "var(--md-text-primary)" }}
             >
               <span>--:--:--</span>
@@ -84,12 +145,12 @@ export function ClockCard() {
   const c = "var(--md-primary)";
 
   return (
-    <div className="md-card">
+    <div className="md-card md-card--static">
       <div className="flex items-center gap-4 sm:gap-6">
         <svg
           width="56"
           height="56"
-          className="sm:w-[72px] sm:h-[72px] shrink-0"
+          className="shrink-0"
           viewBox="0 0 100 100"
           role="img"
           aria-label={`${hh}:${mm}:${ss}`}
@@ -134,25 +195,33 @@ export function ClockCard() {
 
         <div className="min-w-0">
           <div
-            className="flex items-center gap-1 font-heading text-3xl sm:text-4xl xl:text-5xl font-light tracking-[-1px] sm:tracking-[-2px] leading-none"
+            className="flex items-center gap-1 font-heading text-3xl sm:text-4xl font-light tracking-[-1px] sm:tracking-[-2px] leading-none"
             style={{ color: "var(--md-text-primary)" }}
+            aria-hidden="true"
           >
-            <span className="tabular-nums">{hh}</span>
+            <span className="flex items-center">
+              <RollingDigit value={Number(hh[0])} />
+              <RollingDigit value={Number(hh[1])} />
+            </span>
             <span
               className="inline-block text-[0.85em] leading-none opacity-80 font-normal relative"
               style={{ top: "-0.05em" }}
             >
               :
             </span>
-            <span className="tabular-nums">{mm}</span>
+            <span className="flex items-center">
+              <RollingDigit value={Number(mm[0])} />
+              <RollingDigit value={Number(mm[1])} />
+            </span>
             <span
               className="inline-block text-[0.85em] leading-none opacity-60 font-normal relative"
               style={{ top: "-0.05em" }}
             >
               :
             </span>
-            <span className="tabular-nums" style={{ color: c }}>
-              {ss}
+            <span className="flex items-center" style={{ color: c }}>
+              <RollingDigit value={Number(ss[0])} />
+              <RollingDigit value={Number(ss[1])} />
             </span>
           </div>
           <div className="mt-1 text-xs" style={{ color: "var(--md-text-secondary)" }}>
