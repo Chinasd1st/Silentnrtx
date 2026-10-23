@@ -75,20 +75,20 @@ export function Hero() {
 
         <div>
           <h1
-            className="font-heading text-5xl font-bold sm:text-6xl lg:text-7xl tracking-wide leading-[1.15]"
+            className="font-heading text-5xl font-bold sm:text-6xl lg:text-7xl tracking-tight leading-[1.15]"
             style={{ color: "var(--md-text-primary)" }}
           >
             {siteConfig.profile.name}
           </h1>
           <p
             className="hero-subtitle mt-3 text-sm font-medium leading-[1.4]"
-            style={{ color: "var(--md-text-secondary)", letterSpacing: "0.08em" }}
+            style={{ color: "var(--md-text-secondary)" }}
           >
             {t("profile.location")}
           </p>
           <p
             className="hero-subtitle mt-4 text-sm font-medium leading-[1.4] min-h-[1.4em]"
-            style={{ color: "var(--md-text-secondary)", letterSpacing: "0.04em" }}
+            style={{ color: "var(--md-text-secondary)" }}
           >
             {highlight(siteConfig.profile.signature)}
           </p>
