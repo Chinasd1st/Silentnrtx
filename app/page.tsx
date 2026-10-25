@@ -13,6 +13,7 @@ import { ClockCard } from "@/components/features/stats/widgets/ClockCard";
 import { EarthquakeCard } from "@/components/features/stats/widgets/EarthquakeCard";
 import { VercountStats } from "@/components/features/stats/widgets/VercountStats";
 import { WeatherCard } from "@/components/features/stats/widgets/WeatherCard";
+import { WorldClockCard } from "@/components/features/stats/widgets/WorldClockCard";
 import { DotGrid } from "@/components/layout/DotGrid";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/layout/Hero";
@@ -21,6 +22,7 @@ const CARD_MAP: Record<string, React.ReactNode> = {
   ProfileCard: <ProfileCard />,
   SocialLinks: <SocialLinks />,
   ClockCard: <ClockCard />,
+  WorldClockCard: <WorldClockCard />,
   GitHubStats: <GitHubStats />,
   WakatimeCard: <WakatimeCard />,
   WakaAICard: <WakaAICard />,
@@ -47,6 +49,7 @@ export default function Home() {
             "ProfileCard",
             "SocialLinks",
             "ClockCard",
+            "WorldClockCard",
             "GitHubStats",
             "WakatimeCard",
             "WakaAICard",
