@@ -1,24 +1,51 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FiCheck, FiGlobe } from "react-icons/fi";
 import { SettingsCard } from "@/components/dialogs/SettingsCard";
 import { MusicButton } from "@/components/header/MusicButton";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { ThemeSwitch } from "@/components/ui/ThemeSwitch";
 import { siteConfig } from "@/config";
 import { highlight } from "@/lib/highlight";
-import { changeLang, useTranslation } from "@/lib/i18n";
+import { changeLang, type Lang, normalizeLang, useTranslation } from "@/lib/i18n";
+
+const LANGS: { code: Lang; label: string; short: string }[] = [
+  { code: "zh-CN", label: "简体中文", short: "中" },
+  { code: "zh-TW", label: "繁體中文", short: "繁" },
+  { code: "en-US", label: "English", short: "EN" },
+  { code: "ja", label: "日本語", short: "日" },
+];
 
 export function Hero() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const bgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+  const [langOpen, setLangOpen] = useState(false);
+  const currentLang = LANGS.find((l) => l.code === normalizeLang(lang)) ?? LANGS[0];
 
-  const toggleLang = () => {
-    const next = lang === "zh-CN" ? "en-US" : "zh-CN";
+  const pickLang = (next: Lang) => {
     changeLang(next);
+    setLangOpen(false);
   };
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLangOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [langOpen]);
 
   useEffect(() => {
     let ticking = false;
@@ -99,15 +126,52 @@ export function Hero() {
         <MusicButton />
         <ThemeSwitch />
         <SettingsCard />
-        <button
-          type="button"
-          onClick={toggleLang}
-          aria-label={t(lang === "zh-CN" ? "lang.zh_aria" : "lang.en_aria")}
-          className="flex h-8 items-center justify-center rounded-full px-3 text-xs font-medium cursor-pointer transition-colors duration-200 hover:bg-white/6 active:scale-[0.97]"
-          style={{ color: "var(--md-text-primary)" }}
-        >
-          {t(lang === "zh-CN" ? "lang.zh" : "lang.en")}
-        </button>
+        <div ref={langRef} className="relative">
+          <button
+            type="button"
+            onClick={() => setLangOpen((v) => !v)}
+            aria-label={t("lang.switch")}
+            aria-haspopup="menu"
+            aria-expanded={langOpen}
+            className="flex h-8 items-center gap-1 rounded-full px-2.5 text-xs font-medium cursor-pointer transition-colors duration-200 hover:bg-white/6 active:scale-[0.97]"
+            style={{ color: "var(--md-text-primary)" }}
+          >
+            <FiGlobe size={13} aria-hidden="true" />
+            {currentLang.short}
+          </button>
+          {langOpen && (
+            <div
+              role="menu"
+              aria-label={t("lang.switch")}
+              className="animate-fade-in absolute right-0 top-10 z-50 w-40 overflow-hidden rounded-panel p-1 shadow-lg"
+              style={{
+                backgroundColor: "var(--md-surface-variant)",
+                border: "1px solid var(--md-outline-variant)",
+              }}
+            >
+              {LANGS.map((item) => {
+                const active = item.code === currentLang.code;
+                return (
+                  <button
+                    key={item.code}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={active}
+                    onClick={() => pickLang(item.code)}
+                    className="flex w-full items-center justify-between gap-2 rounded-micro px-3 py-2 text-xs cursor-pointer transition-colors duration-200 hover:bg-white/6"
+                    style={{
+                      color: active ? "var(--md-primary)" : "var(--md-text-primary)",
+                      backgroundColor: active ? "var(--md-primary-008)" : "transparent",
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    {active && <FiCheck size={12} aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="absolute bottom-10 flex w-full justify-center">
