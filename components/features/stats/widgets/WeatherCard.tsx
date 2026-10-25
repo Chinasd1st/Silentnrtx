@@ -1,8 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCloudSun, FaSun, FaTint, FaWind } from "react-icons/fa";
-import { FiSunrise, FiSunset } from "react-icons/fi";
+import {
+  WiMoonFirstQuarter,
+  WiMoonFull,
+  WiMoonNew,
+  WiMoonThirdQuarter,
+  WiMoonWaningCrescent3,
+  WiMoonWaningGibbous3,
+  WiMoonWaxingCrescent3,
+  WiMoonWaxingGibbous3,
+  WiSunrise,
+  WiSunset,
+} from "react-icons/wi";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
@@ -193,6 +204,7 @@ export function WeatherCard() {
   const w = weather;
   const moon = getMoonPhase();
   const moonPct = Math.round(moon.illumination * 100);
+  const MoonIcon = MOON_ICONS[Math.round(moon.fraction * 8) % 8];
 
   return (
     <div className="md-card md-card--static">
@@ -242,7 +254,7 @@ export function WeatherCard() {
           className="flex items-center gap-1.5 text-[10px]"
           style={{ color: "var(--md-text-muted)" }}
         >
-          <FiSunrise size={12} aria-hidden="true" style={{ color: "var(--md-primary)" }} />
+          <WiSunrise size={14} aria-hidden="true" style={{ color: "var(--md-primary)" }} />
           {t("weather.sunrise")}
           <span
             className="text-xs font-semibold tabular-nums stat-num"
@@ -255,7 +267,7 @@ export function WeatherCard() {
           className="flex items-center gap-1.5 text-[10px]"
           style={{ color: "var(--md-text-muted)" }}
         >
-          <FiSunset size={12} aria-hidden="true" style={{ color: "var(--md-primary)" }} />
+          <WiSunset size={14} aria-hidden="true" style={{ color: "var(--md-primary)" }} />
           {t("weather.sunset")}
           <span
             className="text-xs font-semibold tabular-nums stat-num"
@@ -271,7 +283,7 @@ export function WeatherCard() {
           aria-label={`${t("weather.moon")} ${moonPct}%`}
           title={`${t("weather.moon")} ${moonPct}%`}
         >
-          <MoonGlyph fraction={moon.fraction} />
+          <MoonIcon size={14} aria-hidden="true" style={{ color: "var(--md-primary)" }} />
           <span
             className="text-xs font-semibold tabular-nums stat-num"
             style={{ color: "var(--md-text-primary)" }}
@@ -285,39 +297,17 @@ export function WeatherCard() {
   );
 }
 
-/** Moon shape derived from the illuminated fraction — drawn, not an emoji. */
-function MoonGlyph({ fraction, size = 13 }: { fraction: number; size?: number }) {
-  const maskId = `moon-${useId().replace(/:/g, "")}`;
-  const c = Math.cos(2 * Math.PI * fraction);
-  const r = size / 2 - 0.5;
-  const cx = size / 2;
-  const cy = size / 2;
-  const rx = Math.abs(c) * r;
-  const waxing = fraction <= 0.5;
-  const half = waxing
-    ? `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} Z`
-    : `M ${cx} ${cy - r} A ${r} ${r} 0 0 0 ${cx} ${cy + r} Z`;
-
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      className="shrink-0"
-      aria-hidden="true"
-    >
-      <defs>
-        <mask id={maskId}>
-          <rect width={size} height={size} fill="black" />
-          <path d={half} fill="white" />
-          {rx > 0.01 && <ellipse cx={cx} cy={cy} rx={rx} ry={r} fill={c > 0 ? "black" : "white"} />}
-        </mask>
-      </defs>
-      <circle cx={cx} cy={cy} r={r} fill="var(--md-text-primary)" opacity="0.22" />
-      <circle cx={cx} cy={cy} r={r} fill="var(--md-primary)" mask={`url(#${maskId})`} />
-    </svg>
-  );
-}
+/** Weather Icons moon glyphs: new → waxing → full → waning. */
+const MOON_ICONS = [
+  WiMoonNew,
+  WiMoonWaxingCrescent3,
+  WiMoonFirstQuarter,
+  WiMoonWaxingGibbous3,
+  WiMoonFull,
+  WiMoonWaningGibbous3,
+  WiMoonThirdQuarter,
+  WiMoonWaningCrescent3,
+];
 
 function WindStat({ dir, speed }: { dir: string; speed: string }) {
   const { value, label } = windDisplay(dir, speed);
