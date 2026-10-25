@@ -25,7 +25,7 @@ export function GalleryCard() {
     next: t("gallery.next"),
   };
   const { enabled, images } = siteConfig.gallery;
-  const isZh = i18n.language === "zh-CN";
+  const isZh = i18n.language.startsWith("zh");
   const desc = (img: GalleryImage) =>
     (isZh && img.descriptionCn ? img.descriptionCn : img.description) || "";
   const [viewerIdx, setViewerIdx] = useState<number | null>(null);
