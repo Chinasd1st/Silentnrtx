@@ -35,7 +35,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 - Motion scale: 200ms for color/opacity hovers, 300ms for surfaces/overlays; one press gesture `active:scale-[0.97]`; no decorative `hover:scale-*` on cards. Use `transition-colors` unless transform/shadow actually changes.
 - Hover pattern on containers: `hover:bg-white/6 transition-colors duration-200` (light mode maps white hover to a primary tint automatically).
 - Subcard hover (title highlight on card hover): `group` on container + `group-hover:text-[var(--md-primary)] transition-all duration-200` on title element. Use className (not inline style) for title color so `group-hover` overrides correctly.
-- Modals use `createPortal` into `document.body`.
+- Modals use the shared `Modal` component (`components/ui/Modal.tsx`) — it owns the portal, scrim, focus trap, header and close button. Do not hand-roll that shell again.
 - All `<button>` elements should have `type="button"`.
 
 ## Images

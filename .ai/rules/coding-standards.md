@@ -66,7 +66,7 @@ The subagent must read only diffed files, run both skill reviews, and return one
 - Import order: React → third-party → `@/components/` → `@/lib/` → `@/config`.
 - Radius scale: `rounded-card` (24px outer), `rounded-panel` (16px inner), `rounded-chip` (12px), `rounded-micro` (6px), `rounded-full` (pills/circles). No one-off arbitrary radii.
 - Hover pattern: `hover:bg-white/6 transition-colors duration-200`; 300ms only for surfaces/overlays. One press scale: `active:scale-[0.97]`.
-- Modals use `createPortal` into `document.body`.
+- Modals use the shared `Modal` component (`components/ui/Modal.tsx`); it owns portal, scrim, focus trap, header and close button.
 
 ## Icons
 
