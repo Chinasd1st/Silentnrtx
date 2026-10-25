@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { WiHurricane } from "react-icons/wi";
+import { FaHurricane } from "react-icons/fa6";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
@@ -168,7 +168,7 @@ export function TyphoonCard() {
   return (
     <Card>
       <CardHeader
-        icon={<WiHurricane />}
+        icon={<FaHurricane />}
         title={t("typhoon.title")}
         action={
           list.length > 0 ? (
