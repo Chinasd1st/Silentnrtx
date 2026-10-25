@@ -58,17 +58,18 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 
 - Hero parallax scroll
 - 8-platform social card grid
-- GitHub stats + contribution grass
+- GitHub stats (repos / stars / forks / followers)
 - Last.fm scrobbling status
 - osu! signature embed
 - Netease music player (global audio, prev/next, progress bar)
-- 7-day weather
-- Blog RSS reader
+- Weather with sunrise / sunset and moon phase
+- Blog reader (JSON Feed)
 - Monkeytype typing stats
 - WakaTime coding activity + AI stats
 - JMA & CEA earthquake monitor (tab switch)
 - Photo gallery lightbox (`createPortal`)
 - Clock (UTC+8, SVG analog + digital + decorative face)
+- World clock (local + Tokyo / London / New York)
 - Keyboard shortcuts panel (`?`)
 - Three-state theme switch (light / dark / system)
 - zh-CN / zh-TW / en-US / ja i18n

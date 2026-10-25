@@ -116,7 +116,7 @@ components/
       coding/      — WakatimeCard, WakaAICard, MonkeytypeCard
       github/      — GitHubStats
       media/       — LastFmStatus
-      widgets/     — ClockCard, WeatherCard, EarthquakeCard, VercountStats
+      widgets/     — ClockCard, WorldClockCard, WeatherCard, EarthquakeCard, VercountStats
 ```
 
 ## Important Conventions

@@ -58,17 +58,18 @@
 
 - Hero 视差滚动
 - 8 平台社交卡片
-- GitHub 统计 + 贡献热力图
+- GitHub 统计（仓库 / 星标 / Forks / 关注者）
 - Last.fm 听歌状态
 - osu! 签名嵌入
 - 网易云音乐播放器（全局音频、上一首/下一首、进度条）
-- 实时天气
-- 博客 RSS 阅读
+- 实时天气 + 日出日落 / 月相
+- 博客阅读（JSON Feed）
 - Monkeytype 打字统计
 - WakaTime 编码活动 + AI 数据
 - JMA & CEA 地震情报（标签切换）
 - 图片灯箱（createPortal）
 - 时钟（UTC+8，SVG 模拟 + 数字 + 装饰圆盘）
+- 世界时钟（本地 + 东京 / 伦敦 / 纽约）
 - 快捷键面板（按 `?` 打开）
 - 三态主题切换（ThemeSwitch）
 - 中英文 i18n
