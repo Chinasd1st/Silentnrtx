@@ -1,8 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaEarthAsia } from "react-icons/fa6";
-import { MdDangerous, MdInfo, MdWarning } from "react-icons/md";
+import {
+  FaCircleExclamation,
+  FaCircleInfo,
+  FaEarthAsia,
+  FaTriangleExclamation,
+} from "react-icons/fa6";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
@@ -41,11 +45,11 @@ function getTsunamiLevel(info: string): TsunamiLevel {
 
 const LEVEL_CONFIG: Record<
   NonNullable<TsunamiLevel>,
-  { cssVar: string; Icon: typeof MdWarning }
+  { cssVar: string; Icon: typeof FaTriangleExclamation }
 > = {
-  major: { cssVar: "var(--md-tsunami-critical)", Icon: MdDangerous },
-  warning: { cssVar: "var(--md-tsunami-warning)", Icon: MdWarning },
-  advisory: { cssVar: "var(--md-tsunami-advisory)", Icon: MdInfo },
+  major: { cssVar: "var(--md-tsunami-critical)", Icon: FaCircleExclamation },
+  warning: { cssVar: "var(--md-tsunami-warning)", Icon: FaTriangleExclamation },
+  advisory: { cssVar: "var(--md-tsunami-advisory)", Icon: FaCircleInfo },
 };
 
 const CACHE_TTL = 5 * 60 * 1000;
