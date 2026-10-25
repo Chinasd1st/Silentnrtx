@@ -59,7 +59,7 @@ function isValidManifest(data: unknown): data is ImageManifest {
 /** Transform and validate raw JSON manifest */
 function createManifest(data: unknown): ImageManifest {
   if (!isValidManifest(data)) {
-    console.warn("⚠️ Invalid image manifest, using empty fallback");
+    console.warn("Invalid image manifest, using empty fallback");
     return {
       version: "1.0.0",
       generated: new Date().toISOString(),
