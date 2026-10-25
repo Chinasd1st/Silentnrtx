@@ -61,6 +61,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       style={{ "--md-hue": String(siteConfig.theme.hue) } as React.CSSProperties}
     >
       <head>
+        {siteConfig.background.enabled && siteConfig.background.imageUrl && (
+          <link
+            rel="preload"
+            as="image"
+            href={
+              siteConfig.background.imageUrl.startsWith("/")
+                ? `${basePath}${siteConfig.background.imageUrl}`
+                : siteConfig.background.imageUrl
+            }
+            fetchPriority="high"
+          />
+        )}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href={FONT_URL} crossOrigin="anonymous" />

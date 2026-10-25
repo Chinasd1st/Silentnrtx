@@ -9,19 +9,33 @@ import { getCache, setCache } from "@/lib/cache";
 import { CACHE_KEYS, CACHE_TTL } from "@/lib/cache-config";
 
 export function Background() {
-  const [bgUrl, setBgUrl] = useState<string>("");
-  const [loading, setLoading] = useState(true);
   const cfg = siteConfig.background;
+
+  /**
+   * A local wallpaper is known at build time, so it is part of the initial
+   * state: the element is server-rendered and the browser starts fetching the
+   * image while parsing the document (see the preload in `app/layout.tsx`).
+   * Remote wallpapers (Bing / Pixiv) still resolve after mount.
+   */
+  const staticUrl = cfg.imageUrl
+    ? cfg.imageUrl.startsWith("/")
+      ? `${basePath}${cfg.imageUrl}`
+      : cfg.imageUrl
+    : "";
+
+  const [bgUrl, setBgUrl] = useState(staticUrl);
+  const [loading, setLoading] = useState(!staticUrl);
 
   const fetchBg = useCallback(() => {
     if (!cfg.enabled) {
       document.body.style.backgroundColor = cfg.fallbackColor;
+      setBgUrl("");
       setLoading(false);
       return;
     }
 
-    if (cfg.imageUrl) {
-      setBgUrl(cfg.imageUrl.startsWith("/") ? `${basePath}${cfg.imageUrl}` : cfg.imageUrl);
+    if (staticUrl) {
+      setBgUrl(staticUrl);
       setLoading(false);
       return;
     }
@@ -78,7 +92,7 @@ export function Background() {
 
     document.body.style.backgroundColor = cfg.fallbackColor;
     setLoading(false);
-  }, []);
+  }, [staticUrl]);
 
   useEffect(() => {
     fetchBg();
