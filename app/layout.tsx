@@ -78,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="lang-detection"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var l=localStorage.getItem("md-lang");if(!l){l=(navigator.language||"").startsWith("zh")?"zh-CN":"en-US"}document.documentElement.lang=l;var m=document.querySelector('meta[property="og:locale"]');if(m)m.setAttribute("content",l==="zh-CN"?"zh_CN":"en_US")}catch(e){}})()`,
+            __html: `(function(){try{var n=localStorage.getItem("md-lang")||navigator.language||"zh-CN";n=n.toLowerCase().replace(/_/g,"-");var l=n.indexOf("zh")===0?(n.indexOf("tw")>-1||n.indexOf("hk")>-1||n.indexOf("mo")>-1||n.indexOf("hant")>-1?"zh-TW":"zh-CN"):n.indexOf("ja")===0?"ja":n.indexOf("en")===0?"en-US":"zh-CN";var h={"zh-CN":"zh-CN","zh-TW":"zh-Hant","en-US":"en","ja":"ja"},o={"zh-CN":"zh_CN","zh-TW":"zh_TW","en-US":"en_US","ja":"ja_JP"};document.documentElement.lang=h[l];var m=document.querySelector('meta[property="og:locale"]');if(m)m.setAttribute("content",o[l])}catch(e){}})()`,
           }}
         />
         <Script

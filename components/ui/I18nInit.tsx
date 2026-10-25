@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { buildTime, commitSha } from "@/lib/buildTime";
 import { clearAllCache } from "@/lib/cache";
-import { getDetectedLang, i18next } from "@/lib/i18n";
+import { getDetectedLang, i18next, LANG_META } from "@/lib/i18n";
 
 const CACHE_VERSION_KEY = "cache_ver";
 
@@ -13,6 +13,7 @@ export function I18nInit() {
     if (lang !== i18next.language) {
       i18next.changeLanguage(lang);
     }
+    document.documentElement.lang = LANG_META[lang].htmlLang;
   }, []);
 
   useEffect(() => {
