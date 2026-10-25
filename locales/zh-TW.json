@@ -160,7 +160,6 @@
   "release.notes": "發行說明",
   "release.view_all": "檢視全部更新",
   "sources.title": "資料來源",
-  "sources.intro": "這個頁面上的內容全部在瀏覽器裡從下列資料來源取回。沒有伺服器、沒有資料庫——只有公開介面，以及我自己的 JSON Feed。",
   "sources.back": "返回首頁",
   "sources.minutes": "分鐘",
   "sources.auth_public": "公開介面",

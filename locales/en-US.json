@@ -160,7 +160,6 @@
   "release.notes": "Release Notes",
   "release.view_all": "View all releases",
   "sources.title": "Data Sources",
-  "sources.intro": "Everything on this page is fetched in the browser from the feeds below. No server, no database — only public endpoints and my own JSON Feed.",
   "sources.back": "Back to home",
   "sources.minutes": "min",
   "sources.auth_public": "public API",

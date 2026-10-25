@@ -160,7 +160,6 @@
   "release.notes": "发布说明",
   "release.view_all": "查看全部更新",
   "sources.title": "数据源",
-  "sources.intro": "这个页面上的内容全部在浏览器里从下面这些数据源取回。没有服务器、没有数据库——只有公开接口，以及我自己的 JSON Feed。",
   "sources.back": "返回首页",
   "sources.minutes": "分钟",
   "sources.auth_public": "公开接口",

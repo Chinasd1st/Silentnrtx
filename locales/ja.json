@@ -160,7 +160,6 @@
   "release.notes": "リリースノート",
   "release.view_all": "すべてのリリースを見る",
   "sources.title": "データソース",
-  "sources.intro": "このページの内容はすべてブラウザから以下のフィードへ直接取得しています。サーバーもデータベースもなく、公開 API と自分の JSON Feed だけです。",
   "sources.back": "ホームに戻る",
   "sources.minutes": "分",
   "sources.auth_public": "公開 API",
