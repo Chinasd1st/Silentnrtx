@@ -1,20 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
 import { SiWakatime } from "react-icons/si";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { ExternalLink } from "@/components/ui/ExternalLink";
+import { Modal } from "@/components/ui/Modal";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 import { siteConfig } from "@/config";
 import { api, fetchWithRetry } from "@/lib/api";
 import { fetchWithTimeout } from "@/lib/api/fetchWithTimeout";
 import { fetchJsonp } from "@/lib/api/jsonp";
 import { getCache, getCacheTime, setCache } from "@/lib/cache";
-import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 import {
   CACHE_KEY,
@@ -168,8 +167,6 @@ export function WakatimeCard() {
   );
 }
 
-const MODAL_TITLE_ID = "waka-modal-title";
-
 function WakaModal({
   open,
   onClose,
@@ -192,8 +189,6 @@ function WakaModal({
   t: (key: string) => string;
   fmtNum: (n: number) => string;
 }) {
-  const viewerRef = useFocusTrap(open);
-
   const maxDay = Math.max(...entries.map((e) => e.grand_total?.total_seconds || 0), 1);
 
   const humanTotal = aiSum.humanAdd + aiSum.humanDel;
@@ -201,163 +196,125 @@ function WakaModal({
   const grand = humanTotal + aiTotal;
   const humanPct = grand > 0 ? (humanTotal / grand) * 100 : 0;
 
-  if (!open) return null;
-
-  return createPortal(
-    <div
-      ref={viewerRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 cursor-pointer"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") onClose();
-      }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={MODAL_TITLE_ID}
-      tabIndex={-1}
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      icon={<SiWakatime size={13} />}
+      title={`${t("wakatime.title")} — ${entries.length} ${t("wakatime.days")}`}
+      closeLabel={t("wakatime.close")}
+      size="md"
     >
-      <div
-        className="relative rounded-card w-full max-w-lg max-h-[80vh] overflow-clip"
-        style={{
-          backgroundColor: "var(--md-card-bg)",
-          border: "1px solid var(--md-card-border)",
-        }}
-      >
-        <div
-          className="flex items-center justify-between px-5 py-4 border-b"
-          style={{ borderColor: "var(--md-divider)" }}
-        >
-          <h2
-            id={MODAL_TITLE_ID}
-            className="font-heading text-base font-semibold"
-            style={{ color: "var(--md-text-primary)" }}
-          >
-            {t("wakatime.title")} — {entries.length} {t("wakatime.days")}
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={t("wakatime.close")}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 cursor-pointer"
-          >
-            &times;
-          </button>
-        </div>
-
-        <div className="overflow-y-auto thin-scrollbar max-h-[calc(80vh-57px)] p-5 space-y-1">
-          {entries.map((day) => {
-            const g = day.grand_total;
-            if (!g) return null;
-            const pct = (g.total_seconds / maxDay) * 100;
-            return (
-              <div
-                key={day.range?.date ?? "entry"}
-                className="flex items-center gap-2 text-xs rounded-panel p-4 transition-colors duration-200 hover:bg-white/6"
-              >
-                <span className="w-20 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>
-                  {day.range?.date || ""}
-                </span>
-                <div
-                  className="flex-1 h-2 rounded-full"
-                  style={{ backgroundColor: "var(--md-track)" }}
-                >
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${Math.max(pct, 1)}%`, backgroundColor: "var(--md-primary)" }}
-                  />
-                </div>
-                <span
-                  className="w-14 text-right shrink-0 stat-num"
-                  style={{ color: "var(--md-text-secondary)" }}
-                >
-                  {g.text?.replace("hrs", "h").replace("hr", "h").replace("mins", "m") || ""}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="border-t px-5 py-4" style={{ borderColor: "var(--md-divider)" }}>
-          <p
-            className="text-xs font-medium mb-3 text-center"
-            style={{ color: "var(--md-text-muted)" }}
-          >
-            {t("wakatime.changes_pie")}
-          </p>
-          <div className="flex items-center justify-center gap-6">
-            <svg
-              width={96}
-              height={96}
-              viewBox="0 0 100 100"
-              className="shrink-0"
-              aria-label="Human vs AI code changes pie chart"
+      <div className="space-y-1">
+        {entries.map((day) => {
+          const g = day.grand_total;
+          if (!g) return null;
+          const pct = (g.total_seconds / maxDay) * 100;
+          return (
+            <div
+              key={day.range?.date ?? "entry"}
+              className="flex items-center gap-2 text-xs rounded-panel p-4 transition-colors duration-200 hover:bg-white/6"
             >
-              <PieSlice
-                cx={50}
-                cy={50}
-                r={45}
-                pct={grand > 0 ? humanPct : 100}
-                offset={0}
-                color="var(--md-accent-green)"
-              />
-              <PieSlice
-                cx={50}
-                cy={50}
-                r={45}
-                pct={grand > 0 ? 100 - humanPct : 0}
-                offset={grand > 0 ? humanPct : 0}
-                color="var(--md-accent-blue)"
-              />
-            </svg>
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: "var(--md-accent-green)" }}
-                />
-                <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.human")}</span>
-                <span style={{ color: "var(--md-text-secondary)" }}>
-                  {fmtNum(humanTotal)} ({grand > 0 ? humanPct.toFixed(1) : "\u2014"}%)
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: "var(--md-accent-blue)" }}
-                />
-                <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.ai_short")}</span>
-                <span style={{ color: "var(--md-text-secondary)" }}>
-                  {fmtNum(aiTotal)} ({grand > 0 ? ((aiTotal / grand) * 100).toFixed(1) : "\u2014"}%)
-                </span>
-              </div>
-              {aiSum.cost > 0 && Object.keys(aiSum.agents).length > 0 && (
+              <span className="w-20 shrink-0 truncate" style={{ color: "var(--md-text-muted)" }}>
+                {day.range?.date || ""}
+              </span>
+              <div
+                className="flex-1 h-2 rounded-full"
+                style={{ backgroundColor: "var(--md-track)" }}
+              >
                 <div
-                  className="pt-2 mt-2 border-t text-[10px]"
-                  style={{ borderColor: "var(--md-card-border)" }}
-                >
-                  {Object.entries(aiSum.agents).map(([name, cost]) => (
-                    <div key={name} className="flex justify-between gap-4">
-                      <span style={{ color: "var(--md-text-muted)" }}>{name}</span>
-                      <span style={{ color: "var(--md-accent-green)" }}>${cost.toFixed(2)}</span>
-                    </div>
-                  ))}
-                  <div
-                    className="flex justify-between gap-4 font-medium mt-0.5"
-                    style={{ color: "var(--md-text-primary)" }}
-                  >
-                    <span>{t("wakatime.total")}</span>
-                    <span>${aiSum.cost.toFixed(2)}</span>
-                  </div>
-                </div>
-              )}
+                  className="h-full rounded-full"
+                  style={{ width: `${Math.max(pct, 1)}%`, backgroundColor: "var(--md-primary)" }}
+                />
+              </div>
+              <span
+                className="w-14 text-right shrink-0 stat-num"
+                style={{ color: "var(--md-text-secondary)" }}
+              >
+                {g.text?.replace("hrs", "h").replace("hr", "h").replace("mins", "m") || ""}
+              </span>
             </div>
+          );
+        })}
+      </div>
+
+      <div className="border-t px-5 py-4" style={{ borderColor: "var(--md-divider)" }}>
+        <p
+          className="text-xs font-medium mb-3 text-center"
+          style={{ color: "var(--md-text-muted)" }}
+        >
+          {t("wakatime.changes_pie")}
+        </p>
+        <div className="flex items-center justify-center gap-6">
+          <svg
+            width={96}
+            height={96}
+            viewBox="0 0 100 100"
+            className="shrink-0"
+            aria-label="Human vs AI code changes pie chart"
+          >
+            <PieSlice
+              cx={50}
+              cy={50}
+              r={45}
+              pct={grand > 0 ? humanPct : 100}
+              offset={0}
+              color="var(--md-accent-green)"
+            />
+            <PieSlice
+              cx={50}
+              cy={50}
+              r={45}
+              pct={grand > 0 ? 100 - humanPct : 0}
+              offset={grand > 0 ? humanPct : 0}
+              color="var(--md-accent-blue)"
+            />
+          </svg>
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: "var(--md-accent-green)" }}
+              />
+              <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.human")}</span>
+              <span style={{ color: "var(--md-text-secondary)" }}>
+                {fmtNum(humanTotal)} ({grand > 0 ? humanPct.toFixed(1) : "\u2014"}%)
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: "var(--md-accent-blue)" }}
+              />
+              <span style={{ color: "var(--md-text-muted)" }}>{t("wakatime.ai_short")}</span>
+              <span style={{ color: "var(--md-text-secondary)" }}>
+                {fmtNum(aiTotal)} ({grand > 0 ? ((aiTotal / grand) * 100).toFixed(1) : "\u2014"}%)
+              </span>
+            </div>
+            {aiSum.cost > 0 && Object.keys(aiSum.agents).length > 0 && (
+              <div
+                className="pt-2 mt-2 border-t text-[10px]"
+                style={{ borderColor: "var(--md-card-border)" }}
+              >
+                {Object.entries(aiSum.agents).map(([name, cost]) => (
+                  <div key={name} className="flex justify-between gap-4">
+                    <span style={{ color: "var(--md-text-muted)" }}>{name}</span>
+                    <span style={{ color: "var(--md-accent-green)" }}>${cost.toFixed(2)}</span>
+                  </div>
+                ))}
+                <div
+                  className="flex justify-between gap-4 font-medium mt-0.5"
+                  style={{ color: "var(--md-text-primary)" }}
+                >
+                  <span>{t("wakatime.total")}</span>
+                  <span>${aiSum.cost.toFixed(2)}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>,
-    document.body
+    </Modal>
   );
 }
 

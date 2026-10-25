@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FiSettings, FiTrash2, FiX } from "react-icons/fi";
+import { FiSettings, FiTrash2 } from "react-icons/fi";
 import { DropdownSelect } from "@/components/ui/DropdownSelect";
+import { Modal } from "@/components/ui/Modal";
 import { PillButton } from "@/components/ui/PillButton";
 import { siteConfig } from "@/config";
 import { clearAllCache } from "@/lib/cache";
-import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 import { loadSettings, type Settings, saveSettings } from "@/lib/settings";
 import { TIMEZONE_OPTIONS } from "@/lib/timezone";
@@ -36,7 +36,6 @@ export function SettingsCard() {
   const update = (partial: Partial<Settings>) => setS((prev) => ({ ...prev, ...partial }));
 
   const commitHue = useCallback((val: number) => setS((prev) => ({ ...prev, customHue: val })), []);
-  const dialogRef = useFocusTrap(open);
 
   return (
     <>
@@ -50,160 +49,113 @@ export function SettingsCard() {
         <FiSettings size={15} />
       </button>
 
-      {open && (
-        <div
-          ref={dialogRef}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-pointer"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setOpen(false);
-          }}
-          role="dialog"
-          aria-modal="true"
-          tabIndex={-1}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setOpen(false);
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
-          <div
-            className="relative rounded-card p-5 w-full max-w-sm"
-            style={{
-              backgroundColor: "var(--md-card-bg)",
-              border: "1px solid var(--md-card-border)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-5">
-              <h2
-                className="font-heading text-lg font-semibold"
-                style={{ color: "var(--md-text-primary)" }}
-              >
-                <FiSettings className="inline mr-2" size={16} />
-                {t("settings.title")}
-              </h2>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label={t("gallery.close")}
-                className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer transition-colors duration-200 hover:bg-[var(--md-primary-008)]"
-                style={{ color: "var(--md-text-muted)" }}
-              >
-                <FiX size={16} />
-              </button>
-            </div>
-
-            <div className="space-y-5">
-              {/* Weather source */}
-              <div>
-                <p
-                  className="text-xs font-medium mb-2.5"
-                  style={{ color: "var(--md-text-secondary)" }}
-                >
-                  {t("settings.weather_source")}
-                </p>
-                <div className="flex gap-2 mb-3">
-                  <PillButton
-                    active={s.weatherSource === "manual"}
-                    onClick={() => update({ weatherSource: "manual" })}
-                    className="px-3.5 py-1.5"
-                  >
-                    {t("settings.weather_manual")}
-                  </PillButton>
-                  <PillButton
-                    active={s.weatherSource === "auto"}
-                    onClick={() => update({ weatherSource: "auto" })}
-                    className="px-3.5 py-1.5"
-                  >
-                    {t("settings.weather_auto")}
-                  </PillButton>
-                </div>
-                <label htmlFor="manual-city" className="sr-only">
-                  {t("settings.weather_manual")}
-                </label>
-                <input
-                  id="manual-city"
-                  type="text"
-                  value={s.manualCity || ""}
-                  placeholder={siteConfig.weather.city}
-                  disabled={s.weatherSource !== "manual"}
-                  onChange={(e) => update({ manualCity: e.target.value })}
-                  className="w-full rounded-panel px-3 py-2 text-xs border disabled:opacity-50"
-                  style={{
-                    borderColor: "var(--md-card-border)",
-                    color:
-                      s.weatherSource === "manual"
-                        ? "var(--md-text-primary)"
-                        : "var(--md-text-secondary)",
-                    backgroundColor: "var(--md-card-bg)",
-                  }}
-                />
-              </div>
-
-              {/* HUE */}
-              <div>
-                <p
-                  className="text-xs font-medium mb-2.5"
-                  style={{ color: "var(--md-text-secondary)" }}
-                >
-                  {t("settings.hue")}
-                </p>
-                <div className="flex gap-2 mb-3">
-                  <PillButton
-                    active={s.hueEnabled}
-                    onClick={() => update({ hueEnabled: true })}
-                    className="px-3.5 py-1.5"
-                  >
-                    {t("settings.hue_on")}
-                  </PillButton>
-                  <PillButton
-                    active={!s.hueEnabled}
-                    onClick={() => update({ hueEnabled: false })}
-                    className="px-3.5 py-1.5"
-                  >
-                    {t("settings.hue_off")}
-                  </PillButton>
-                </div>
-                {s.hueEnabled && (
-                  <HueSlider
-                    value={s.customHue ?? 250}
-                    onCommit={commitHue}
-                    ariaLabel={t("settings.hue")}
-                  />
-                )}
-              </div>
-
-              {/* Timezone */}
-              <div>
-                <p
-                  className="text-xs font-medium mb-2.5"
-                  style={{ color: "var(--md-text-secondary)" }}
-                >
-                  {t("settings.timezone")}
-                </p>
-                <DropdownSelect
-                  value={s.timezone}
-                  options={TIMEZONE_OPTIONS}
-                  onChange={(v) => update({ timezone: v })}
-                />
-              </div>
-
-              {/* Clear cache */}
-              <div>
-                <p
-                  className="text-xs font-medium mb-2.5"
-                  style={{ color: "var(--md-text-secondary)" }}
-                >
-                  {t("settings.cache")}
-                </p>
-                <ClearCacheButton />
-              </div>
-            </div>
-
-            <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }}>
-              {t("settings.persist")}
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        icon={<FiSettings size={13} />}
+        title={t("settings.title")}
+        closeLabel={t("gallery.close")}
+        size="sm"
+      >
+        <div className="space-y-5">
+          {/* Weather source */}
+          <div>
+            <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }}>
+              {t("settings.weather_source")}
             </p>
+            <div className="flex gap-2 mb-3">
+              <PillButton
+                active={s.weatherSource === "manual"}
+                onClick={() => update({ weatherSource: "manual" })}
+                className="px-3.5 py-1.5"
+              >
+                {t("settings.weather_manual")}
+              </PillButton>
+              <PillButton
+                active={s.weatherSource === "auto"}
+                onClick={() => update({ weatherSource: "auto" })}
+                className="px-3.5 py-1.5"
+              >
+                {t("settings.weather_auto")}
+              </PillButton>
+            </div>
+            <label htmlFor="manual-city" className="sr-only">
+              {t("settings.weather_manual")}
+            </label>
+            <input
+              id="manual-city"
+              type="text"
+              value={s.manualCity || ""}
+              placeholder={siteConfig.weather.city}
+              disabled={s.weatherSource !== "manual"}
+              onChange={(e) => update({ manualCity: e.target.value })}
+              className="w-full rounded-panel px-3 py-2 text-xs border disabled:opacity-50"
+              style={{
+                borderColor: "var(--md-card-border)",
+                color:
+                  s.weatherSource === "manual"
+                    ? "var(--md-text-primary)"
+                    : "var(--md-text-secondary)",
+                backgroundColor: "var(--md-card-bg)",
+              }}
+            />
+          </div>
+
+          {/* HUE */}
+          <div>
+            <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }}>
+              {t("settings.hue")}
+            </p>
+            <div className="flex gap-2 mb-3">
+              <PillButton
+                active={s.hueEnabled}
+                onClick={() => update({ hueEnabled: true })}
+                className="px-3.5 py-1.5"
+              >
+                {t("settings.hue_on")}
+              </PillButton>
+              <PillButton
+                active={!s.hueEnabled}
+                onClick={() => update({ hueEnabled: false })}
+                className="px-3.5 py-1.5"
+              >
+                {t("settings.hue_off")}
+              </PillButton>
+            </div>
+            {s.hueEnabled && (
+              <HueSlider
+                value={s.customHue ?? 250}
+                onCommit={commitHue}
+                ariaLabel={t("settings.hue")}
+              />
+            )}
+          </div>
+
+          {/* Timezone */}
+          <div>
+            <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }}>
+              {t("settings.timezone")}
+            </p>
+            <DropdownSelect
+              value={s.timezone}
+              options={TIMEZONE_OPTIONS}
+              onChange={(v) => update({ timezone: v })}
+            />
+          </div>
+
+          {/* Clear cache */}
+          <div>
+            <p className="text-xs font-medium mb-2.5" style={{ color: "var(--md-text-secondary)" }}>
+              {t("settings.cache")}
+            </p>
+            <ClearCacheButton />
           </div>
         </div>
-      )}
+
+        <p className="mt-4 text-[10px] text-center" style={{ color: "var(--md-text-muted)" }}>
+          {t("settings.persist")}
+        </p>
+      </Modal>
     </>
   );
 }

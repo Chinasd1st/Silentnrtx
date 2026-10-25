@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FaKeyboard } from "react-icons/fa6";
-import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
+import { Modal } from "@/components/ui/Modal";
 import { useTranslation } from "@/lib/i18n";
 
 const SHORTCUTS = [
@@ -29,57 +29,33 @@ export function ShortcutsPanel() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const dialogRef = useFocusTrap(open);
-
-  if (!open) return null;
-
   return (
-    <div
-      ref={dialogRef}
-      className="fixed inset-0 z-100 flex items-center justify-center p-4 cursor-pointer"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) setOpen(false);
-      }}
-      role="dialog"
-      aria-modal="true"
-      tabIndex={-1}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") setOpen(false);
-      }}
+    <Modal
+      open={open}
+      onClose={() => setOpen(false)}
+      icon={<FaKeyboard size={13} />}
+      title={t("shortcuts.title")}
+      closeLabel={t("shortcuts.close")}
+      size="sm"
     >
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
-      <div
-        className="relative rounded-card p-6 w-full max-w-sm"
-        style={{ backgroundColor: "var(--md-card-bg)", border: "1px solid var(--md-card-border)" }}
-      >
-        <div className="flex items-center gap-3 mb-5">
-          <FaKeyboard className="text-lg" style={{ color: "var(--md-primary)" }} />
-          <h2
-            className="font-heading text-lg font-semibold"
-            style={{ color: "var(--md-text-primary)" }}
-          >
-            {t("shortcuts.title")}
-          </h2>
-        </div>
-        <div className="space-y-3">
-          {SHORTCUTS.map((s) => (
-            <div key={s.key} className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
-                {t(s.descKey)}
-              </span>
-              <kbd
-                className="rounded-micro px-2.5 py-1 text-xs font-medium"
-                style={{
-                  backgroundColor: "var(--md-surface-variant)",
-                  color: "var(--md-on-surface-variant)",
-                }}
-              >
-                {s.key}
-              </kbd>
-            </div>
-          ))}
-        </div>
+      <div className="space-y-3">
+        {SHORTCUTS.map((s) => (
+          <div key={s.key} className="flex items-center justify-between gap-3">
+            <span className="text-sm" style={{ color: "var(--md-text-secondary)" }}>
+              {t(s.descKey)}
+            </span>
+            <kbd
+              className="rounded-micro px-2.5 py-1 text-xs font-medium"
+              style={{
+                backgroundColor: "var(--md-surface-variant)",
+                color: "var(--md-on-surface-variant)",
+              }}
+            >
+              {s.key}
+            </kbd>
+          </div>
+        ))}
       </div>
-    </div>
+    </Modal>
   );
 }

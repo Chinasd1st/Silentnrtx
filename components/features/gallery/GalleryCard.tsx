@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaImage } from "react-icons/fa6";
+import { FiX } from "react-icons/fi";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { siteConfig } from "@/config";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
@@ -130,7 +131,7 @@ export function GalleryCard() {
         createPortal(
           <div
             ref={viewerRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 cursor-pointer"
+            className="modal-scrim fixed inset-0 z-50 flex items-center justify-center p-4 cursor-pointer"
             onClick={(e) => {
               if (e.target === e.currentTarget) closeViewer();
             }}
@@ -141,7 +142,7 @@ export function GalleryCard() {
             tabIndex={-1}
           >
             <div
-              className="relative max-h-[90vh] max-w-[90vw] rounded-card overflow-hidden"
+              className="modal-panel relative max-h-[90vh] max-w-[90vw] rounded-card overflow-hidden"
               style={{
                 backgroundColor: "var(--md-card-bg)",
                 border: "1px solid var(--md-card-border)",
@@ -153,7 +154,7 @@ export function GalleryCard() {
                 aria-label={labels.close}
                 className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 cursor-pointer"
               >
-                &times;
+                <FiX size={15} />
               </button>
               <OptimizedImage
                 src={images[viewerIdx].url}

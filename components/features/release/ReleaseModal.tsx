@@ -1,13 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import { FiX } from "react-icons/fi";
+import { FiTag } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Modal } from "@/components/ui/Modal";
 import { fetchWithRetry, mapApiError } from "@/lib/api";
 import { githubApi } from "@/lib/api/github";
-import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 
 interface ReleaseData {
@@ -17,8 +16,6 @@ interface ReleaseData {
   prerelease: boolean;
   published_at: string;
 }
-
-const TITLE_ID = "release-modal-title";
 
 const TYPE_COLORS: Record<string, string> = {
   fix: "#ef4444",
@@ -194,7 +191,6 @@ export function ReleaseModal({
   const [releases, setReleases] = useState<ReleaseData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const viewerRef = useFocusTrap(open);
 
   const fetchReleases = async () => {
     setLoading(true);
@@ -236,153 +232,107 @@ export function ReleaseModal({
         {children || version}
       </button>
 
-      {open &&
-        createPortal(
-          <div
-            ref={viewerRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 cursor-pointer"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) handleClose();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") handleClose();
-            }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={TITLE_ID}
-            tabIndex={-1}
-          >
-            <div
-              className="relative rounded-card w-[95vw] max-w-2xl max-h-[80vh] overflow-clip"
-              style={{
-                backgroundColor: "var(--md-card-bg)",
-                border: "1px solid var(--md-card-border)",
-              }}
-            >
-              <div
-                className="flex items-center justify-between px-5 py-4 border-b"
-                style={{ borderColor: "var(--md-divider)" }}
-              >
-                <h2
-                  id={TITLE_ID}
-                  className="font-heading text-base font-semibold truncate"
-                  style={{ color: "var(--md-text-primary)" }}
-                >
-                  {t("release.notes")}
-                </h2>
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  aria-label={t("release.close")}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-colors duration-200 shrink-0 cursor-pointer"
-                >
-                  <FiX size={15} />
-                </button>
-              </div>
-
-              <div className="overflow-y-auto thin-scrollbar max-h-[calc(80vh-57px)] p-5">
-                {loading && (
-                  <p className="text-sm" style={{ color: "var(--md-text-muted)" }}>
-                    {t("release.loading")}
-                  </p>
-                )}
-                {error && !loading && (
-                  <p className="text-sm" style={{ color: "var(--md-accent-red, #ef4444)" }}>
-                    {t("release.error")}
-                  </p>
-                )}
-
-                {releases.map((release, idx) => (
-                  <div key={release.tag_name}>
-                    {idx > 0 && (
-                      <hr className="my-4" style={{ borderColor: "var(--md-divider)" }} />
-                    )}
-
-                    <div className="flex items-center gap-2 mb-3">
-                      <a
-                        href={release.html_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-heading text-sm font-semibold hover:underline"
-                        style={{ color: "var(--md-primary)" }}
-                      >
-                        {release.tag_name}
-                      </a>
-                      <span
-                        className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                        style={{
-                          backgroundColor: release.prerelease
-                            ? "color-mix(in srgb, var(--md-accent-yellow, #eab308) 20%, transparent)"
-                            : "color-mix(in srgb, var(--md-accent-green, #22c55e) 20%, transparent)",
-                          color: release.prerelease
-                            ? "var(--md-accent-yellow, #eab308)"
-                            : "var(--md-accent-green, #22c55e)",
-                        }}
-                      >
-                        {release.prerelease
-                          ? t("release.prerelease")
-                          : idx === 0
-                            ? t("release.latest")
-                            : t("release.stable")}
-                      </span>
-                      <span
-                        className="text-[10px] shrink-0"
-                        style={{ color: "var(--md-text-muted)" }}
-                      >
-                        {new Date(release.published_at).toLocaleDateString(i18n.language, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </div>
-
-                    {/beta/i.test(release.tag_name) && (
-                      <div
-                        className="rounded-chip p-3 mb-3 text-xs"
-                        style={{
-                          backgroundColor:
-                            "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
-                          color: "var(--md-accent-yellow, #eab308)",
-                        }}
-                      >
-                        {t("release.beta_warning")}
-                      </div>
-                    )}
-                    {/rc/i.test(release.tag_name) && !/beta/i.test(release.tag_name) && (
-                      <div
-                        className="rounded-chip p-3 mb-3 text-xs"
-                        style={{
-                          backgroundColor:
-                            "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
-                          color: "var(--md-accent-yellow, #eab308)",
-                        }}
-                      >
-                        {t("release.rc_warning")}
-                      </div>
-                    )}
-                    <ReleaseBody body={release.body} repo={repo} />
-                  </div>
-                ))}
-
-                {releases.length > 0 && (
-                  <div className="mt-2 text-center">
-                    <a
-                      href={`https://github.com/${repo}/releases`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs inline-flex items-center gap-1 hover:underline"
-                      style={{ color: "var(--md-primary)" }}
-                    >
-                      {t("release.view_all")} &rarr;
-                    </a>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>,
-          document.body
+      <Modal
+        open={open}
+        onClose={handleClose}
+        icon={<FiTag size={13} />}
+        title={t("release.notes")}
+        closeLabel={t("release.close")}
+        size="lg"
+      >
+        {loading && (
+          <p className="text-sm" style={{ color: "var(--md-text-muted)" }}>
+            {t("release.loading")}
+          </p>
         )}
+        {error && !loading && (
+          <p className="text-sm" style={{ color: "var(--md-accent-red, #ef4444)" }}>
+            {t("release.error")}
+          </p>
+        )}
+
+        {releases.map((release, idx) => (
+          <div key={release.tag_name}>
+            {idx > 0 && <hr className="my-4" style={{ borderColor: "var(--md-divider)" }} />}
+
+            <div className="flex items-center gap-2 mb-3">
+              <a
+                href={release.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-heading text-sm font-semibold hover:underline"
+                style={{ color: "var(--md-primary)" }}
+              >
+                {release.tag_name}
+              </a>
+              <span
+                className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                style={{
+                  backgroundColor: release.prerelease
+                    ? "color-mix(in srgb, var(--md-accent-yellow, #eab308) 20%, transparent)"
+                    : "color-mix(in srgb, var(--md-accent-green, #22c55e) 20%, transparent)",
+                  color: release.prerelease
+                    ? "var(--md-accent-yellow, #eab308)"
+                    : "var(--md-accent-green, #22c55e)",
+                }}
+              >
+                {release.prerelease
+                  ? t("release.prerelease")
+                  : idx === 0
+                    ? t("release.latest")
+                    : t("release.stable")}
+              </span>
+              <span className="text-[10px] shrink-0" style={{ color: "var(--md-text-muted)" }}>
+                {new Date(release.published_at).toLocaleDateString(i18n.language, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+
+            {/beta/i.test(release.tag_name) && (
+              <div
+                className="rounded-chip p-3 mb-3 text-xs"
+                style={{
+                  backgroundColor:
+                    "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
+                  color: "var(--md-accent-yellow, #eab308)",
+                }}
+              >
+                {t("release.beta_warning")}
+              </div>
+            )}
+            {/rc/i.test(release.tag_name) && !/beta/i.test(release.tag_name) && (
+              <div
+                className="rounded-chip p-3 mb-3 text-xs"
+                style={{
+                  backgroundColor:
+                    "color-mix(in srgb, var(--md-accent-yellow, #eab308) 15%, transparent)",
+                  color: "var(--md-accent-yellow, #eab308)",
+                }}
+              >
+                {t("release.rc_warning")}
+              </div>
+            )}
+            <ReleaseBody body={release.body} repo={repo} />
+          </div>
+        ))}
+
+        {releases.length > 0 && (
+          <div className="mt-2 text-center">
+            <a
+              href={`https://github.com/${repo}/releases`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs inline-flex items-center gap-1 hover:underline"
+              style={{ color: "var(--md-primary)" }}
+            >
+              {t("release.view_all")} &rarr;
+            </a>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }
