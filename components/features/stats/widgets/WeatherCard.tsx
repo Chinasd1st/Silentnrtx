@@ -16,6 +16,7 @@ interface WData {
   FeelsLikeC: string;
   humidity: string;
   lang_zh: { value: string }[];
+  lang_ja: { value: string }[];
   weatherDesc: { value: string }[];
   winddir16Point: string;
   windspeedKmph: string;
@@ -65,7 +66,9 @@ export function WeatherCard() {
   const [error, setError] = useState(false);
   const [cacheKey, setCacheKey] = useState("");
   const cfg = siteConfig.weather;
-  const isZh = i18n.language === "zh-CN";
+  const isZh = i18n.language.startsWith("zh");
+  /** wttr.in localization code: `zh` covers both Chinese locales, `ja` for Japanese. */
+  const wttrLang = i18n.language === "ja" ? "ja" : isZh ? "zh" : "";
   const prevCityRef = useRef("");
 
   const fetchWeather = useCallback(() => {
@@ -83,7 +86,7 @@ export function WeatherCard() {
       prevCityRef.current = effective;
     }
 
-    const ck = `${CACHE_KEY}_${effective}`;
+    const ck = `${CACHE_KEY}_${effective}_${wttrLang || "en"}`;
     setCacheKey(ck);
     const cached = getCache<{ w: WData; a: AData }>(ck, CACHE_TTL);
     if (cached) {
@@ -96,7 +99,9 @@ export function WeatherCard() {
     const enc = city ? encodeURIComponent(city) : "";
     setLoading(true);
     setError(false);
-    fetchWithRetry(() => api.get(`https://wttr.in/${enc}?format=j1${isZh ? "&lang=zh" : ""}`))
+    fetchWithRetry(() =>
+      api.get(`https://wttr.in/${enc}?format=j1${wttrLang ? `&lang=${wttrLang}` : ""}`)
+    )
       .then(({ data }) => data)
       .then((data: any) => {
         if (data.current_condition?.[0]) {
@@ -107,7 +112,7 @@ export function WeatherCard() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [isZh]);
+  }, [wttrLang]);
 
   useEffect(() => {
     if (!cfg.enabled) {
@@ -131,7 +136,12 @@ export function WeatherCard() {
     };
   }, [fetchWeather]);
 
-  const desc = isZh ? weather?.lang_zh?.[0]?.value || "" : weather?.weatherDesc?.[0]?.value || "";
+  const desc =
+    wttrLang === "ja"
+      ? weather?.lang_ja?.[0]?.value || ""
+      : wttrLang === "zh"
+        ? weather?.lang_zh?.[0]?.value || ""
+        : weather?.weatherDesc?.[0]?.value || "";
   const cityName = area?.areaName?.[0]?.value || cfg.city;
 
   if (!cfg.enabled) return null;
