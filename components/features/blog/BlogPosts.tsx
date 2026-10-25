@@ -1,6 +1,6 @@
 "use client";
 
-import { FaGlobe } from "react-icons/fa";
+import { FaNewspaper } from "react-icons/fa6";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";
@@ -63,7 +63,7 @@ export function BlogPosts() {
   return (
     <Card>
       <CardHeader
-        icon={<FaGlobe />}
+        icon={<FaNewspaper />}
         title={t("blog.title")}
         action={
           <ExternalLink href={siteConfig.social.blog.url}>{t("blog.view_all")} &rarr;</ExternalLink>
