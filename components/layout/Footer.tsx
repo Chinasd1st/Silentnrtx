@@ -1,6 +1,7 @@
 "use client";
 
 import DOMPurify from "isomorphic-dompurify";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ReleaseModal } from "@/components/features/release/ReleaseModal";
 import { siteConfig } from "@/config";
@@ -9,7 +10,7 @@ import { useVersion } from "@/lib/hooks/useVersion";
 import { useTranslation } from "@/lib/i18n";
 
 export function Footer() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const cfg = siteConfig.footer;
   const [year, setYear] = useState(new Date().getFullYear());
   const rawText = (cfg.customHtml || cfg.text).replace(/\[year\]/g, String(year));
@@ -58,6 +59,13 @@ export function Footer() {
             <ReleaseModal version={ver} />
           </>
         )}
+        {"  ·  "}
+        <Link
+          href="/sources"
+          className="transition-colors duration-200 hover:text-[var(--md-primary)]"
+        >
+          {t("sources.title")}
+        </Link>
       </p>
     </footer>
   );

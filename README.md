@@ -76,6 +76,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 - zh-CN / zh-TW / en-US / ja i18n
 - Site visitor stats
 - Build time + commit SHA in footer
+- Data sources page (`/sources`) listing every feed with auth mode and cache TTL
 - Version tag from GitHub releases
 
 ## Getting Started
