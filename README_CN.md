@@ -31,7 +31,7 @@
 | 语言 | TypeScript (strict) |
 | 样式 | Tailwind CSS v4 + CSS Custom Properties |
 | 图标 | react-icons (FontAwesome / Simple Icons) |
-| 本地化 | react-i18next (zh-CN / en-US，浏览器自动检测) |
+| 本地化 | react-i18next (zh-CN / zh-TW / en-US / ja，浏览器自动检测) |
 | 构建 | `output: "export"` — 纯静态导出 |
 | 部署 | GitHub Pages，子路径 `/Silentnrtx` |
 | CI/CD | GitHub Actions (push → 构建 → 部署) |

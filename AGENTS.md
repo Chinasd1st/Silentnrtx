@@ -11,7 +11,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 | Language        | TypeScript (strict)                                                               |
 | Styling         | Tailwind CSS v4 + CSS Custom Properties                                           |
 | Icons           | react-icons (FontAwesome / Simple Icons)                                          |
-| L10n            | react-i18next (zh-CN / en-US, browser auto-detect)                                |
+| L10n            | react-i18next (zh-CN / zh-TW / en-US / ja, browser auto-detect)                    |
 | Build           | `output: "export"` — fully static                                                 |
 | Deploy          | GitHub Pages at `/Silentnrtx` subpath                                             |
 | Images          | Custom `OptimizedImage` component (AVIF/WebP responsive srcset, blur placeholder) |
@@ -48,7 +48,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 
 - All UI text uses `t()` from `useTranslation()` (exception: "Vibe Coding" branding).
 - `toLocaleString() / toLocaleDateString()` always receives `i18n.language` as first arg.
-- New i18n keys go in both `locales/en-US.json` and `locales/zh-CN.json`.
+- New i18n keys go in all four files: `locales/zh-CN.json`, `locales/zh-TW.json`, `locales/en-US.json`, `locales/ja.json`.
 - Keys use dot notation: `section.key`.
 - Prefer interpolation: `t("key", { param: value })`.
 

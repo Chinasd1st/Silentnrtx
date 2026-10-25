@@ -31,7 +31,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 | Language | TypeScript (strict) |
 | Styling | Tailwind CSS v4 + CSS Custom Properties |
 | Icons | react-icons (FontAwesome / Simple Icons) |
-| L10n | react-i18next (zh-CN / en-US, browser auto-detect) |
+| L10n | react-i18next (zh-CN / zh-TW / en-US / ja, browser auto-detect) |
 | Build | `output: "export"` — fully static |
 | Deploy | GitHub Pages at `/Silentnrtx` subpath |
 | CI/CD | GitHub Actions (push → build → deploy) |
@@ -71,7 +71,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 - Clock (UTC+8, SVG analog + digital + decorative face)
 - Keyboard shortcuts panel (`?`)
 - Three-state theme switch (light / dark / system)
-- zh-CN / en-US i18n
+- zh-CN / zh-TW / en-US / ja i18n
 - Site visitor stats
 - Build time + commit SHA in footer
 - Version tag from GitHub releases
