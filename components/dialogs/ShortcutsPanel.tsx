@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { FaKeyboard } from "react-icons/fa";
@@ -68,7 +68,7 @@ export function ShortcutsPanel() {
                 {t(s.descKey)}
               </span>
               <kbd
-                className="rounded-micro px-2.5 py-1 text-xs font-mono"
+                className="rounded-micro px-2.5 py-1 text-xs font-medium"
                 style={{
                   backgroundColor: "var(--md-surface-variant)",
                   color: "var(--md-on-surface-variant)",

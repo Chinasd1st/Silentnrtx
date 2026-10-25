@@ -205,7 +205,7 @@ export function TyphoonCard() {
               >
                 <div className="flex items-center gap-2">
                   <span
-                    className="font-mono text-xs tabular-nums"
+                    className="text-xs tabular-nums stat-num"
                     style={{ color: "var(--md-text-muted)" }}
                   >
                     {ty.number}

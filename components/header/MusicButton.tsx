@@ -224,7 +224,7 @@ export function MusicButton() {
 
               {/* Time + Volume Row */}
               <div className="flex items-center gap-3" style={{ color: "var(--md-text-muted)" }}>
-                <div className="text-[10px] font-mono tabular-nums flex items-center gap-1 shrink-0 h-5">
+                <div className="text-[10px] tabular-nums stat-num flex items-center gap-1 shrink-0 h-5">
                   <span>{formatTime(currentTime)}</span>
                   <span className="opacity-50" aria-hidden="true">
                     /

@@ -282,7 +282,7 @@ function HueSlider({
         aria-label={ariaLabel}
         className="hue-slider flex-1 cursor-pointer"
       />
-      <span className="text-xs font-mono" style={{ color: "var(--md-text-muted)" }}>
+      <span className="text-xs tabular-nums stat-num" style={{ color: "var(--md-text-muted)" }}>
         {value}°
       </span>
     </div>
