@@ -158,7 +158,7 @@ export function Hero() {
                     role="menuitemradio"
                     aria-checked={active}
                     onClick={() => pickLang(item.code)}
-                    className="flex w-full items-center justify-between gap-2 rounded-micro px-3 py-2 text-xs cursor-pointer transition-colors duration-200 hover:bg-white/6"
+                    className="flex w-full items-center justify-between gap-2 rounded-chip px-3 py-2 text-xs cursor-pointer transition-colors duration-200 hover:bg-white/6"
                     style={{
                       color: active ? "var(--md-primary)" : "var(--md-text-primary)",
                       backgroundColor: active ? "var(--md-primary-008)" : "transparent",
