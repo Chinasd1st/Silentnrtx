@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaCloudSun, FaSun, FaTint, FaWind } from "react-icons/fa";
+import { FaCloudSun } from "react-icons/fa6";
 import {
+  WiDaySunny,
+  WiHumidity,
   WiMoonFirstQuarter,
   WiMoonFull,
   WiMoonNew,
@@ -11,6 +13,8 @@ import {
   WiMoonWaningGibbous3,
   WiMoonWaxingCrescent3,
   WiMoonWaxingGibbous3,
+  WiRain,
+  WiStrongWind,
   WiSunrise,
   WiSunset,
 } from "react-icons/wi";
@@ -236,14 +240,18 @@ export function WeatherCard() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <Stat icon={<FaTint size={13} />} value={`${w.humidity}%`} label={t("weather.humidity")} />
+        <Stat
+          icon={<WiHumidity size={14} />}
+          value={`${w.humidity}%`}
+          label={t("weather.humidity")}
+        />
         <WindStat dir={w.winddir16Point} speed={w.windspeedKmph} />
         <Stat
-          icon={<FaTint size={13} />}
+          icon={<WiRain size={14} />}
           value={w.precipMM ? `${w.precipMM}mm` : "0mm"}
           label={t("weather.precip")}
         />
-        <Stat icon={<FaSun size={13} />} value={w.uvIndex || "0"} label={t("weather.uv")} />
+        <Stat icon={<WiDaySunny size={14} />} value={w.uvIndex || "0"} label={t("weather.uv")} />
       </div>
 
       <div
@@ -317,7 +325,7 @@ function WindStat({ dir, speed }: { dir: string; speed: string }) {
       style={{ backgroundColor: "var(--md-primary-008)" }}
     >
       <div className="flex justify-center mb-1" style={{ color: "var(--md-text-muted)" }}>
-        <FaWind size={13} />
+        <WiStrongWind size={14} />
       </div>
       <p
         className="text-sm font-semibold leading-snug truncate stat-num"
