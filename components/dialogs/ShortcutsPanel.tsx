@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaKeyboard } from "react-icons/fa";
+import { FaKeyboard } from "react-icons/fa6";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useTranslation } from "@/lib/i18n";
 

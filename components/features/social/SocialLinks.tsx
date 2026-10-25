@@ -1,7 +1,13 @@
 "use client";
 
-import { FaDiscord, FaGithub, FaGlobe } from "react-icons/fa";
-import { FaBandcamp, FaSoundcloud, FaXTwitter } from "react-icons/fa6";
+import {
+  FaBandcamp,
+  FaDiscord,
+  FaGithub,
+  FaGlobe,
+  FaSoundcloud,
+  FaXTwitter,
+} from "react-icons/fa6";
 import { SiBilibili, SiOsu } from "react-icons/si";
 import { siteConfig } from "@/config";
 import { useTranslation } from "@/lib/i18n";

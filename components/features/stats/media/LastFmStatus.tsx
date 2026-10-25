@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaLastfm } from "react-icons/fa";
+import { FaLastfm } from "react-icons/fa6";
 import { FiMusic } from "react-icons/fi";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";

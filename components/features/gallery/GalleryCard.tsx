@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { FaImage } from "react-icons/fa";
+import { FaImage } from "react-icons/fa6";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { siteConfig } from "@/config";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";

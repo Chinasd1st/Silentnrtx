@@ -1,6 +1,6 @@
 "use client";
 
-import { FaBook, FaCodeBranch, FaGithub, FaStar, FaUsers } from "react-icons/fa";
+import { FaBook, FaCodeBranch, FaGithub, FaStar, FaUsers } from "react-icons/fa6";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { Card } from "@/components/ui/Card";
 import { CardHeader } from "@/components/ui/CardHeader";

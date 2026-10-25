@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FaCodeBranch, FaGithub, FaStar } from "react-icons/fa";
+import { FaCodeBranch, FaGithub, FaStar } from "react-icons/fa6";
 import { CachedAt } from "@/components/ui/CachedAt";
 import { ErrorCard } from "@/components/ui/ErrorCard";
 import { CardSkeleton } from "@/components/ui/Skeleton";
