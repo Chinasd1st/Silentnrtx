@@ -11,6 +11,7 @@ import { GitHubStats } from "@/components/features/stats/github/GitHubStats";
 import { LastFmStatus } from "@/components/features/stats/media/LastFmStatus";
 import { ClockCard } from "@/components/features/stats/widgets/ClockCard";
 import { EarthquakeCard } from "@/components/features/stats/widgets/EarthquakeCard";
+import { TyphoonCard } from "@/components/features/stats/widgets/TyphoonCard";
 import { VercountStats } from "@/components/features/stats/widgets/VercountStats";
 import { WeatherCard } from "@/components/features/stats/widgets/WeatherCard";
 import { WorldClockCard } from "@/components/features/stats/widgets/WorldClockCard";
@@ -31,6 +32,7 @@ const CARD_MAP: Record<string, React.ReactNode> = {
   LastFmStatus: <LastFmStatus />,
   OsuSignature: <OsuSignature />,
   WeatherCard: <WeatherCard />,
+  TyphoonCard: <TyphoonCard />,
   EarthquakeCard: <EarthquakeCard />,
   BlogPosts: <BlogPosts />,
   GalleryCard: <GalleryCard />,
@@ -58,6 +60,7 @@ export default function Home() {
             "LastFmStatus",
             "OsuSignature",
             "WeatherCard",
+            "TyphoonCard",
             "EarthquakeCard",
             "BlogPosts",
             "GalleryCard",

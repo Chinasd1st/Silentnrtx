@@ -67,6 +67,7 @@ Personal homepage with Material Design 3–like style, built entirely with **Vib
 - Monkeytype typing stats
 - WakaTime coding activity + AI stats
 - JMA & CEA earthquake monitor (tab switch)
+- JMA typhoon tracker (active storms, pressure / wind / course)
 - Photo gallery lightbox (`createPortal`)
 - Clock (UTC+8, SVG analog + digital + decorative face)
 - World clock (local + Tokyo / London / New York)

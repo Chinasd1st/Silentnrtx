@@ -67,6 +67,7 @@
 - Monkeytype 打字统计
 - WakaTime 编码活动 + AI 数据
 - JMA & CEA 地震情报（标签切换）
+- JMA 台风追踪（活跃台风、气压 / 风速 / 移动方向）
 - 图片灯箱（createPortal）
 - 时钟（UTC+8，SVG 模拟 + 数字 + 装饰圆盘）
 - 世界时钟（本地 + 东京 / 伦敦 / 纽约）
