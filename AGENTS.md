@@ -10,7 +10,7 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 | Framework       | Next.js 16 (App Router) + Turbopack                                               |
 | Language        | TypeScript (strict)                                                               |
 | Styling         | Tailwind CSS v4 + CSS Custom Properties                                           |
-| Icons           | react-icons (FontAwesome / Simple Icons)                                          |
+| Icons           | react-icons (fa6 / fi / si / wi)                                                  |
 | L10n            | react-i18next (zh-CN / zh-TW / en-US / ja, browser auto-detect)                    |
 | Build           | `output: "export"` — fully static                                                 |
 | Deploy          | GitHub Pages at `/Silentnrtx` subpath                                             |
@@ -43,6 +43,13 @@ Material Design 3–like design system, fully static export, deployed to GitHub 
 - Static local images: use `OptimizedImage` component (auto AVIF/WebP, responsive srcset, blur placeholder).
 - Remote/dynamic images (music covers, Last.fm art, Osu! sig): use `<img>` with `loading="lazy"` and `onError` handler.
 - Wallpaper `Background`: loads async via API + state (implicitly deferred).
+
+## Icons
+
+- Four families, one job each: `react-icons/si` for brand marks, `react-icons/fa6` for card headers and in-card data icons, `react-icons/fi` for UI controls (toolbar, dialogs, player), `react-icons/wi` for weather glyphs (sunrise / sunset / moon phase).
+- Do NOT import from `react-icons/fa` (Font Awesome 5) or introduce another family without a documented reason.
+- Size scale: 12 (badges / keycaps), 13–14 (in-card data icons), 15–16 (control buttons), `1em` (card header, inherits `text-lg`).
+- Pick glyphs that fill their em box; icon sets with large internal padding (e.g. `WiHurricane`) read as too small next to a header title.
 
 ## i18n
 

@@ -68,6 +68,13 @@ The subagent must read only diffed files, run both skill reviews, and return one
 - Hover pattern: `hover:bg-white/6 transition-colors duration-200`; 300ms only for surfaces/overlays. One press scale: `active:scale-[0.97]`.
 - Modals use `createPortal` into `document.body`.
 
+## Icons
+
+- Brand marks → `react-icons/si`; card headers and in-card data icons → `react-icons/fa6`; UI controls (toolbar, dialogs, player) → `react-icons/fi`; weather glyphs (sunrise/sunset/moon phases) → `react-icons/wi` only.
+- Do NOT import from `react-icons/fa` (Font Awesome 5) or add another icon family without a documented reason.
+- Size scale: 12 (badges/keycaps), 13–14 (in-card data icons), 15–16 (control buttons), `1em` (card header, inherits `text-lg`). No other one-off sizes.
+- Prefer icons that fill their em box — sets with large internal padding (e.g. `WiHurricane`) read as too small in headers.
+
 ## CSS / Design Tokens
 
 - Use `--md-*` CSS custom properties for theming.
