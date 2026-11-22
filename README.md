@@ -1,110 +1,58 @@
-<p align="center">
-  <a href="README.md">English</a> | <a href="README_CN.md">中文</a>
-</p>
+# Silentnrtx — homepage
 
-# Silentnrtx Homepage
+A small static site: home, about, gallery and contact. Astro + React + Tailwind CSS v4, Material 3 color roles and motion with its own personality, English / 中文.
 
-[![Deploy to GitHub Pages](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml/badge.svg)](https://github.com/Chinasd1st/Silentnrtx/actions/workflows/deploy.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/Chinasd1st/Silentnrtx?include_prereleases&label=release)](https://github.com/Chinasd1st/Silentnrtx/releases)
+小型静态站：首页、关于、画廊、联系方式。Astro + React + Tailwind CSS v4，以 Material 3 的配色角色和动效为骨架、加入个人化处理，中英双语。
 
-Personal homepage with Material Design 3–like style, built entirely with **Vibe Coding** using **DeepSeek V4 Flash** via [opencode](https://opencode.ai).
+## Commands / 命令
 
-> **Live**: [https://silentnrtx.top/Silentnrtx/](https://silentnrtx.top/Silentnrtx/)
->
-> **Repo**: [Chinasd1st/Silentnrtx](https://github.com/Chinasd1st/Silentnrtx)
+All commands go through Python — no PowerShell needed. 所有命令都用 Python 执行。
 
----
+```text
+python tasks.py doctor     # check Node.js (>= 22.23.4) and pnpm
+python tasks.py install    # pnpm install
+python tasks.py dev        # http://localhost:4321
+python tasks.py build      # static output in dist/
+python tasks.py preview
+```
 
-## Design
+## Routes / 路由
 
-- **Material Design 3–like** — 24px rounded elevated cards, `oklch()` dynamic color palette driven by a single `--md-hue` variable
-- **Always-dark first** — dark mode default, automatic light mode follows `prefers-color-scheme`, three-state toggle via ThemeSwitch
-- **Glassmorphism background** — Bing daily wallpaper with `backdrop-filter` blur (disabled in light mode)
-- **Masonry waterfall layout** — CSS `columns`, cards auto-flow by content height
-- **Pure CSS animations** — no JavaScript animation libraries
-
-## Tech Stack
-
-| Layer | Choice |
-|---|---|
-| Framework | Next.js 16 (App Router) + Turbopack |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS v4 + CSS Custom Properties |
-| Icons | react-icons (FontAwesome / Simple Icons) |
-| L10n | react-i18next (zh-CN / zh-TW / en-US / ja, browser auto-detect) |
-| Build | `output: "export"` — fully static |
-| Deploy | GitHub Pages at `/Silentnrtx` subpath |
-| CI/CD | GitHub Actions (push → build → deploy) |
-| Package Manager | pnpm 10 |
-
-## Data Sources (100% client-side, no server)
-
-| Source | Data | Auth |
+| English | 中文 | Page |
 |---|---|---|
-| GitHub REST API | Repos, stars, forks, followers | Public |
-| github-contributions-api | Contribution heatmap | Public |
-| Last.fm API | Now playing / recent scrobbles | API Key |
-| wttr.in | Real-time weather (auto IP) | Public |
-| Meting API (injaho) | Netease Cloud Music playlist + player | Public |
-| Monkeytype API | Typing speed personal bests | Public |
-| WakaTime Embed JSON | Coding activity + AI vibecoding stats | Embeddable JSON |
-| JMA / CEA Earthquake API | Latest seismic info (Japan & China) | Public |
-| Bing Daily Wallpaper | Glassmorphism page background | Public |
-| JSON Feed | Blog posts feed | Public |
-| Vercount | Page views & visitors counter | `@vercount/react` hook |
-| Steam Web API | Gaming status (optional) | API Key |
+| `/` | `/zh/` | Home 首页 |
+| `/about/` | `/zh/about/` | About 关于 |
+| `/gallery/` | `/zh/gallery/` | Gallery 画廊 |
+| `/contact/` | `/zh/contact/` | Contact 联系方式 |
 
-## Features
+The language switch keeps you on the same page. First-time visitors whose browser language is Chinese are sent to the `/zh/` version; a manual choice is remembered.
 
-- Hero parallax scroll
-- 8-platform social card grid
-- GitHub stats (repos / stars / forks / followers)
-- Last.fm scrobbling status
-- osu! signature embed
-- Netease music player (global audio, prev/next, progress bar)
-- Weather with sunrise / sunset and moon phase
-- Blog reader (JSON Feed)
-- Monkeytype typing stats
-- WakaTime coding activity + AI stats
-- JMA & CEA earthquake monitor (tab switch)
-- JMA typhoon tracker (active storms, pressure / wind / course)
-- Photo gallery lightbox (`createPortal`)
-- Clock (UTC+8, SVG analog + digital + decorative face)
-- World clock (local + Tokyo / London / New York)
-- Keyboard shortcuts panel (`?`)
-- Three-state theme switch (light / dark / system)
-- zh-CN / zh-TW / en-US / ja i18n
-- Site visitor stats
-- Build time + commit SHA in footer
-- Data sources page (`/sources`) listing every feed with auth mode and cache TTL
-- Version tag from GitHub releases
+## Where to edit / 改哪里
 
-## Getting Started
+| What | File |
+|---|---|
+| Gallery images 画廊图片 | `src/assets/gallery/design/`, `src/assets/gallery/photo/` |
+| Gallery captions 画廊说明（可选） | `src/data/gallery.ts` |
+| Accounts 账号 | `src/data/profile.ts` |
+| UI copy 界面文案 (en / zh) | `src/i18n/ui.ts` |
+| Colors, type, motion 配色 / 字体 / 动效 | `src/styles/global.css` (`--md-hue` re-tints everything 改它就能换整站色相) |
 
-```bash
-pnpm install --frozen-lockfile
-pnpm run dev     # dev server at localhost:3000
-pnpm run build   # static export to ./out/
-```
+### Gallery / 画廊
 
-### Environment Variables
+Drop jpg / png / webp / avif files into `src/assets/gallery/design/` or `src/assets/gallery/photo/`. Nothing else is required: at build time each image becomes AVIF/WebP in several widths, plus a large version that opens on click. File names decide the order (descending), so `2026-11-22-cover.jpg` puts the newest first. To add a title or year, add an entry keyed by file name in `src/data/gallery.ts`.
 
-Copy `.env.example` to `.env.local` and fill in your API keys:
+图片直接放进上面两个文件夹即可，不用改代码。构建时自动生成多尺寸 AVIF/WebP 和点击查看的大图。文件名倒序排列，用日期开头最方便。想加标题或年份，在 `src/data/gallery.ts` 里按文件名添加。
 
-```env
-NEXT_PUBLIC_LAST_FM_API_KEY=
-NEXT_PUBLIC_LAST_FM_USERNAME=silentnrtx
-NEXT_PUBLIC_STEAM_API_KEY=
-```
+## Assets / 资源
 
-> All `NEXT_PUBLIC_*` variables are embedded in the client bundle. Only use read-only public keys.
+Avatar 头像: `src/assets/avatar.png`. At build time it becomes AVIF/WebP in several sizes plus the favicons, all with hashed file names so browsers cache them. 换头像只需替换这个文件。
 
-For WakaTime, see [WAKATIME_SETUP.md](./WAKATIME_SETUP.md).
+Fonts: Google Sans Flex (weight axis only) for Latin text; 思源黑体 (Source Han Sans) for Chinese — a locally installed copy is used first, otherwise Noto Sans SC (the same typeface) is served in small subsets.
 
-## Vibe Coding
+## Deploy / 部署
 
-This entire project was generated through conversational AI pair-programming using **DeepSeek V4 Flash** via the opencode CLI. Every component, config, style, and deployment workflow was iterated collaboratively — no manually typed boilerplate, just prompt, review, and commit.
+Repository `Chinasd1st/Silentnrtx`, published as a GitHub Pages project site at **https://silentnrtx.top/Silentnrtx/** (`base: "/Silentnrtx/"` in `astro.config.mjs`). `.github/workflows/deploy.yml` builds every pull request and deploys every push to `main`. All internal links go through `href()` in `src/i18n/ui.ts`, so they follow `base`.
 
----
+仓库 `Chinasd1st/Silentnrtx`，以 GitHub Pages 项目站点发布在 **https://silentnrtx.top/Silentnrtx/**。PR 只构建检查，合并到 `main` 自动部署。
 
-Built with Next.js · Material Design 3–like · ☕ vibe coding
+The previous Next.js version is kept at tag `v1.10.0`. 旧版 Next.js 站点保留在 tag `v1.10.0`。

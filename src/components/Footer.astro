@@ -1,0 +1,27 @@
+---
+import { FaCreativeCommons, FaCreativeCommonsBy, FaCreativeCommonsNc, FaCreativeCommonsSa } from "react-icons/fa";
+import { t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 md:mt-32">
+  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-dashed border-outline px-4 py-8 text-on-surface-variant type-body-m md:px-8">
+    <p lang="en">© {year} Silentnrtx</p>
+    <p class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+      <span>{u.footer.licenseBefore}</span>
+      <a class="link inline-flex items-center gap-2 font-semibold" href={u.footer.licenseUrl} target="_blank" rel="license noopener noreferrer">
+        <span class="flex gap-0.5" aria-hidden="true">
+          <FaCreativeCommons size={16} />
+          <FaCreativeCommonsBy size={16} />
+          <FaCreativeCommonsNc size={16} />
+          <FaCreativeCommonsSa size={16} />
+        </span>
+        <span lang="en">CC BY-NC-SA 4.0</span>
+      </a>
+      {u.footer.licenseAfter && <span>{u.footer.licenseAfter}</span>}
+    </p>
+  </div>
+</footer>

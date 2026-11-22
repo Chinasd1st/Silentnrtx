@@ -1,0 +1,48 @@
+{
+  "01.webp": {
+    "hash": "e8c961da47612fd5",
+    "mtime": 1777816530374.946,
+    "variants": {
+      "400w-webp": "01-400w.webp",
+      "400w-avif": "01-400w.avif",
+      "800w-webp": "01-800w.webp",
+      "800w-avif": "01-800w.avif",
+      "1200w-webp": "01-1200w.webp",
+      "1200w-avif": "01-1200w.avif",
+      "1600w-webp": "01-1600w.webp"
+    }
+  },
+  "02.webp": {
+    "hash": "44748f408c9664be",
+    "mtime": 1778155420455.8916,
+    "variants": {
+      "400w-webp": "02-400w.webp",
+      "400w-avif": "02-400w.avif",
+      "800w-webp": "02-800w.webp",
+      "800w-avif": "02-800w.avif",
+      "1200w-webp": "02-1200w.webp",
+      "1200w-avif": "02-1200w.avif",
+      "1600w-webp": "02-1600w.webp"
+    }
+  },
+  "SP6C_01.jpg": {
+    "hash": "6845b5bf0248b6d8",
+    "mtime": 1770724843528.1387,
+    "variants": {
+      "400w-webp": "SP6C_01-400w.webp",
+      "400w-avif": "SP6C_01-400w.avif",
+      "800w-webp": "SP6C_01-800w.webp",
+      "800w-avif": "SP6C_01-800w.avif"
+    }
+  },
+  "SP7_01.webp": {
+    "hash": "487dbe06e147648f",
+    "mtime": 1792672387074,
+    "variants": {
+      "400w-webp": "SP7_01-400w.webp",
+      "400w-avif": "SP7_01-400w.avif",
+      "800w-webp": "SP7_01-800w.webp",
+      "800w-avif": "SP7_01-800w.avif"
+    }
+  }
+}

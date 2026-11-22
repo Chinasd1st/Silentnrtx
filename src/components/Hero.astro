@@ -1,0 +1,44 @@
+---
+import { Picture } from "astro:assets";
+import avatar from "../assets/avatar.png";
+import { t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+const silent = [..."Silent"];
+const nrtx = [..."nrtx"];
+---
+
+<section class="hero rise mt-4 px-6 py-10 sm:px-10 md:mt-6 md:px-14 md:py-16" style="--i: 0" aria-labelledby="hero-name">
+  <div class="relative grid items-center gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-8">
+    <div>
+      <h1 id="hero-name" class="hero-name rise" style="--i: 1" lang="en" aria-label="Silentnrtx">
+        <span aria-hidden="true">
+          {silent.map((c) => <span class="ch">{c}</span>)}<span class="text-primary">{nrtx.map((c) => <span class="ch">{c}</span>)}</span>
+        </span>
+      </h1>
+
+      <blockquote class="motto rise mt-6 md:mt-8" style="--i: 2" lang="ja" cite={u.motto.href}>
+        <p>
+          <a class="link" href={u.motto.href} target="_blank" rel="noopener noreferrer">{u.motto.text}</a>
+        </p>
+      </blockquote>
+    </div>
+
+    <div class="hero-art rise justify-self-center lg:justify-self-end" style="--i: 2">
+      <div class="avatar">
+        <!-- Built into hashed AVIF/WebP files under /_astro/, so browsers cache them for good -->
+        <Picture
+          src={avatar}
+          alt={u.hero.avatarAlt}
+          formats={["avif", "webp"]}
+          widths={[240, 360, 480, 720, 960]}
+          sizes="(min-width: 1024px) 400px, 80vw"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </div>
+</section>

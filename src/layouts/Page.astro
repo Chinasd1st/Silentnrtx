@@ -1,0 +1,21 @@
+---
+import Base from "./Base.astro";
+import TopBar from "../components/TopBar.astro";
+import Footer from "../components/Footer.astro";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+  title?: string;
+}
+const { lang, title } = Astro.props;
+---
+
+<Base lang={lang} title={title}>
+  <TopBar lang={lang} />
+  <!-- page content brings its own entrance (.rise), so no extra cross-fade on navigation -->
+  <main id="main" class="mx-auto w-full max-w-[1200px] flex-1 scroll-mt-24 px-4 md:px-8" transition:animate="none">
+    <slot />
+  </main>
+  <Footer lang={lang} />
+</Base>

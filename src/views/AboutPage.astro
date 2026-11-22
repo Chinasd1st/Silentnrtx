@@ -1,0 +1,124 @@
+---
+import { Image, Picture } from "astro:assets";
+import type { IconType } from "react-icons";
+import { MdGraphicEq, MdHeadphones, MdMovie, MdNorthEast, MdPalette, MdPhotoCamera, MdTranslate } from "react-icons/md";
+import { SiBlender, SiOsu, SiX } from "react-icons/si";
+import Page from "../layouts/Page.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ContactCards from "../components/ContactCards.astro";
+import avatar from "../assets/avatar.png";
+import blogIcon from "../assets/blog.png";
+import { t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+const a = u.about;
+
+type Hobby = { title: string; note?: string; noteHref?: string };
+const hobbies: { key: keyof typeof a.hobbies; icon: IconType }[] = [
+  { key: "svp", icon: MdGraphicEq },
+  { key: "mmd", icon: SiBlender },
+  { key: "video", icon: MdMovie },
+  { key: "graphic", icon: MdPalette },
+  { key: "photo", icon: MdPhotoCamera },
+  { key: "music", icon: MdHeadphones },
+  { key: "rhythm", icon: SiOsu },
+];
+---
+
+<Page lang={lang} title={a.title}>
+  <PageHeader title={a.title} />
+
+  <!-- Intro -->
+  <div class="mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,13rem)_1fr] md:gap-14">
+    <div class="portrait rise aspect-square w-36 md:w-full" style="--i: 2">
+      <Picture
+        src={avatar}
+        alt={u.hero.avatarAlt}
+        formats={["avif", "webp"]}
+        widths={[160, 240, 320, 480]}
+        sizes="(min-width: 768px) 208px, 144px"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+    <div class="rise flex flex-col gap-2" style="--i: 3">
+      {a.intro.map((line) => <p class="text-pretty type-headline-m">{line}</p>)}
+    </div>
+  </div>
+
+  <!-- Avatar illustration credit -->
+  <p class="avatar-credit rise mt-12" style="--i: 4">
+    <SiX aria-hidden="true" size={14} />
+    <span>{a.credit.label}{lang === "en" ? ` ${a.credit.by} ` : a.credit.by}</span>
+    <a class="link" href="https://x.com/famy_siraso" target="_blank" rel="noopener noreferrer" lang="ja">FAMY / ふぁみ</a>
+    <span lang="en">@famy_siraso</span>
+  </p>
+
+  <!-- Hobbies -->
+  <section class="mt-20" aria-labelledby="hobbies-title">
+    <h2 id="hobbies-title" class="rise section-label" style="--i: 4">{a.hobbiesTitle}</h2>
+    <ul class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        hobbies.map(({ key, icon: Icon }, i) => {
+          const h: Hobby = a.hobbies[key];
+          return (
+            <li class="tile rise" style={`--i: ${i + 5}`}>
+              <span class="tile-icon" aria-hidden="true">
+                <Icon size={24} />
+              </span>
+              <span class="mt-auto block pt-10">
+                <span class="block type-title-l">{h.title}</span>
+                {h.note &&
+                  (h.noteHref ? (
+                    <span class="mt-1 block text-on-surface-variant type-body-m">
+                      <a class="link whitespace-pre" href={h.noteHref} target="_blank" rel="noopener noreferrer">
+                        {h.note}
+                      </a>
+                    </span>
+                  ) : (
+                    <span class="mt-1 block text-on-surface-variant type-body-m">{h.note}</span>
+                  ))}
+              </span>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  <!-- Skills + Blog -->
+  <div class="mt-16 grid gap-10 md:grid-cols-2 md:gap-3">
+    <section aria-labelledby="skills-title">
+      <h2 id="skills-title" class="rise section-label" style="--i: 6">{a.skillsTitle}</h2>
+      <ul class="mt-5 flex flex-wrap gap-2">
+        <li class="skill-chip rise" style="--i: 7">
+          <MdTranslate aria-hidden="true" size={18} />
+          {a.skills.english}
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="blog-title">
+      <h2 id="blog-title" class="rise section-label" style="--i: 6">{a.blogTitle}</h2>
+      <a class="blog-card rise mt-5" style="--i: 7" href={a.blog.url} target="_blank" rel="me noopener noreferrer" aria-label={a.blog.open}>
+        <span class="blog-icon" aria-hidden="true">
+          <Image src={blogIcon} alt="" width={96} height={96} densities={[1, 2]} format="webp" loading="lazy" decoding="async" />
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block truncate type-title-l" lang="en">{a.blog.label}</span>
+          <span class="mt-0.5 block text-on-surface-variant type-body-m">{a.blog.open}</span>
+        </span>
+        <MdNorthEast class="blog-go" aria-hidden="true" size={22} />
+      </a>
+    </section>
+  </div>
+
+  <!-- Contact — same cards as the contact page -->
+  <section class="mt-16" aria-labelledby="about-contact-title">
+    <h2 id="about-contact-title" class="rise section-label" style="--i: 8">{u.contact.title}</h2>
+    <div class="mt-5">
+      <ContactCards lang={lang} />
+    </div>
+  </section>
+</Page>

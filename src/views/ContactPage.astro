@@ -1,0 +1,16 @@
+---
+import Page from "../layouts/Page.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ContactCards from "../components/ContactCards.astro";
+import { t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+---
+
+<Page lang={lang} title={u.contact.title}>
+  <PageHeader title={u.contact.title} />
+  <div class="mt-10">
+    <ContactCards lang={lang} />
+  </div>
+</Page>

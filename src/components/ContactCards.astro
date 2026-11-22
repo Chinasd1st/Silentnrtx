@@ -1,0 +1,36 @@
+---
+import { MdNorthEast } from "react-icons/md";
+import CopyHandle from "./react/CopyHandle";
+import { profile } from "../data/profile";
+import { platformIcons } from "../lib/icons";
+import { t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+---
+
+<ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+  {
+    profile.links.map((l, i) => {
+      const Icon = platformIcons[l.id];
+      const name = l.platform[lang];
+      return (
+        <li class={`contact-card rise tone-${l.tone}`} style={`--i: ${i + 2}`}>
+          <div class="flex items-start justify-between">
+            <Icon aria-hidden="true" size={34} />
+            <CopyHandle client:visible value={l.copy} label={`${u.contact.copy} ${name}`} copiedText={u.contact.copied} />
+          </div>
+          <div class="mt-auto pt-14">
+            <p class="opacity-75 type-label-m">{name}</p>
+            <p class="contact-handle mt-1 break-all type-headline-m" lang="en">{l.handle}</p>
+            {l.note && <p class="mt-1 opacity-75 type-body-m" lang="en">{l.note}</p>}
+          </div>
+          <a class="btn-solid state mt-6 self-start" href={l.href} target="_blank" rel="me noopener noreferrer">
+            {u.contact.open} {name}
+            <MdNorthEast class="nudge-ne" aria-hidden="true" size={18} />
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>

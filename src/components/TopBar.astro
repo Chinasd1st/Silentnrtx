@@ -1,0 +1,73 @@
+---
+import ThemeToggle from "./react/ThemeToggle";
+import { href, routeOf, t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+const route = routeOf(Astro.url.pathname);
+const section = route.startsWith("contact")
+  ? "contact"
+  : route.startsWith("about")
+    ? "about"
+    : route.startsWith("gallery")
+      ? "gallery"
+      : route === ""
+        ? "home"
+        : "";
+const items = [
+  { id: "home", label: u.nav.home, to: "" },
+  { id: "about", label: u.nav.about, to: "about/" },
+  { id: "gallery", label: u.nav.gallery, to: "gallery/" },
+  { id: "contact", label: u.nav.contact, to: "contact/" },
+] as const;
+const langs = [
+  { id: "en", label: "EN", hreflang: "en" },
+  { id: "zh", label: "中文", hreflang: "zh-CN" },
+] as const;
+---
+
+<!--
+  .drop = entrance: each item fades in from above, staggered by --i (first full load only).
+  Sliding indicators: only the active item renders a pill, and every page gives it the same
+  view-transition-name, so on navigation the browser glides it from the old item to the new one.
+  Labels carry their own names so they stay above the moving pill.
+-->
+<header class="topbar sticky top-0 z-40" transition:animate="none">
+  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-1 px-4 md:px-8">
+    <a href={href(lang)} class="topbar-link drop mr-auto flex h-16 items-center type-title-m" style="--i: 0" lang="en">
+      Silentnrtx
+    </a>
+
+    <nav aria-label={u.nav.label} class="order-last -mx-1 flex w-full gap-1 pb-3 sm:order-none sm:mx-0 sm:mr-3 sm:w-auto sm:pb-0">
+      {
+        items.map((i, n) => (
+          <a href={href(lang, i.to)} class="nav-link drop" style={`--i: ${n + 1}`} aria-current={section === i.id ? "page" : undefined}>
+            {section === i.id && <span class="nav-pill" aria-hidden="true" />}
+            <span class="vt-label" style={`view-transition-name: nav-${i.id}`}>{i.label}</span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="segmented drop" style={`--i: ${items.length + 1}`} role="group" aria-label={u.lang.label}>
+      {
+        langs.map((l) => (
+          <a
+            href={href(l.id, route)}
+            hreflang={l.hreflang}
+            lang={l.hreflang}
+            data-set-lang={l.id}
+            aria-current={lang === l.id ? "true" : undefined}
+          >
+            {lang === l.id && <span class="seg-pill" aria-hidden="true" />}
+            <span class="vt-label" style={`view-transition-name: lang-${l.id}`}>{l.label}</span>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="topbar-toggle drop ml-1 size-10" style={`--i: ${items.length + 2}`}>
+      <ThemeToggle client:only="react" labels={u.theme} />
+    </div>
+  </div>
+</header>
