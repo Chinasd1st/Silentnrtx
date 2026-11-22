@@ -6,6 +6,7 @@ import "@fontsource-variable/google-sans-flex";
 import "@fontsource-variable/noto-sans-sc";
 import "../styles/global.css";
 import avatar from "../assets/avatar.png";
+import { profile } from "../data/profile";
 import { href, routeOf, t, type Lang } from "../i18n/ui";
 
 interface Props {
@@ -41,6 +42,46 @@ const icon192 = await getImage({ src: avatar, width: 192, height: 192, format: "
 const appleIcon = await getImage({ src: avatar, width: 180, height: 180, format: "png" });
 // Link preview image (X, Discord, QQ, Telegram…): the avatar, square.
 const ogImage = await getImage({ src: avatar, width: 512, height: 512, format: "png" });
+
+// Structured data: tells search engines that this site, the X / GitHub / osu! / Bilibili /
+// Last.fm accounts and the blog all belong to the same person, so they are grouped in results.
+const home = abs(href("en"));
+const personId = `${home}#person`;
+const websiteId = `${home}#website`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      url: home,
+      name: "Silentnrtx",
+      inLanguage: ["en", "zh-CN"],
+      publisher: { "@id": personId },
+    },
+    {
+      "@type": "Person",
+      "@id": personId,
+      name: "Silentnrtx",
+      alternateName: "chinasd1st",
+      url: home,
+      image: abs(ogImage.src),
+      sameAs: [...profile.links.map((l) => l.href), t("en").about.blog.url],
+    },
+    {
+      "@type": route === "about/" ? "ProfilePage" : "WebPage",
+      "@id": canonical,
+      url: canonical,
+      name: pageTitle,
+      description: pageDescription,
+      inLanguage: lang === "zh" ? "zh-CN" : "en",
+      isPartOf: { "@id": websiteId },
+      ...(route === "about/" ? { mainEntity: { "@id": personId } } : { about: { "@id": personId } }),
+    },
+  ],
+};
+// "<" escaped so a value can never close the <script> tag
+const jsonLdText = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -83,6 +124,10 @@ const ogImage = await getImage({ src: avatar, width: 512, height: 512, format: "
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Silentnrtx" />
     <meta name="twitter:creator" content="@Silentnrtx" />
+
+    {!noindex && <script is:inline type="application/ld+json" set:html={jsonLdText} />}
+    <!-- page-specific head content (e.g. gallery image metadata) -->
+    <slot name="head" />
 
     <!--
       Client-side navigation: switching page or language swaps the DOM instead of reloading,

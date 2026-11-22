@@ -3,7 +3,7 @@ import { Picture, getImage } from "astro:assets";
 import { MdChevronLeft, MdChevronRight, MdClose } from "react-icons/md";
 import Page from "../layouts/Page.astro";
 import { loadGallery, type Category, type GalleryItem } from "../data/gallery";
-import { t, type Lang } from "../i18n/ui";
+import { href, t, type Lang } from "../i18n/ui";
 
 const { lang } = Astro.props as { lang: Lang };
 const u = t(lang);
@@ -24,18 +24,24 @@ const filters = ([
 const showFilter = filters.length > 2;
 
 const pad = (n: number) => String(n).padStart(2, "0");
+const abs = (path: string) => new URL(path, Astro.site ?? "https://silentnrtx.top").href;
 
 const items = await Promise.all(
   gallery.map(async (item, i) => {
     const full = await getImage({ src: item.image, width: Math.min(item.image.width, 2400), format: "webp" });
     const title = item.title?.[lang];
-    const kind = item.category === "design" ? g.design : g.photo;
     const settings = [item.exif?.aperture, item.exif?.shutter, item.exif?.iso, item.exif?.focal].filter(Boolean).join(" · ");
+    // Descriptive alt text: what it is, who made it, when, with what
+    const alt = [title ?? (item.category === "design" ? g.alt.design : g.alt.photo), item.date, item.exif?.camera]
+      .filter(Boolean)
+      .join(g.alt.sep);
     return {
       ...item,
       full: full.src,
+      fullWidth: full.attributes.width as number | undefined,
+      fullHeight: full.attributes.height as number | undefined,
       no: `No.${pad(i + 1)}`,
-      alt: title ?? `${kind} ${item.date ?? item.id}`,
+      alt,
       title,
       settings,
     };
@@ -53,9 +59,39 @@ const spec = (it: Item) =>
   ].filter((r) => r.v);
 
 const meta = (it: Item) => [it.no, it.title, it.date, it.settings, it.exif?.camera].filter(Boolean).join("   ");
+
+// Image metadata for Google Images: creator, date and the CC BY-NC-SA licence
+// (shown as "Licensable" in image results).
+const personId = `${abs(href("en"))}#person`;
+const licenseUrl = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
+const imagesLd = {
+  "@context": "https://schema.org",
+  "@graph": items.map((it) => {
+    const isoDate = it.date?.replace(/\./g, "-");
+    const year = isoDate?.slice(0, 4) ?? String(new Date().getFullYear());
+    return {
+      "@type": "ImageObject",
+      contentUrl: abs(it.full),
+      url: abs(it.full),
+      name: it.title ?? it.alt,
+      caption: it.alt,
+      ...(it.fullWidth && it.fullHeight ? { width: it.fullWidth, height: it.fullHeight } : {}),
+      ...(isoDate ? { dateCreated: isoDate } : {}),
+      creator: { "@type": "Person", "@id": personId, name: "Silentnrtx" },
+      creditText: "Silentnrtx",
+      copyrightNotice: `© ${year} Silentnrtx`,
+      license: licenseUrl,
+      acquireLicensePage: abs(href(lang, "contact/")),
+      ...(it.exif?.camera ? { exifData: [{ "@type": "PropertyValue", name: "Camera", value: it.exif.camera }] } : {}),
+    };
+  }),
+};
+const imagesLdText = JSON.stringify(imagesLd).replace(/</g, "\\u003c");
 ---
 
 <Page lang={lang} title={g.title}>
+  <Fragment slot="head">{items.length > 0 && <script is:inline type="application/ld+json" set:html={imagesLdText} />}</Fragment>
+
   <header class="gallery-head border-b border-dashed border-outline pb-8 pt-12 md:pt-20">
     <h1 class="rise type-display-m" style="--i: 1">{g.title}</h1>
     {

@@ -14,7 +14,14 @@ const { lang } = Astro.props as { lang: Lang };
 const u = t(lang);
 const a = u.about;
 
-type Hobby = { title: string; note?: string; noteHref?: string };
+type Hobby = {
+  title: string;
+  note?: string;
+  noteHref?: string;
+  voicebanksLabel?: string;
+  voicebanks?: readonly string[];
+};
+
 const hobbies: { key: keyof typeof a.hobbies; icon: IconType }[] = [
   { key: "svp", icon: MdGraphicEq },
   { key: "mmd", icon: SiBlender },
@@ -80,6 +87,16 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
                   ) : (
                     <span class="mt-1 block text-on-surface-variant type-body-m">{h.note}</span>
                   ))}
+                {h.voicebanks && (
+                  <span class="mt-3 flex flex-wrap items-center gap-1.5">
+                    <span class="sr-only">{h.voicebanksLabel}: </span>
+                    {h.voicebanks.map((v) => (
+                      <span class="chip" lang={lang === "zh" ? "ja" : "en"}>
+                        {v}
+                      </span>
+                    ))}
+                  </span>
+                )}
               </span>
             </li>
           );

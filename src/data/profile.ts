@@ -1,7 +1,7 @@
 import type { L10n } from "../i18n/ui";
 
-export type Tone = "primary" | "secondary" | "inverse" | "tertiary" | "neutral";
-export type PlatformId = "x" | "github" | "osu" | "bilibili" | "lastfm";
+export type Tone = "primary" | "secondary" | "inverse" | "tertiary" | "neutral" | "accent";
+export type PlatformId = "x" | "github" | "osu" | "bilibili" | "lastfm" | "discord";
 
 export interface ContactLink {
   id: PlatformId;
@@ -58,6 +58,14 @@ export const profile = {
       copy: "Silentnrtx",
       href: "https://www.last.fm/user/Silentnrtx",
       tone: "secondary",
+    },
+    {
+      id: "discord",
+      platform: { en: "Discord", zh: "Discord" },
+      handle: "Silentnrtx",
+      copy: "Silentnrtx",
+      href: "https://discord.com/users/957082674399412224",
+      tone: "accent",
     },
   ] satisfies ContactLink[],
 };
