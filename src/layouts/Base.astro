@@ -12,19 +12,35 @@ interface Props {
   lang: Lang;
   /** Page name; the site name is appended. Omit on the home page. */
   title?: string;
+  /** Overrides the per-route description from ui.ts. */
+  description?: string;
+  /** Keep the page out of search results (404). */
+  noindex?: boolean;
 }
 
-const { lang, title } = Astro.props;
+const { lang, title, description, noindex = false } = Astro.props;
 const u = t(lang);
-const route = routeOf(Astro.url.pathname);
+// Normalise to the keys used in ui.ts: "" | "about/" | "gallery/" | "contact/"
+const raw = routeOf(Astro.url.pathname).replace(/index\.html$/, "");
+const route = raw === "" ? "" : raw.replace(/\/?$/, "/");
 const enHref = href("en", route);
 const zhHref = href("zh", route);
 const pageTitle = title ? `${title} · ${u.meta.site}` : u.meta.site;
+const pages = u.meta.pages as Record<string, string>;
+const pageDescription = description ?? pages[route] ?? u.meta.description;
+
+// Absolute URLs (canonical, hreflang, Open Graph) — search engines and link previews need the full address.
+const site = Astro.site ?? new URL("https://silentnrtx.top");
+const abs = (path: string) => new URL(path, site).href;
+const canonical = abs(lang === "en" ? enHref : zhHref);
+const sitemap = abs(`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}sitemap.xml`);
 
 // Favicons are generated from the avatar at build time (hashed file names → cached long-term).
 const icon32 = await getImage({ src: avatar, width: 32, height: 32, format: "png" });
 const icon192 = await getImage({ src: avatar, width: 192, height: 192, format: "png" });
 const appleIcon = await getImage({ src: avatar, width: 180, height: 180, format: "png" });
+// Link preview image (X, Discord, QQ, Telegram…): the avatar, square.
+const ogImage = await getImage({ src: avatar, width: 512, height: 512, format: "png" });
 ---
 
 <!doctype html>
@@ -33,18 +49,40 @@ const appleIcon = await getImage({ src: avatar, width: 180, height: 180, format:
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
-    <meta name="description" content={u.meta.description} />
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content="Silentnrtx" />
+    {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#f5f4f8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#010102" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/png" sizes="32x32" href={icon32.src} />
     <link rel="icon" type="image/png" sizes="192x192" href={icon192.src} />
     <link rel="apple-touch-icon" href={appleIcon.src} />
-    <link rel="alternate" hreflang="en" href={enHref} />
-    <link rel="alternate" hreflang="zh-CN" href={zhHref} />
-    <link rel="alternate" hreflang="x-default" href={enHref} />
+    {
+      !noindex && (
+        <>
+          <link rel="canonical" href={canonical} />
+          <link rel="alternate" hreflang="en" href={abs(enHref)} />
+          <link rel="alternate" hreflang="zh-CN" href={abs(zhHref)} />
+          <link rel="alternate" hreflang="x-default" href={abs(enHref)} />
+          <link rel="sitemap" type="application/xml" href={sitemap} />
+        </>
+      )
+    }
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={u.meta.site} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={u.meta.description} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={u.meta.ogLocale} />
+    <meta property="og:locale:alternate" content={lang === "en" ? "zh_CN" : "en_US"} />
+    <meta property="og:image" content={abs(ogImage.src)} />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content={u.hero.avatarAlt} />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Silentnrtx" />
+    <meta name="twitter:creator" content="@Silentnrtx" />
 
     <!--
       Client-side navigation: switching page or language swaps the DOM instead of reloading,
