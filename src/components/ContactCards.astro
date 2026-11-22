@@ -15,9 +15,9 @@ const u = t(lang);
       const Icon = platformIcons[l.id];
       const name = l.platform[lang];
       return (
-        <li class={`contact-card rise tone-${l.tone}`} style={`--i: ${i + 2}`}>
+        <li class="contact-card rise" style={`--i: ${i + 2}; --bh: ${l.brand.hue}; --bc: ${l.brand.chroma ?? 1}`}>
           <div class="flex items-start justify-between">
-            <Icon aria-hidden="true" size={34} />
+            <Icon class="brand-icon" aria-hidden="true" size={34} />
             <CopyHandle client:visible value={l.copy} label={`${u.contact.copy} ${name}`} copiedText={u.contact.copied} />
           </div>
           <div class="mt-auto pt-14">
