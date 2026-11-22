@@ -600,26 +600,12 @@
   .contact-card:hover { border-radius: 56px; }
   .contact-card:nth-child(odd):hover { rotate: -1deg; }
   .contact-card:nth-child(even):hover { rotate: 1deg; }
-  /* Brand tints: one lightness / saturation for every card, hue from the platform (--bh, set
-     per card from profile.ts). --bc scales the saturation down for black brands (X, GitHub). */
-  .contact-card {
-    --bh: 270;
-    --bc: 1;
-    background: oklch(0.93 calc(0.045 * var(--bc)) var(--bh));
-    color: oklch(0.3 calc(0.09 * var(--bc)) var(--bh));
-    --btn-bg: oklch(0.32 calc(0.1 * var(--bc)) var(--bh));
-    --btn-fg: oklch(0.97 calc(0.015 * var(--bc)) var(--bh));
-  }
-  .contact-card > svg,
-  .contact-card .brand-icon { color: oklch(0.45 calc(0.15 * var(--bc)) var(--bh)); }
-  :root[data-theme="dark"] .contact-card {
-    background: oklch(0.24 calc(0.045 * var(--bc)) var(--bh));
-    color: oklch(0.92 calc(0.04 * var(--bc)) var(--bh));
-    --btn-bg: oklch(0.88 calc(0.06 * var(--bc)) var(--bh));
-    --btn-fg: oklch(0.2 calc(0.05 * var(--bc)) var(--bh));
-  }
-  :root[data-theme="dark"] .contact-card > svg,
-  :root[data-theme="dark"] .contact-card .brand-icon { color: oklch(0.8 calc(0.13 * var(--bc)) var(--bh)); }
+  .tone-primary { background: var(--md-primary-container); color: var(--md-on-primary-container); --btn-bg: var(--md-on-primary-container); --btn-fg: var(--md-primary-container); }
+  .tone-secondary { background: var(--md-secondary-container); color: var(--md-on-secondary-container); --btn-bg: var(--md-on-secondary-container); --btn-fg: var(--md-secondary-container); }
+  .tone-accent { background: var(--md-primary); color: var(--md-on-primary); --btn-bg: var(--md-on-primary); --btn-fg: var(--md-primary); }
+  .tone-inverse { background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); --btn-bg: var(--md-inverse-on-surface); --btn-fg: var(--md-inverse-surface); }
+  .tone-tertiary { background: var(--md-tertiary-container); color: var(--md-on-tertiary-container); --btn-bg: var(--md-on-tertiary-container); --btn-fg: var(--md-tertiary-container); }
+  .tone-neutral { background: var(--md-surface-container-highest); color: var(--md-on-surface); --btn-bg: var(--md-on-surface); --btn-fg: var(--md-surface-container-highest); }
   .contact-card .icon-btn { color: inherit; }
   .contact-handle { font-weight: 700; }
 
