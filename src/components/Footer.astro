@@ -8,8 +8,8 @@ const u = t(lang);
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 md:mt-32">
-  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-dashed border-outline px-4 py-8 text-on-surface-variant type-body-m md:px-8">
+<footer class="mt-16 md:mt-32">
+  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-dashed border-outline py-8 text-on-surface-variant type-body-m page-x">
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
       <p lang="en">© {year} Silentnrtx</p>
       <VisitCounter client:idle locale={lang === "zh" ? "zh-CN" : "en"} labels={u.footer.visits} />

@@ -7,7 +7,7 @@ interface Props {
 const { eyebrow, title, sub } = Astro.props;
 ---
 
-<header class="border-b border-dashed border-outline pb-10 pt-12 md:pt-20">
+<header class="border-b border-dashed border-outline pb-6 pt-8 sm:pb-8 sm:pt-12 md:pb-10 md:pt-20">
   {eyebrow && <p class="rise text-tertiary type-label-l" style="--i: 0">{eyebrow}</p>}
   <h1 class="rise mt-2 type-display-m" style="--i: 1">{title}</h1>
   {sub && <p class="rise mt-4 max-w-[52ch] text-on-surface-variant type-body-l md:text-[1.125rem]" style="--i: 2">{sub}</p>}

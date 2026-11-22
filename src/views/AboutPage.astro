@@ -38,8 +38,8 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
   <PageHeader title={a.title} />
 
   <!-- Intro -->
-  <div class="mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,13rem)_1fr] md:gap-14">
-    <div class="portrait rise aspect-square w-36 md:w-full" style="--i: 2">
+  <div class="mt-8 grid items-center gap-6 md:mt-12 md:grid-cols-[minmax(0,13rem)_1fr] md:gap-14">
+    <div class="portrait rise aspect-square w-28 sm:w-36 md:w-full" style="--i: 2">
       <Picture
         src={avatar}
         alt={u.hero.avatarAlt}
@@ -51,12 +51,12 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
       />
     </div>
     <div class="rise flex flex-col gap-2" style="--i: 3">
-      {a.intro.map((line) => <p class="text-pretty type-headline-m">{line}</p>)}
+      {a.intro.map((line) => <p class="about-intro text-pretty type-headline-m">{line}</p>)}
     </div>
   </div>
 
   <!-- Avatar illustration credit -->
-  <p class="avatar-credit rise mt-12" style="--i: 4">
+  <p class="avatar-credit rise mt-6 md:mt-12" style="--i: 4">
     <SiX aria-hidden="true" size={14} />
     <span>{a.credit.label}{lang === "en" ? ` ${a.credit.by} ` : a.credit.by}</span>
     <a class="link" href="https://x.com/famy_siraso" target="_blank" rel="noopener noreferrer" lang="ja">FAMY / ふぁみ</a>
@@ -64,7 +64,7 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
   </p>
 
   <!-- Hobbies -->
-  <section class="mt-20" aria-labelledby="hobbies-title">
+  <section class="mt-12 md:mt-20" aria-labelledby="hobbies-title">
     <h2 id="hobbies-title" class="rise section-label" style="--i: 4">{a.hobbiesTitle}</h2>
     <ul class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {
@@ -106,7 +106,7 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
   </section>
 
   <!-- Circles -->
-  <section class="mt-16" aria-labelledby="circles-title">
+  <section class="mt-12 md:mt-16" aria-labelledby="circles-title">
     <h2 id="circles-title" class="rise section-label" style="--i: 6">{a.circlesTitle}</h2>
     <ul class="mt-5 grid gap-3 sm:grid-cols-2">
       {
@@ -126,7 +126,7 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
   </section>
 
   <!-- Skills + Blog -->
-  <div class="mt-16 grid gap-10 md:grid-cols-2 md:gap-3">
+  <div class="mt-12 grid gap-12 md:mt-16 md:grid-cols-2 md:gap-3">
     <section aria-labelledby="skills-title">
       <h2 id="skills-title" class="rise section-label" style="--i: 6">{a.skillsTitle}</h2>
       <ul class="mt-5 flex flex-wrap gap-2">
@@ -153,7 +153,7 @@ const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
   </div>
 
   <!-- Contact — same cards as the contact page -->
-  <section class="mt-16" aria-labelledby="about-contact-title">
+  <section class="mt-12 md:mt-16" aria-labelledby="about-contact-title">
     <h2 id="about-contact-title" class="rise section-label" style="--i: 8">{u.contact.title}</h2>
     <div class="mt-5">
       <ContactCards lang={lang} />

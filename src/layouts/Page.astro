@@ -15,7 +15,7 @@ const { lang, title } = Astro.props;
   <slot name="head" slot="head" />
   <TopBar lang={lang} />
   <!-- page content brings its own entrance (.rise), so no extra cross-fade on navigation -->
-  <main id="main" class="mx-auto w-full max-w-[1200px] flex-1 scroll-mt-24 px-4 md:px-8" transition:animate="none">
+  <main id="main" class="page-x mx-auto w-full max-w-[1200px] flex-1 scroll-mt-24" transition:animate="none">
     <slot />
   </main>
   <Footer lang={lang} />
