@@ -14,6 +14,14 @@ const ui = {
     meta: {
       site: "Silentnrtx",
       description: "Silentnrtx — where to find me.",
+      /** Per-page <meta name="description">, keyed by route. Keep each under ~155 characters. */
+      pages: {
+        "": "Personal site of Silentnrtx — a bored, post-modern internet lunatic and a maker of far-fetched ideas.",
+        "about/": "About Silentnrtx: Synthesizer V tuning, Blender MMD, video editing, graphic and book design, photography, doujin music and osu!.",
+        "gallery/": "Design work and photographs by Silentnrtx.",
+        "contact/": "Find Silentnrtx on X, GitHub, osu!, Bilibili and Last.fm.",
+      },
+      ogLocale: "en_US",
     },
     skip: "Skip to content",
     nav: { label: "Main", home: "Home", about: "About", gallery: "Gallery", contact: "Contact" },
@@ -72,6 +80,7 @@ const ui = {
       licenseBefore: "Content licensed under",
       licenseAfter: "",
       licenseUrl: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      visits: { label: "Visits", page: "This page", site: "Site", visitors: "Visitors" },
     },
     contact: {
       title: "Contact",
@@ -86,6 +95,14 @@ const ui = {
     meta: {
       site: "Silentnrtx",
       description: "Silentnrtx 的联系方式。",
+      /** 每页的 <meta name="description">，按路由区分。每条尽量控制在 80 字以内。 */
+      pages: {
+        "": "Silentnrtx 的个人主页：百无聊赖的后现代互联网精神病，异想天开的创造者。",
+        "about/": "关于 Silentnrtx：Synthesizer V 调教、Blender MMD、视频剪辑、平面与装帧设计、摄影、同人音乐与 osu!。",
+        "gallery/": "Silentnrtx 的设计与摄影作品。",
+        "contact/": "在 X、GitHub、osu!、哔哩哔哩和 Last.fm 上找到 Silentnrtx。",
+      },
+      ogLocale: "zh_CN",
     },
     skip: "跳到正文",
     nav: { label: "主导航", home: "首页", about: "关于", gallery: "画廊", contact: "联系" },
@@ -144,6 +161,7 @@ const ui = {
       licenseBefore: "本站内容采用",
       licenseAfter: "许可协议",
       licenseUrl: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans",
+      visits: { label: "访问统计", page: "本页", site: "总访问", visitors: "访客" },
     },
     contact: {
       title: "联系",
