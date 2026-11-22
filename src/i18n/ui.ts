@@ -48,7 +48,7 @@ const ui = {
         video: { title: "Video editing", note: "The basics" },
         graphic: { title: "Graphic & book design", note: "The basics" },
       },
-      circlesTitle: "Circles",
+      circlesTitle: "Fandoms",
       circles: {
         kamitsubaki: { title: "KAMITSUBAKI STUDIO", note: "神椿" },
         voices: { title: "Voice synthesis", note: "VOICEPEAK · VOICEVOX · VOICEROID" },
