@@ -1,0 +1,204 @@
+---
+import { Picture, getImage } from "astro:assets";
+import { MdChevronLeft, MdChevronRight, MdClose } from "react-icons/md";
+import Page from "../layouts/Page.astro";
+import { loadGallery, type Category, type GalleryItem } from "../data/gallery";
+import { t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+const g = u.gallery;
+
+const gallery = await loadGallery();
+const counts = {
+  all: gallery.length,
+  design: gallery.filter((i) => i.category === "design").length,
+  photo: gallery.filter((i) => i.category === "photo").length,
+};
+// Only offer a filter when there is something to choose between.
+const filters = ([
+  { id: "all", label: g.all },
+  { id: "design", label: g.design },
+  { id: "photo", label: g.photo },
+] as { id: "all" | Category; label: string }[]).filter((f) => f.id === "all" || counts[f.id] > 0);
+const showFilter = filters.length > 2;
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const items = await Promise.all(
+  gallery.map(async (item, i) => {
+    const full = await getImage({ src: item.image, width: Math.min(item.image.width, 2400), format: "webp" });
+    const title = item.title?.[lang];
+    const kind = item.category === "design" ? g.design : g.photo;
+    const settings = [item.exif?.aperture, item.exif?.shutter, item.exif?.iso, item.exif?.focal].filter(Boolean).join(" · ");
+    return {
+      ...item,
+      full: full.src,
+      no: `No.${pad(i + 1)}`,
+      alt: title ?? `${kind} ${item.date ?? item.id}`,
+      title,
+      settings,
+    };
+  }),
+);
+type Item = (typeof items)[number];
+const [feature, ...rest] = items;
+
+const spec = (it: Item) =>
+  [
+    { k: g.spec.date, v: it.date },
+    { k: g.spec.camera, v: it.exif?.camera },
+    { k: g.spec.lens, v: it.exif?.lens },
+    { k: g.spec.exposure, v: it.settings },
+  ].filter((r) => r.v);
+
+const meta = (it: Item) => [it.no, it.title, it.date, it.settings, it.exif?.camera].filter(Boolean).join("   ");
+---
+
+<Page lang={lang} title={g.title}>
+  <header class="gallery-head border-b border-dashed border-outline pb-8 pt-12 md:pt-20">
+    <h1 class="rise type-display-m" style="--i: 1">{g.title}</h1>
+    {
+      items.length > 0 && (
+        <p class="gallery-count rise" style="--i: 2">
+          <span class="n">{pad(items.length)}</span>
+          <span class="type-label-l text-on-surface-variant">{g.frames}</span>
+        </p>
+      )
+    }
+  </header>
+
+  {
+    items.length === 0 ? (
+      <p class="rise mt-12 text-on-surface-variant type-body-l" style="--i: 2">{g.empty}</p>
+    ) : (
+      <div class="gallery mt-10" data-gallery>
+        {showFilter && (
+          <fieldset class="gallery-filter rise" style="--i: 3">
+            <legend class="sr-only">{g.filterLabel}</legend>
+            {filters.map((f) => (
+              <label>
+                <input type="radio" name="gallery-filter" value={f.id} checked={f.id === "all"} />
+                <span>
+                  {f.label}
+                  <sup>{counts[f.id]}</sup>
+                </span>
+              </label>
+            ))}
+          </fieldset>
+        )}
+
+        {/* Latest frame: large print with its spec sheet */}
+        <article class="gallery-feature gallery-item rise" data-category={feature.category} style="--i: 3">
+          <a class="print" href={feature.full} data-full={feature.full} data-alt={feature.alt} data-meta={meta(feature)}>
+            <Picture
+              src={feature.image}
+              alt={feature.alt}
+              formats={["avif", "webp"]}
+              widths={[640, 960, 1280, 1600]}
+              sizes="(min-width: 1024px) 720px, 92vw"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <span class="print-foot">
+              <span>{feature.no}</span>
+              <span>{feature.date}</span>
+            </span>
+          </a>
+
+          <div class="spec">
+            <p class="text-tertiary type-label-l">{g.latest}</p>
+            {feature.title && <h2 class="mt-2 type-headline-m">{feature.title}</h2>}
+            <dl class="mt-6">
+              {spec(feature).map((r) => (
+                <div>
+                  <dt>{r.k}</dt>
+                  <dd lang="en">{r.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </article>
+
+        {rest.length > 0 && (
+          <ul class="gallery-grid mt-16">
+            {rest.map((item, i) => (
+              <li class="gallery-item rise" data-category={item.category} style={`--i: ${Math.min(i, 8) + 4}`}>
+                <a class="print" href={item.full} data-full={item.full} data-alt={item.alt} data-meta={meta(item)}>
+                  <Picture
+                    src={item.image}
+                    alt={item.alt}
+                    formats={["avif", "webp"]}
+                    widths={[400, 640, 960, 1280]}
+                    sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="print-foot">
+                    <span>{item.no}</span>
+                    <span>{item.date}</span>
+                  </span>
+                  {item.settings && <span class="print-exif" lang="en">{item.settings}</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <dialog class="lightbox" aria-label={g.title}>
+          <figure>
+            <img alt="" decoding="async" />
+            <figcaption class="lb-meta" lang="en"></figcaption>
+          </figure>
+          <button type="button" class="icon-btn lb-prev" data-step="-1" aria-label={g.prev}><MdChevronLeft size={28} /></button>
+          <button type="button" class="icon-btn lb-next" data-step="1" aria-label={g.next}><MdChevronRight size={28} /></button>
+          <button type="button" class="icon-btn lb-close" aria-label={g.close}><MdClose size={24} /></button>
+        </dialog>
+      </div>
+    )
+  }
+</Page>
+
+<script>
+  // Lightbox: click a print to view it large; ←/→ to step, Esc or the backdrop to close.
+  // Without JavaScript the prints are plain links to the full-size file.
+  function init() {
+    const root = document.querySelector<HTMLElement>("[data-gallery]");
+    const dlg = root?.querySelector<HTMLDialogElement>("dialog.lightbox");
+    if (!root || !dlg || root.dataset.bound) return;
+    root.dataset.bound = "";
+    const img = dlg.querySelector("img")!;
+    const cap = dlg.querySelector(".lb-meta")!;
+    const visible = () => [...root.querySelectorAll<HTMLAnchorElement>("a[data-full]")].filter((a) => a.getClientRects().length > 0);
+    let cur = 0;
+
+    const show = (i: number) => {
+      const list = visible();
+      if (!list.length) return;
+      cur = (i + list.length) % list.length;
+      const a = list[cur];
+      img.src = a.dataset.full!;
+      img.alt = a.dataset.alt ?? "";
+      cap.textContent = a.dataset.meta ?? "";
+    };
+
+    root.addEventListener("click", (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>("a[data-full]");
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      show(visible().indexOf(a));
+      dlg.showModal();
+    });
+    dlg.addEventListener("click", (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>("button");
+      if (btn?.dataset.step) show(cur + Number(btn.dataset.step));
+      else if (btn?.classList.contains("lb-close") || e.target === dlg) dlg.close();
+    });
+    dlg.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") show(cur + 1);
+      if (e.key === "ArrowLeft") show(cur - 1);
+    });
+  }
+  document.addEventListener("astro:page-load", init);
+</script>

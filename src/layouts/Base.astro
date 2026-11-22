@@ -1,0 +1,120 @@
+---
+import { getImage } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+// Default build = weight axis only, so no rounded (ROND) glyphs are ever loaded.
+import "@fontsource-variable/google-sans-flex";
+import "@fontsource-variable/noto-sans-sc";
+import "../styles/global.css";
+import avatar from "../assets/avatar.png";
+import { href, routeOf, t, type Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+  /** Page name; the site name is appended. Omit on the home page. */
+  title?: string;
+}
+
+const { lang, title } = Astro.props;
+const u = t(lang);
+const route = routeOf(Astro.url.pathname);
+const enHref = href("en", route);
+const zhHref = href("zh", route);
+const pageTitle = title ? `${title} · ${u.meta.site}` : u.meta.site;
+
+// Favicons are generated from the avatar at build time (hashed file names → cached long-term).
+const icon32 = await getImage({ src: avatar, width: 32, height: 32, format: "png" });
+const icon192 = await getImage({ src: avatar, width: 192, height: 192, format: "png" });
+const appleIcon = await getImage({ src: avatar, width: 180, height: 180, format: "png" });
+---
+
+<!doctype html>
+<html lang={lang === "zh" ? "zh-CN" : "en"}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={u.meta.description} />
+    <meta name="theme-color" content="#f5f4f8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#010102" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="32x32" href={icon32.src} />
+    <link rel="icon" type="image/png" sizes="192x192" href={icon192.src} />
+    <link rel="apple-touch-icon" href={appleIcon.src} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="zh-CN" href={zhHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={u.meta.description} />
+    <meta name="twitter:site" content="@Silentnrtx" />
+
+    <!--
+      Client-side navigation: switching page or language swaps the DOM instead of reloading,
+      so already-loaded fonts never drop back to the fallback face.
+    -->
+    <ClientRouter fallback="swap" />
+
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const theme = () => {
+          try {
+            const s = localStorage.getItem("theme");
+            const dark = s ? s === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+            return dark ? "dark" : "light";
+          } catch {
+            return "light";
+          }
+        };
+        root.dataset.theme = theme();
+
+        if (window.__siteBound) return;
+        window.__siteBound = true;
+
+        // Remember an explicit language choice (delegated, so it survives page swaps).
+        document.addEventListener("click", (e) => {
+          const a = e.target instanceof Element ? e.target.closest("[data-set-lang]") : null;
+          if (a) try { localStorage.setItem("lang", a.dataset.setLang); } catch {}
+        });
+
+        // Before navigating: fetch the next page, then make sure the font files its text
+        // needs (e.g. CJK subsets on the first switch to 中文) are loaded before it is shown.
+        document.addEventListener("astro:before-preparation", (e) => {
+          const load = e.loader;
+          e.loader = async () => {
+            await load();
+            const text = (e.newDocument?.body?.textContent || "").replace(/\s+/g, " ").slice(0, 4000);
+            if (!text || !document.fonts?.load) return;
+            const faces = ['"Google Sans Flex Variable"', '"Noto Sans SC Variable"'];
+            const jobs = faces.flatMap((f) => [400, 600].map((w) => document.fonts.load(`${w} 16px ${f}`, text)));
+            await Promise.race([Promise.allSettled(jobs), new Promise((r) => setTimeout(r, 800))]);
+          };
+        });
+
+        // Carry the theme onto the incoming page before it is painted, and mark it as a
+        // client-side visit so the navbar entrance plays only on the first load.
+        document.addEventListener("astro:before-swap", (e) => {
+          const next = e.newDocument.documentElement;
+          next.dataset.theme = root.dataset.theme || theme();
+          next.dataset.navigated = "";
+        });
+      })();
+    </script>
+    {
+      lang === "en" && (
+        <script is:inline define:vars={{ zhHref }}>
+          try {
+            if (!document.documentElement.hasAttribute("data-navigated") && !localStorage.getItem("lang") && /^zh\b/i.test(navigator.language || "")) location.replace(zhHref);
+          } catch {}
+        </script>
+      )
+    }
+  </head>
+  <body class="flex min-h-dvh flex-col text-on-surface antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-inverse-surface focus:px-5 focus:py-2.5 focus:text-inverse-on-surface"
+    >
+      {u.skip}
+    </a>
+    <slot />
+  </body>
+</html>

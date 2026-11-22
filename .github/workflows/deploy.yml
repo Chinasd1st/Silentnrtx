@@ -1,7 +1,11 @@
-name: Deploy to GitHub Pages
+name: Build & deploy
 
+# Pull requests: build only, so a broken build shows up on the PR.
+# Pushes to main: build, then publish to GitHub Pages (https://silentnrtx.top/Silentnrtx/).
 on:
   push:
+    branches: ["main"]
+  pull_request:
     branches: ["main"]
   workflow_dispatch:
 
@@ -11,20 +15,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
-      # ==================== pnpm 设置 ====================
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
@@ -33,43 +33,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 20
-          cache: "pnpm"
-          cache-dependency-path: ./pnpm-lock.yaml
+          # Astro 7 needs Node >= 22.23.4
+          node-version: 24
+          cache: pnpm
 
-      # ==================== 安装依赖 ====================
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Approve builds (esbuild & sharp)
-        run: pnpm approve-builds esbuild sharp
-
-      # ==================== Git 信息与构建时间 ====================
-      - name: Get Git info and Build Time
-        id: git_info
-        run: |
-          echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "COMMIT_DATE=$(git log -1 --pretty=format:%cd --date=iso)" >> $GITHUB_ENV
-          echo "BUILD_TIME=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
-
-      # ==================== 构建 ====================
-      - name: Build static export
+      - name: Build
         run: pnpm build
-        env:
-          NEXT_PUBLIC_LAST_FM_API_KEY: ${{ secrets.NEXT_PUBLIC_LAST_FM_API_KEY }}
-          NEXT_PUBLIC_LAST_FM_USERNAME: ${{ secrets.NEXT_PUBLIC_LAST_FM_USERNAME }}
-          NEXT_PUBLIC_GITHUB_TOKEN: ${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}
-          NEXT_PUBLIC_BUILD_TIME: ${{ env.BUILD_TIME }}
-          NEXT_PUBLIC_COMMIT_DATE: ${{ env.COMMIT_DATE }}
-          NEXT_PUBLIC_COMMIT_SHA: ${{ env.COMMIT_SHA }}
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
-          path: ./out
+          path: ./dist
 
-  # ==================== 部署 ====================
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

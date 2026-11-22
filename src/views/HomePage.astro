@@ -1,0 +1,39 @@
+---
+import { MdArrowForward } from "react-icons/md";
+import Page from "../layouts/Page.astro";
+import Hero from "../components/Hero.astro";
+import { href, t, type Lang } from "../i18n/ui";
+
+const { lang } = Astro.props as { lang: Lang };
+const u = t(lang);
+const pages = [
+  { to: "about/", title: u.nav.about, desc: u.home.pages.about },
+  { to: "gallery/", title: u.nav.gallery, desc: u.home.pages.gallery },
+  { to: "contact/", title: u.nav.contact, desc: u.home.pages.contact },
+];
+---
+
+<Page lang={lang}>
+  <Hero lang={lang} />
+
+  <nav class="pt-6 md:pt-8" aria-label={u.home.pagesLabel}>
+    <ul class="grid gap-3 md:grid-cols-3">
+      {
+        pages.map((p, i) => (
+          <li class="rise" style={`--i: ${i + 3}`}>
+            <a class="page-card" href={href(lang, p.to)}>
+              <span class="page-no type-label-l" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <span class="mt-auto block pt-12">
+                <span class="block type-display-s">{p.title}</span>
+                <span class="mt-2 block text-on-surface-variant type-body-l">{p.desc}</span>
+              </span>
+              <span class="page-go" aria-hidden="true">
+                <MdArrowForward size={22} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</Page>

@@ -1,0 +1,689 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------
+   Color roles — Material 3 naming, palette carried over from Silentnrtx v1:
+   one seed hue (--md-hue, violet 270) drives everything; surfaces lean
+   +30° toward magenta; pink (hue 350) is the single loud accent.
+   Change --md-hue to re-tint the whole site.
+   ------------------------------------------------------------------ */
+:root {
+  --md-hue: 270;
+  --md-hue-surface: calc(var(--md-hue) + 30);
+  --md-hue-accent: 350;
+
+  color-scheme: light;
+  /* v1 light used L 0.70 for primary; darkened here so it passes as text on the light surface */
+  --md-primary: oklch(0.52 0.16 var(--md-hue));
+  --md-on-primary: oklch(0.98 0.015 var(--md-hue));
+  --md-primary-container: oklch(0.9 0.06 var(--md-hue));
+  --md-on-primary-container: oklch(0.3 0.1 var(--md-hue));
+  --md-secondary: oklch(0.48 0.03 var(--md-hue-surface));
+  --md-on-secondary: oklch(0.98 0.005 var(--md-hue-surface));
+  --md-secondary-container: oklch(0.92 0.012 var(--md-hue-surface));
+  --md-on-secondary-container: oklch(0.28 0.02 var(--md-hue-surface));
+  --md-tertiary: oklch(0.56 0.17 var(--md-hue-accent));
+  --md-on-tertiary: oklch(0.98 0.01 var(--md-hue-accent));
+  --md-tertiary-container: oklch(0.9 0.06 var(--md-hue-accent));
+  --md-on-tertiary-container: oklch(0.33 0.11 var(--md-hue-accent));
+  --md-surface: oklch(0.97 0.005 var(--md-hue-surface));
+  --md-surface-container-lowest: oklch(0.995 0.002 var(--md-hue));
+  --md-surface-container-low: oklch(0.955 0.006 var(--md-hue-surface));
+  --md-surface-container: oklch(0.94 0.007 var(--md-hue-surface));
+  --md-surface-container-high: oklch(0.92 0.008 var(--md-hue-surface));
+  --md-surface-container-highest: oklch(0.9 0.009 var(--md-hue-surface));
+  --md-on-surface: oklch(0.15 0.01 var(--md-hue));
+  --md-on-surface-variant: oklch(0.4 0.015 var(--md-hue));
+  --md-outline: oklch(0.68 0.01 var(--md-hue-surface));
+  --md-outline-variant: oklch(0.86 0.008 var(--md-hue-surface));
+  --md-inverse-surface: oklch(0.18 0.01 var(--md-hue-surface));
+  --md-inverse-on-surface: oklch(0.93 0.005 var(--md-hue));
+  --paper-grain: oklch(0.15 0.01 var(--md-hue) / 0.07);
+}
+
+/* Dark — v1's default: near-black background, violet primary at L 0.75 / C 0.14 */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --md-primary: oklch(0.75 0.14 var(--md-hue));
+  --md-on-primary: oklch(0.2 0.06 var(--md-hue));
+  --md-primary-container: oklch(0.3 0.09 var(--md-hue));
+  --md-on-primary-container: oklch(0.9 0.05 var(--md-hue));
+  --md-secondary: oklch(0.72 0.02 var(--md-hue-surface));
+  --md-on-secondary: oklch(0.2 0.015 var(--md-hue-surface));
+  --md-secondary-container: oklch(0.22 0.012 var(--md-hue-surface));
+  --md-on-secondary-container: oklch(0.88 0.01 var(--md-hue-surface));
+  --md-tertiary: oklch(0.72 0.15 var(--md-hue-accent));
+  --md-on-tertiary: oklch(0.2 0.07 var(--md-hue-accent));
+  --md-tertiary-container: oklch(0.32 0.1 var(--md-hue-accent));
+  --md-on-tertiary-container: oklch(0.9 0.05 var(--md-hue-accent));
+  --md-surface: oklch(0.07 0.005 var(--md-hue-surface));
+  --md-surface-container-lowest: oklch(0.05 0.004 var(--md-hue-surface));
+  --md-surface-container-low: oklch(0.12 0.008 var(--md-hue-surface));
+  --md-surface-container: oklch(0.14 0.009 var(--md-hue-surface));
+  --md-surface-container-high: oklch(0.18 0.01 var(--md-hue-surface));
+  --md-surface-container-highest: oklch(0.22 0.011 var(--md-hue-surface));
+  --md-on-surface: oklch(0.92 0.005 var(--md-hue));
+  --md-on-surface-variant: oklch(0.65 0.015 var(--md-hue));
+  --md-outline: oklch(0.45 0.012 var(--md-hue-surface));
+  --md-outline-variant: oklch(0.22 0.01 var(--md-hue-surface));
+  --md-inverse-surface: oklch(0.92 0.005 var(--md-hue));
+  --md-inverse-on-surface: oklch(0.12 0.008 var(--md-hue-surface));
+  --paper-grain: oklch(0.92 0.005 var(--md-hue) / 0.045);
+}
+
+@theme inline {
+  --color-primary: var(--md-primary);
+  --color-on-primary: var(--md-on-primary);
+  --color-primary-container: var(--md-primary-container);
+  --color-on-primary-container: var(--md-on-primary-container);
+  --color-secondary: var(--md-secondary);
+  --color-on-secondary: var(--md-on-secondary);
+  --color-secondary-container: var(--md-secondary-container);
+  --color-on-secondary-container: var(--md-on-secondary-container);
+  --color-tertiary: var(--md-tertiary);
+  --color-on-tertiary: var(--md-on-tertiary);
+  --color-tertiary-container: var(--md-tertiary-container);
+  --color-on-tertiary-container: var(--md-on-tertiary-container);
+  --color-surface: var(--md-surface);
+  --color-surface-container-lowest: var(--md-surface-container-lowest);
+  --color-surface-container-low: var(--md-surface-container-low);
+  --color-surface-container: var(--md-surface-container);
+  --color-surface-container-high: var(--md-surface-container-high);
+  --color-surface-container-highest: var(--md-surface-container-highest);
+  --color-on-surface: var(--md-on-surface);
+  --color-on-surface-variant: var(--md-on-surface-variant);
+  --color-outline: var(--md-outline);
+  --color-outline-variant: var(--md-outline-variant);
+  --color-inverse-surface: var(--md-inverse-surface);
+  --color-inverse-on-surface: var(--md-inverse-on-surface);
+
+  /* Latin: Google Sans Flex (weight axis only — no rounded corners). CJK: 思源黑体 Source Han Sans,
+     local install first, then Noto Sans SC (the same design, web-subset). Japanese uses the same CJK fallback. */
+  --font-sans: "Google Sans Flex Variable", "Google Sans Flex", "Source Han Sans SC", "Source Han Sans CN", "思源黑体", "Noto Sans SC Variable", "Noto Sans SC", sans-serif;
+
+  --ease-spring: cubic-bezier(0.38, 1.21, 0.22, 1);
+  --ease-spring-fast: cubic-bezier(0.42, 1.67, 0.21, 0.9);
+  --ease-soft: cubic-bezier(0.34, 0.8, 0.34, 1);
+  /* emphasized decelerate: fast start, long soft landing, no overshoot */
+  --ease-emphasized: cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+/* ------------------------------ type scale ------------------------------ */
+@utility type-display-m { font-size: clamp(2.5rem, 6vw, 3.75rem); line-height: 1.05; letter-spacing: -0.025em; font-weight: 600; }
+@utility type-display-s { font-size: 2.5rem; line-height: 2.75rem; letter-spacing: -0.02em; font-weight: 600; }
+@utility type-headline-m { font-size: 1.75rem; line-height: 2.25rem; letter-spacing: -0.01em; font-weight: 400; }
+@utility type-headline-s { font-size: 1.5rem; line-height: 2rem; letter-spacing: -0.005em; font-weight: 500; }
+@utility type-title-l { font-size: 1.375rem; line-height: 1.75rem; font-weight: 500; }
+@utility type-title-m { font-size: 1rem; line-height: 1.5rem; letter-spacing: 0.009em; font-weight: 600; }
+@utility type-body-l { font-size: 1rem; line-height: 1.65rem; letter-spacing: 0.01em; font-weight: 400; }
+@utility type-body-m { font-size: 0.875rem; line-height: 1.35rem; letter-spacing: 0.012em; font-weight: 400; }
+@utility type-label-l { font-size: 0.875rem; line-height: 1.25rem; letter-spacing: 0.007em; font-weight: 600; }
+@utility type-label-m { font-size: 0.75rem; line-height: 1rem; letter-spacing: 0.04em; font-weight: 600; }
+
+/* -------------------------------- base -------------------------------- */
+@layer base {
+  html {
+    background-color: var(--md-surface);
+    background-image: radial-gradient(var(--paper-grain) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    color: var(--md-on-surface);
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  /* CJK reads better a touch looser */
+  :lang(zh) { line-height: 1.75; }
+  :lang(zh) :is(h1, h2, h3) { letter-spacing: 0; }
+  ::selection { background: var(--md-tertiary); color: var(--md-on-tertiary); }
+  :focus-visible { outline: 2px dashed var(--md-tertiary); outline-offset: 3px; }
+  /* set for one frame while the theme flips, so every surface changes together */
+  :root[data-theme-switching] *,
+  :root[data-theme-switching] *::before,
+  :root[data-theme-switching] *::after { transition: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; }
+  }
+}
+
+/* ------------------------------ components ------------------------------ */
+@layer components {
+  /* State layer: hover 8%, focus 10%, pressed 12% */
+  .state { position: relative; isolation: isolate; }
+  .state::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: currentColor;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms var(--ease-soft);
+  }
+  .state:hover::after { opacity: 0.08; }
+  .state:focus-visible::after { opacity: 0.1; }
+  .state:active::after { opacity: 0.12; }
+
+  /* ---- Text links: one style for every inline hyperlink ----
+     The underline is a gradient that grows from the left on hover and
+     retracts to the right on leave, on an emphasized (non-linear) curve. */
+  .link {
+    color: var(--md-primary);
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: 0% 1.5px;
+    padding-bottom: 0.1em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition: background-size 480ms var(--ease-emphasized), color 200ms var(--ease-soft);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-position: 0% 100%;
+    background-size: 100% 1.5px;
+  }
+  .link svg { display: inline-block; vertical-align: -0.15em; }
+
+  .icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    /* exact half-height (not 9999px) so the press transition interpolates evenly */
+    border-radius: 1.25rem;
+    color: var(--md-on-surface-variant);
+    cursor: pointer;
+    transition: border-radius 200ms var(--ease-soft);
+  }
+  .icon-btn:active { border-radius: 12px; }
+
+  .btn-text, .btn-tonal, .btn-filled, .btn-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding-inline: 1.375rem;
+    border-radius: 1.375rem;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    white-space: nowrap;
+    /* no overshoot on radius: a spring curve made the corners bounce several times per press */
+    transition: border-radius 200ms var(--ease-soft), padding 350ms var(--ease-spring);
+  }
+  .btn-text { height: 2.5rem; border-radius: 1.25rem; padding-inline: 0.875rem; font-size: 0.875rem; color: var(--md-on-surface); }
+  .btn-tonal { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+  .btn-filled { background: var(--md-primary); color: var(--md-on-primary); }
+  .btn-solid { height: 2.5rem; border-radius: 1.25rem; font-size: 0.875rem; background: var(--btn-bg); color: var(--btn-fg); }
+  .btn-tonal:hover, .btn-filled:hover, .btn-solid:hover { padding-inline: 1.625rem; }
+  .btn-tonal:active, .btn-filled:active, .btn-solid:active { border-radius: 12px; }
+  :is(.btn-tonal, .btn-filled, .btn-solid, .btn-text) svg { transition: translate 350ms var(--ease-spring-fast); }
+  :is(.btn-tonal, .btn-filled, .btn-solid, .btn-text):hover svg.nudge { translate: 3px 0; }
+  :is(.btn-tonal, .btn-filled, .btn-solid, .btn-text):hover svg.nudge-ne { translate: 2px -2px; }
+  :is(.btn-tonal, .btn-filled, .btn-solid, .btn-text):hover svg.nudge-back { translate: -3px 0; }
+
+  /* ---- Top bar ---- */
+  .topbar {
+    background: color-mix(in oklch, var(--md-surface) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+  }
+  @supports (animation-timeline: scroll()) {
+    .topbar {
+      animation: topbar-lift linear both;
+      animation-timeline: scroll();
+      animation-range: 0 120px;
+    }
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--md-on-surface-variant);
+    transition: background-color 250ms var(--ease-soft), color 250ms var(--ease-soft);
+  }
+  /* Top bar: no darkening background on hover — only the text color moves */
+  .nav-link:hover, .segmented > a:hover, .topbar-link:hover { color: var(--md-primary); }
+  .topbar-link { color: var(--md-on-surface); transition: color 250ms var(--ease-soft); }
+  .topbar-toggle .state::after { display: none; }
+  .topbar-toggle .icon-btn { transition: color 250ms var(--ease-soft), border-radius 200ms var(--ease-soft); }
+  .topbar-toggle .icon-btn:hover { color: var(--md-primary); }
+  /* The active background is a separate pill (see "Sliding indicators" below), not the link itself */
+  .nav-link, .segmented > a { position: relative; isolation: isolate; }
+  .nav-link[aria-current="page"],
+  .nav-link[aria-current="page"]:hover { color: var(--md-on-secondary-container); }
+
+  .segmented {
+    display: inline-flex;
+    height: 2.25rem;
+    padding: 3px;
+    gap: 2px;
+    border-radius: 9999px;
+    background: var(--md-surface-container-high);
+  }
+  .segmented > a {
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--md-on-surface-variant);
+    transition: color 250ms var(--ease-soft);
+  }
+  .segmented > a[aria-current="true"],
+  .segmented > a[aria-current="true"]:hover { color: var(--md-inverse-on-surface); }
+
+  /* ---- Expressive shapes: equal-vertex polygons so clip-path can morph ---- */
+  .shape {
+    clip-path: var(--shape-rest);
+    transition: clip-path 800ms var(--ease-spring), rotate 800ms var(--ease-spring), scale 600ms var(--ease-spring);
+  }
+  .shape:hover, a:focus-visible > .shape { clip-path: var(--shape-alt); }
+
+  /* ---- Hero ---- */
+  .hero {
+    position: relative;
+    border-radius: 48px;
+    background: var(--md-surface-container-low);
+    overflow: clip;
+  }
+  /* a soft violet bloom from the avatar side */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: 70%;
+    aspect-ratio: 1;
+    background: radial-gradient(closest-side, color-mix(in oklch, var(--md-primary) 16%, transparent), transparent);
+    pointer-events: none;
+  }
+  .hero-name {
+    font-size: clamp(3.25rem, 8.6vw, 7.25rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    font-weight: 650;
+  }
+  .hero-name .ch {
+    display: inline-block;
+    transition: font-weight 600ms var(--ease-spring), translate 600ms var(--ease-spring);
+  }
+  .hero-name .ch:hover { font-weight: 900; translate: 0 -0.05em; }
+
+  .hero-art { position: relative; aspect-ratio: 1; width: min(100%, 27rem); }
+  .hero-art .avatar {
+    position: absolute;
+    inset: 4%;
+    border-radius: 9999px;
+    overflow: hidden;
+    background: var(--md-primary-container);
+  }
+  .hero-art .avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* About page portrait */
+  .portrait { border-radius: 9999px; overflow: hidden; background: var(--md-primary-container); }
+  .portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* ---- Motto under the hero ---- */
+  .motto {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--md-on-surface-variant);
+  }
+  .motto .link { color: inherit; }
+  .motto .link:hover, .motto .link:focus-visible { color: var(--md-primary); }
+
+  /* ---- About page ---- */
+  .avatar-credit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--md-on-surface-variant);
+  }
+  .avatar-credit > svg { flex: none; }
+  .avatar-credit .link { font-weight: 600; }
+  .section-label {
+    color: var(--md-tertiary);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .tile {
+    display: flex;
+    flex-direction: column;
+    min-height: 10.5rem;
+    padding: 1.5rem;
+    border-radius: 28px;
+    background: var(--md-surface-container-low);
+    transition: border-radius 450ms var(--ease-soft), background-color 250ms var(--ease-soft);
+  }
+  .tile:hover { border-radius: 40px; background: var(--md-surface-container); }
+  .tile-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+    background: var(--md-primary-container);
+    color: var(--md-on-primary-container);
+  }
+  .skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding-inline: 1rem 1.25rem;
+    border-radius: 14px;
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+    font-weight: 600;
+  }
+  .blog-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1.25rem 1.25rem;
+    border-radius: 28px;
+    background: var(--md-surface-container-low);
+    transition: border-radius 450ms var(--ease-soft), background-color 250ms var(--ease-soft);
+  }
+  .blog-card:hover { border-radius: 40px; background: var(--md-surface-container-high); }
+  .blog-icon { flex: none; width: 3rem; height: 3rem; border-radius: 1rem; overflow: hidden; background: var(--md-surface-container-highest); }
+  .blog-icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .blog-card .blog-go { flex: none; color: var(--md-on-surface-variant); transition: translate 450ms var(--ease-emphasized), color 250ms var(--ease-soft); }
+  .blog-card:hover .blog-go { translate: 3px -3px; color: var(--md-primary); }
+
+  /* ---- Home: list of sub-pages ---- */
+  /* ---- Gallery ---- */
+  /* Images: plain rounded corners, same language as the rest of the site's cards */
+  .gallery-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
+  .gallery-count { display: flex; align-items: baseline; gap: 0.5rem; }
+  .gallery-count .n {
+    font-size: clamp(3rem, 7vw, 4.5rem);
+    line-height: 0.9;
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    color: var(--md-tertiary);
+  }
+
+  .gallery-filter { display: flex; flex-wrap: wrap; gap: 1.5rem; border: 0; padding: 0; margin: 0 0 2.5rem; }
+  .gallery-filter label { position: relative; cursor: pointer; }
+  .gallery-filter input { position: absolute; inset: 0; opacity: 0; cursor: inherit; margin: 0; }
+  .gallery-filter label > span {
+    display: inline-block;
+    padding-bottom: 0.25rem;
+    color: var(--md-on-surface-variant);
+    font-size: 1.125rem;
+    font-weight: 600;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: color 250ms var(--ease-soft), background-size 480ms var(--ease-emphasized);
+  }
+  .gallery-filter label:hover > span { color: var(--md-primary); }
+  .gallery-filter input:checked + span { color: var(--md-on-surface); background-size: 100% 2px; }
+  .gallery-filter input:focus-visible + span { outline: 2px dashed var(--md-tertiary); outline-offset: 3px; }
+  .gallery-filter sup { margin-left: 0.2em; font-size: 0.65em; font-weight: 500; color: var(--md-tertiary); }
+
+  .print { display: block; }
+  .print picture { display: block; overflow: hidden; border-radius: 28px; background: var(--md-surface-container); transition: border-radius 450ms var(--ease-soft); }
+  .print:hover picture, .print:focus-visible picture { border-radius: 40px; }
+  .print img { display: block; width: 100%; height: auto; }
+  .print-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0.25rem 0;
+    color: var(--md-on-surface-variant);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .print-exif {
+    display: block;
+    padding: 0.125rem 0.25rem 0;
+    color: var(--md-on-surface-variant);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+  }
+
+  /* Latest frame + its spec sheet */
+  .gallery-feature { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 1024px) { .gallery-feature { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 4rem; } }
+  .spec dl > div {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1rem;
+    padding-block: 0.875rem;
+    border-top: 1px dashed var(--md-outline-variant);
+  }
+  .spec dl > div:last-child { border-bottom: 1px dashed var(--md-outline-variant); }
+  .spec dt { color: var(--md-on-surface-variant); font-size: 0.875rem; }
+  .spec dd { font-weight: 500; }
+
+  /* Older frames: masonry, each image keeps its own aspect ratio */
+  .gallery-grid { columns: 1; column-gap: 1rem; }
+  @media (min-width: 640px) { .gallery-grid { columns: 2; } }
+  @media (min-width: 1024px) { .gallery-grid { columns: 3; } }
+  .gallery-grid .gallery-item { break-inside: avoid; margin-bottom: 1.75rem; }
+
+  /* Lightbox */
+  .lightbox {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: oklch(0.95 0.005 var(--md-hue));
+  }
+  .lightbox::backdrop { background: oklch(0.08 0.01 var(--md-hue-surface) / 0.92); backdrop-filter: blur(6px); }
+  .lightbox[open] { display: grid; place-items: center; animation: lb-in 380ms var(--ease-emphasized); }
+  .lightbox figure { display: grid; justify-items: center; gap: 1rem; padding: 4rem 4.5rem 2rem; max-width: 100%; }
+  .lightbox img { max-width: 100%; max-height: calc(100dvh - 9rem); width: auto; height: auto; object-fit: contain; }
+  .lightbox figcaption { white-space: pre-wrap; text-align: center; font-size: 0.8125rem; letter-spacing: 0.06em; opacity: 0.75; }
+  .lightbox .icon-btn { position: fixed; width: 3rem; height: 3rem; border-radius: 1.5rem; color: inherit; }
+  .lightbox .icon-btn:hover { background: rgb(255 255 255 / 0.1); }
+  .lb-prev { left: 1rem; top: 50%; translate: 0 -50%; }
+  .lb-next { right: 1rem; top: 50%; translate: 0 -50%; }
+  .lb-close { right: 1rem; top: 1rem; }
+  @media (max-width: 639px) {
+    .lightbox figure { padding: 4rem 1rem 6rem; }
+    .lb-prev, .lb-next { top: auto; bottom: 1.5rem; translate: none; }
+    .lb-prev { left: calc(50% - 3.5rem); }
+    .lb-next { right: calc(50% - 3.5rem); }
+  }
+
+  /* Filtering without JavaScript */
+  .gallery:has(input[value="design"]:checked) .gallery-item:not([data-category="design"]),
+  .gallery:has(input[value="photo"]:checked) .gallery-item:not([data-category="photo"]) { display: none; }
+
+  .page-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 15rem;
+    padding: 1.75rem;
+    border-radius: 32px;
+    background: var(--md-surface-container-low);
+    transition: border-radius 450ms var(--ease-soft), background-color 250ms var(--ease-soft);
+  }
+  .page-card:hover { border-radius: 52px; background: var(--md-surface-container-high); }
+  .page-card .page-no { color: var(--md-tertiary); }
+  .page-card .page-go {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    background: var(--md-surface-container-highest);
+    color: var(--md-on-surface);
+    transition: background-color 250ms var(--ease-soft), color 250ms var(--ease-soft), rotate 450ms var(--ease-soft);
+  }
+  .page-card:hover .page-go { background: var(--md-primary); color: var(--md-on-primary); rotate: -45deg; }
+
+  /* ---- Contact cards: each one gets a different "bitten" corner ---- */
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 18rem;
+    padding: 1.5rem;
+    border-radius: 36px;
+    transition: border-radius 450ms var(--ease-soft), rotate 600ms var(--ease-spring);
+  }
+  .contact-card:nth-child(4n + 1) { border-bottom-left-radius: 6px; }
+  .contact-card:nth-child(4n + 2) { border-top-right-radius: 6px; }
+  .contact-card:nth-child(4n + 3) { border-bottom-right-radius: 6px; }
+  .contact-card:nth-child(4n + 4) { border-top-left-radius: 6px; }
+  .contact-card:hover { border-radius: 56px; }
+  .contact-card:nth-child(odd):hover { rotate: -1deg; }
+  .contact-card:nth-child(even):hover { rotate: 1deg; }
+  .tone-primary { background: var(--md-primary-container); color: var(--md-on-primary-container); --btn-bg: var(--md-on-primary-container); --btn-fg: var(--md-primary-container); }
+  .tone-secondary { background: var(--md-secondary-container); color: var(--md-on-secondary-container); --btn-bg: var(--md-on-secondary-container); --btn-fg: var(--md-secondary-container); }
+  .tone-inverse { background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); --btn-bg: var(--md-inverse-on-surface); --btn-fg: var(--md-inverse-surface); }
+  .tone-tertiary { background: var(--md-tertiary-container); color: var(--md-on-tertiary-container); --btn-bg: var(--md-on-tertiary-container); --btn-fg: var(--md-tertiary-container); }
+  .tone-neutral { background: var(--md-surface-container-highest); color: var(--md-on-surface); --btn-bg: var(--md-on-surface); --btn-fg: var(--md-surface-container-highest); }
+  .contact-card .icon-btn { color: inherit; }
+  .contact-handle { font-weight: 700; }
+
+  /* Snackbar */
+  .snackbar {
+    position: fixed;
+    left: 50%;
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+    z-index: 60;
+    min-height: 3rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    padding: 0.875rem 1.125rem;
+    border-radius: 14px;
+    background: var(--md-inverse-surface);
+    color: var(--md-inverse-on-surface);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
+    translate: -50% 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms var(--ease-soft), translate 400ms var(--ease-spring-fast);
+  }
+  .snackbar[data-open] { opacity: 1; translate: -50% 0; }
+}
+
+@keyframes topbar-lift {
+  to {
+    background: color-mix(in oklch, var(--md-surface-container) 90%, transparent);
+    border-bottom-color: var(--md-outline-variant);
+  }
+}
+
+/* ------------------------------ entrance motion ------------------------------
+   .drop — navbar items fall in from above, staggered by --i; first full load only
+           (client-side navigations set [data-navigated] on <html>).
+   .rise — page content lifts in slightly, staggered by --i; plays on every page.
+   Both use the emphasized-decelerate curve and respect prefers-reduced-motion
+   through the global rule in @layer base. */
+@keyframes drop-in {
+  from { opacity: 0; translate: 0 -0.75rem; }
+}
+@keyframes rise-in {
+  from { opacity: 0; translate: 0 0.625rem; }
+}
+@keyframes lb-in {
+  from { opacity: 0; scale: 0.97; }
+}
+.drop {
+  animation: drop-in 620ms var(--ease-emphasized) both;
+  animation-delay: calc(var(--i, 0) * 55ms + 60ms);
+}
+:root[data-navigated] .drop { animation: none; }
+.rise {
+  animation: rise-in 720ms var(--ease-emphasized) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 140ms);
+}
+:root[data-navigated] .rise { animation-delay: calc(var(--i, 0) * 50ms); }
+@media (prefers-reduced-motion: reduce) {
+  .drop, .rise { animation: none; }
+}
+
+/* ------------------------------ sliding indicators ------------------------------
+   Navbar + language switch. Only the active link renders a pill; it carries the same
+   view-transition-name on every page, so during a client-side navigation the browser
+   moves and resizes it from the old link to the new one. Labels have their own names
+   (and come later in the DOM), so they are drawn above the pill while it travels.
+   Browsers without View Transitions simply switch without the glide.
+
+   Nothing is ever scaled:
+   - the pill is painted by the transition group itself (real background + radius),
+     its snapshots are hidden, so its corners stay round while it stretches;
+   - labels don't move or resize at all — each one cross-fades in place at its own
+     natural size (a language switch swaps 首页 → Home without the text being squashed). */
+.nav-pill,
+.seg-pill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.nav-pill { background: var(--md-secondary-container); view-transition-name: nav-pill; }
+.seg-pill { background: var(--md-inverse-surface); view-transition-name: lang-pill; }
+.vt-label { display: inline-block; view-transition-class: nav-label; }
+
+/* pill: only the box moves */
+::view-transition-group(nav-pill),
+::view-transition-group(lang-pill) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  border-radius: 9999px;
+  /* Transition layers are stacked in the old page's paint order, so when the old
+     active item sits to the right of the target (e.g. 联系 → 首页) the pill would be
+     drawn over the target's label. Pin the stacking explicitly instead. */
+  z-index: 1;
+}
+::view-transition-group(nav-pill) { background: var(--md-secondary-container); }
+::view-transition-group(lang-pill) { background: var(--md-inverse-surface); }
+::view-transition-old(nav-pill),
+::view-transition-old(lang-pill),
+::view-transition-new(nav-pill),
+::view-transition-new(lang-pill) { animation: none; opacity: 0; }
+
+/* labels: no cross-fade at all. The old snapshot is hidden and the new text shows
+   immediately at its final spot. A cross-fade would briefly draw the old label
+   (e.g. 首页) at the new label's position, and since EN and 中文 labels differ in
+   width, the two would overlap their neighbours for a moment. */
+::view-transition-group(*.nav-label) { animation: none; z-index: 2; }
+::view-transition-old(*.nav-label) { display: none; }
+::view-transition-new(*.nav-label) { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
