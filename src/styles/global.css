@@ -383,6 +383,7 @@
     background: var(--md-primary-container);
     color: var(--md-on-primary-container);
   }
+  .tile--circle { min-height: 0; justify-content: center; }
   .skill-chip {
     display: inline-flex;
     align-items: center;

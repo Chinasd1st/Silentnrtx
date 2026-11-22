@@ -24,6 +24,7 @@ const hobbies: { key: keyof typeof a.hobbies; icon: IconType }[] = [
   { key: "music", icon: MdHeadphones },
   { key: "rhythm", icon: SiOsu },
 ];
+const circles: (keyof typeof a.circles)[] = ["kamitsubaki", "voices"];
 ---
 
 <Page lang={lang} title={a.title}>
@@ -79,6 +80,26 @@ const hobbies: { key: keyof typeof a.hobbies; icon: IconType }[] = [
                   ) : (
                     <span class="mt-1 block text-on-surface-variant type-body-m">{h.note}</span>
                   ))}
+              </span>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  <!-- Circles -->
+  <section class="mt-16" aria-labelledby="circles-title">
+    <h2 id="circles-title" class="rise section-label" style="--i: 6">{a.circlesTitle}</h2>
+    <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+      {
+        circles.map((key, i) => {
+          const c: Hobby = a.circles[key];
+          return (
+            <li class="tile tile--circle rise" style={`--i: ${i + 7}`}>
+              <span class="block">
+                <span class="block type-title-l">{c.title}</span>
+                {c.note && <span class="mt-1 block text-on-surface-variant type-body-m" lang="en">{c.note}</span>}
               </span>
             </li>
           );

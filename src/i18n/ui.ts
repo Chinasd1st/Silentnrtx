@@ -48,6 +48,11 @@ const ui = {
         video: { title: "Video editing", note: "The basics" },
         graphic: { title: "Graphic & book design", note: "The basics" },
       },
+      circlesTitle: "Circles",
+      circles: {
+        kamitsubaki: { title: "KAMITSUBAKI STUDIO", note: "神椿" },
+        voices: { title: "Voice synthesis", note: "VOICEPEAK · VOICEVOX · VOICEROID" },
+      },
       skillsTitle: "Skills",
       skills: { english: "English (?)" },
       blogTitle: "Blog",
@@ -128,6 +133,11 @@ const ui = {
         rhythm: { title: "音游", note: "现主攻 osu!mania & osu!std" },
         video: { title: "视频剪辑", note: "基础" },
         graphic: { title: "平面设计与装帧设计", note: "基础" },
+      },
+      circlesTitle: "圈子",
+      circles: {
+        kamitsubaki: { title: "神椿", note: "KAMITSUBAKI STUDIO" },
+        voices: { title: "合成音声", note: "VOICEPEAK · VOICEVOX · VOICEROID" },
       },
       skillsTitle: "特长",
       skills: { english: "英语（？）" },
